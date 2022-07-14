@@ -24,8 +24,25 @@
 	rel="stylesheet" />
 <!-- Core theme CSS (includes Bootstrap)-->
 <link href="css/styles_jw.css" rel="stylesheet" />
+<style>
+img {
+	width: 1000px;
+	height: 300px;
+	object-fit: cover;
+	max-width: 1000px;
+	max-height: 300px;
+}
+</style>
 </head>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript"
+	src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId="></script>
+<script type="text/javascript"
+	src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=&submodules=geocoder"></script>
 <!-- Contact-->
+
 <body>
 	<!-- Navigation-->
 	<div w3-include-html="nav.html"></div>
@@ -40,10 +57,6 @@
 			<div class="row gx-4 gx-lg-5 justify-content-center mb-5">
 				<div class="col-lg-6">
 					<form id="signupform" novalidate>
-						<div id="image-block" class="form-floating mb-3"
-							style="display: none">
-							<img id="image-block-image" class="card-img-top" src="" alt="..." />
-						</div>
 						<div class="form-floating mb-3">
 							<input id='create-meet' type='file'
 								accept="image/jpeg,image/png,image/gif" name='image'
@@ -65,12 +78,27 @@
 							<div class="place valid-feedback" style="display: none">정상적인
 								장소입니다.</div>
 						</div>
-
 						<div class="form-floating mb-3">
-							<input class="form-control" id="date" type="date" required
-								onchange="dateval()" min="" /> <label for="date">Date</label>
-							<div class="date invalid-feedback">오늘 이후의 날짜를 입력해주세요</div>
-							<div class="date valid-feedback" style="display: none">OK</div>
+							<input class="form-control" id="address" type="text"
+								placeholder="검색할 주소" value="불정로 6">
+							<input type="hidden" id="lat" type="text" value="">
+							<input type="hidden" id="lng" type="text" value="">
+						</div>
+
+
+						<div class="form-floating mb-3" style="display: flex; flex: auto;">
+							<div style="padding: 30px;">
+								<input class="form-control" id="dateFrom" type="date" required
+									onchange="datevalFrom()" min="" /> <label for="date">From</label>
+								<div class="date invalid-feedbackFrom">오늘 이후의 날짜를 입력해주세요</div>
+								<div class="date valid-feedbackFrom" style="display: none">OK</div>
+							</div>
+							<div style="padding: 30px;">
+								<input class="form-control" id="dateTo" type="date" required
+									onchange="datevalTo()" min="" /> <label for="date">To</label>
+								<div class="date invalid-feedbackTo">From 이후의 날짜를 입력해주세요</div>
+								<div class="date valid-feedbackTo" style="display: none">OK</div>
+							</div>
 						</div>
 
 						<div>
@@ -90,6 +118,15 @@
 						</div>
 
 					</form>
+				</div>
+				<!-- 오른쪽 meeting 생성 미리보기 부분 -->
+				<div class="col-lg-6">
+					<div id="image-block" class="form-floating mb-3"
+						style="display: none">
+						<img id="image-block-image" class="card-img-top" src="" alt="..." />
+					</div>
+					<div id="map"
+						style="width: 800px; height: 500px; margin-top: 40px"></div>
 				</div>
 			</div>
 			<div class="row gx-4 gx-lg-5 justify-content-center">
@@ -115,7 +152,7 @@
 		src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
 	<!-- Core theme JS-->
 	<script type="text/javascript">
-		let nums = new Array(3);
+		let nums = new Array(4);
 		nums.fill(0);
 
 		function av_valid() {
@@ -133,7 +170,6 @@
 				ei[0].style.display = "block";
 				nums[0] = 0;
 			}
-			;
 			val();
 		};
 
@@ -152,15 +188,14 @@
 				ei[0].style.display = "block";
 				nums[1] = 0;
 			}
-			;
 			val();
 		};
 		
-		function dateval() {
+		function datevalFrom() {
 
-			var e = document.getElementById("date");
-			var ei = document.getElementsByClassName('date invalid-feedback');
-			var ev = document.getElementsByClassName('date valid-feedback');
+			var e = document.getElementById("dateFrom");
+			var ei = document.getElementsByClassName('date invalid-feedbackFrom');
+			var ev = document.getElementsByClassName('date valid-feedbackFrom');
 			if (new Date(e.value).getTime() > new Date().getTime()) {
 				ev[0].style.display = "block";
 				ei[0].style.display = "none";
@@ -170,13 +205,31 @@
 				ei[0].style.display = "block";
 				nums[2] = 0;
 			}
-			;
+			val();
+			datevalTo();
+		};
+		
+		function datevalTo() {
+			
+			var ef = document.getElementById("dateFrom");
+			var e = document.getElementById("dateTo");
+			var ei = document.getElementsByClassName('date invalid-feedbackTo');
+			var ev = document.getElementsByClassName('date valid-feedbackTo');
+			if (new Date(e.value).getTime() >= new Date(ef.value).getTime()) {
+				ev[0].style.display = "block";
+				ei[0].style.display = "none";
+				nums[3] = 1;
+			} else {
+				ev[0].style.display = "none";
+				ei[0].style.display = "block";
+				nums[3] = 0;
+			}
 			val();
 		};
 
 		function val() {
 			var k = 1;
-			for (i = 0; i < 3; i++) {
+			for (i = 0; i < 4; i++) {
 				if (nums[i] == 0) {
 					k = 0;
 					break;
@@ -187,7 +240,6 @@
 			} else {
 				document.getElementById("singupButton").disabled = false;
 			}
-			;
 		};
 
 		/* image 미리보기 기능  */
@@ -211,7 +263,7 @@
 		
 		/* 오늘 날짜 반환 */
 		
-		document.getElementById("date").min = get_current_date();
+		document.getElementById("dateFrom").min = get_current_date();
 		
 		function get_current_date(){
 			return new Date();
@@ -246,7 +298,265 @@
 	    	     }
 	    	   }
 	    	 }
-		
+	       
+	       
+	       
+	       /* 지도관련 script문 */
+	       
+	       var mapOptions = {
+	   			center : new naver.maps.LatLng(37.3595704, 127.105399),
+	   			zoom : 15,
+	   			mapTypeControl : true
+	   		};
+
+	   		var map = new naver.maps.Map('map', mapOptions);
+
+	   		var infoWindow = new naver.maps.InfoWindow({
+	   			anchorSkew : true
+	   		});
+
+	   		map.setCursor('pointer');
+
+	   		function searchCoordinateToAddress(latlng) {
+
+	   			infoWindow.close();
+
+	   			naver.maps.Service
+	   					.reverseGeocode(
+	   							{
+	   								coords : latlng,
+	   								orders : [ naver.maps.Service.OrderType.ADDR,
+	   										naver.maps.Service.OrderType.ROAD_ADDR ]
+	   										.join(',')
+	   							},
+	   							function(status, response) {
+	   								if (status === naver.maps.Service.Status.ERROR) {
+	   									if (!latlng) {
+	   										return alert('ReverseGeocode Error, Please check latlng');
+	   									}
+	   									if (latlng.toString) {
+	   										return alert('ReverseGeocode Error, latlng:'
+	   												+ latlng.toString());
+	   									}
+	   									if (latlng.x && latlng.y) {
+	   										return alert('ReverseGeocode Error, x:'
+	   												+ latlng.x + ', y:' + latlng.y);
+	   									}
+	   									return alert('ReverseGeocode Error, Please check latlng');
+	   								}
+
+	   								var address = response.v2.address, htmlAddresses = [];
+
+	   								if (address.jibunAddress !== '') {
+	   									htmlAddresses.push('[지번 주소] '
+	   											+ address.jibunAddress);
+	   								}
+
+	   								if (address.roadAddress !== '') {
+	   									htmlAddresses.push('[도로명 주소] '
+	   											+ address.roadAddress);
+	   								}
+	   								// 찍은곳 마커 찍기
+	   								console.log(latlng);
+	   								drawNaverMarker(latlng._lng, latlng._lat);
+	   								document.getElementById("address").value = htmlAddresses[0].replace("[지번 주소] ", "");
+	   								document.getElementById("lat").value = latlng._lat;
+	   								document.getElementById("lng").value = latlng._lng;
+	   								
+	   								infoWindow
+	   										.setContent([
+	   												'<div id="" style="padding:10px;min-width:200px;line-height:150%;" value=true>',
+	   												'<h4 style="margin-top:5px;">검색 좌표</h4><br />',
+	   												htmlAddresses.join('<br />'),
+	   												'<c:if test="${not empty cookie.name.value}"><button onclick="setStartingPoint()">출발지</button></c:if><br />',
+	   												'</div>' ].join('\n'));
+
+	   								infoWindow.open(map, latlng);
+	   							});
+	   		}
+
+	   		function searchAddressToCoordinate(address) {
+	   			address = document.getElementById("address").value
+	   			naver.maps.Service
+	   					.geocode(
+	   							{
+	   								query : address
+	   							},
+	   							function(status, response) {
+	   								if (status === naver.maps.Service.Status.ERROR) {
+	   									if (!address) {
+	   										return alert('Geocode Error, Please check address');
+	   									}
+	   									return alert('Geocode Error, address:'
+	   											+ address);
+	   								}
+
+	   								if (response.v2.meta.totalCount === 0) {
+	   									return alert('No result.');
+	   								}
+
+	   								var htmlAddresses = [], item = response.v2.addresses[0], point = new naver.maps.Point(
+	   										item.x, item.y);
+
+	   								if (item.roadAddress) {
+	   									htmlAddresses.push('[도로명 주소] '
+	   											+ item.roadAddress);
+	   								}
+
+	   								if (item.jibunAddress) {
+	   									htmlAddresses.push('[지번 주소] '
+	   											+ item.jibunAddress);
+	   								}
+
+	   								if (item.englishAddress) {
+	   									htmlAddresses.push('[영문명 주소] '
+	   											+ item.englishAddress);
+	   								}
+
+	   								infoWindow
+	   										.setContent([
+	   												'<div style="padding:10px;min-width:200px;line-height:150%;">',
+	   												'<h4 style="margin-top:5px;">검색 주소 : '
+	   														+ address
+	   														+ '</h4><br />',
+	   												htmlAddresses.join('<br />'),
+	   												'</div>' ].join('\n'));
+
+	   								map.setCenter(point);
+	   								infoWindow.open(map, point);
+	   							});
+	   		}
+
+	   		function initGeocoder() {
+
+	   			map.addListener('click', function(e) {
+	   				searchCoordinateToAddress(e.coord);
+	   			});
+
+	   			$('#address').on('keydown', function(e) {
+	   				var keyCode = e.which;
+
+	   				if (keyCode === 13) { // Enter Key
+	   					searchAddressToCoordinate($('#address').val());
+	   				}
+	   			});
+
+	   			$('#submit').on('click', function(e) {
+	   				e.preventDefault();
+
+	   				searchAddressToCoordinate($('#address').val());
+	   			});
+
+	   			searchAddressToCoordinate('정자동 178-1');
+	   		}
+
+	   		naver.maps.onJSContentLoaded = initGeocoder;
+
+	   		// 지도에 선표시 API
+
+	   		var sx = 126.93737555322481;
+	   		var sy = 37.55525165729346;
+	   		var ex = 126.88265238619182;
+	   		var ey = 37.481440035175375;
+
+	   		//
+	   		function searchPubTransPathAJAX() {
+	   			var xhr = new XMLHttpRequest();
+	   			//ODsay apiKey 입력
+	   			var url = "https://api.odsay.com/v1/api/searchPubTransPath?SX="
+	   					+ sx + "&SY=" + sy + "&EX=" + ex + "&EY=" + ey
+	   					+ "&apiKey=uObgrqZOrswtls0XwGkV9w";
+	   			xhr.open("GET", url, true);
+	   			xhr.send();
+	   			xhr.onreadystatechange = function() {
+	   				if (xhr.readyState == 4 && xhr.status == 200) {
+	   					console.log(JSON.parse(xhr.responseText)); // <- xhr.responseText 로 결과를 가져올 수 있음
+	   					//노선그래픽 데이터 호출
+	   					callMapObjApiAJAX((JSON.parse(xhr.responseText))["result"]["path"][0].info.mapObj);
+	   				}
+	   			}
+	   		}
+
+	   		//길찾기 API 호출
+	   		// searchPubTransPathAJAX();
+
+	   		function callMapObjApiAJAX(mabObj) {
+	   			var xhr = new XMLHttpRequest();
+	   			//ODsay apiKey 입력
+	   			var url = "https://api.odsay.com/v1/api/loadLane?mapObject=0:0@"
+	   					+ mabObj + "&apiKey=uObgrqZOrswtls0XwGkV9w";
+	   			xhr.open("GET", url, true);
+	   			xhr.send();
+	   			xhr.onreadystatechange = function() {
+	   				if (xhr.readyState == 4 && xhr.status == 200) {
+	   					var resultJsonData = JSON.parse(xhr.responseText);
+	   					drawNaverMarker(sx, sy); // 출발지 마커 표시
+	   					drawNaverMarker(ex, ey); // 도착지 마커 표시
+	   					drawNaverPolyLine(resultJsonData); // 노선그래픽데이터 지도위 표시
+	   					// boundary 데이터가 있을경우, 해당 boundary로 지도이동
+	   					if (resultJsonData.result.boundary) {
+	   						var boundary = new naver.maps.LatLngBounds(
+	   								new naver.maps.LatLng(
+	   										resultJsonData.result.boundary.top,
+	   										resultJsonData.result.boundary.left),
+	   								new naver.maps.LatLng(
+	   										resultJsonData.result.boundary.bottom,
+	   										resultJsonData.result.boundary.right));
+	   						map.panToBounds(boundary);
+	   					}
+	   				}
+	   			}
+	   		}
+
+	   		// 지도위 마커 표시해주는 함수
+	   		function drawNaverMarker(x, y) {
+	   			var marker = new naver.maps.Marker({
+	   				position : new naver.maps.LatLng(y, x),
+	   				map : map
+	   			});
+	   		}
+
+	   		// 노선그래픽 데이터를 이용하여 지도위 폴리라인 그려주는 함수
+	   		function drawNaverPolyLine(data) {
+	   			var lineArray;
+	   			console.log(data.result.lane);
+	   			for (var i = 0; i < data.result.lane.length; i++) {
+	   				for (var j = 0; j < data.result.lane[i].section.length; j++) {
+	   					lineArray = null;
+	   					lineArray = new Array();
+	   					for (var k = 0; k < data.result.lane[i].section[j].graphPos.length; k++) {
+	   						lineArray.push(new naver.maps.LatLng(
+	   								data.result.lane[i].section[j].graphPos[k].y,
+	   								data.result.lane[i].section[j].graphPos[k].x));
+	   					}
+
+	   					//지하철결과의 경우 노선에 따른 라인색상 지정하는 부분 (1,2호선의 경우만 예로 들음)
+	   					if (data.result.lane[i].type == 1) {
+	   						var polyline = new naver.maps.Polyline({
+	   							map : map,
+	   							path : lineArray,
+	   							strokeWeight : 3,
+	   							strokeColor : '#003499'
+	   						});
+	   					} else if (data.result.lane[i].type == 2) {
+	   						var polyline = new naver.maps.Polyline({
+	   							map : map,
+	   							path : lineArray,
+	   							strokeWeight : 3,
+	   							strokeColor : '#37b42d'
+	   						});
+	   					} else {
+	   						var polyline = new naver.maps.Polyline({
+	   							map : map,
+	   							path : lineArray,
+	   							strokeWeight : 3
+	   						});
+	   					}
+	   				}
+	   			}
+	   		}
+
+	       
 	</script>
 
 </body>
