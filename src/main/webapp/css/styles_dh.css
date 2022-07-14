@@ -13,6 +13,13 @@
  
 /* 신규 추가부분 - 최영준부분  */
 
+#get_moem_btn{
+	border: 1px solid skyblue;
+	background-color: rgba(0, 0, 0, 0);
+	color: skyblue;
+	padding: 5px;
+}
+
 #modal.modal-overlay {
 	width: 100%;
 	height: 100%;
@@ -137,12 +144,13 @@ img {
 	padding: 5px 10px;
 	text-align: center;
 	position: absolute;
-	top: 69%;
-	left: 63%;
+	top: 40%;
+	left: 10%;
 }
 
 .fw-bolder3 {
-	font-size: xx-small;
+	font-size: small;
+	font-weight: bolder;
 }
 
 /* 동혁님부분  */

@@ -183,9 +183,11 @@
 
 
 	<div class="container px-4 px-lg-5 my-5">
-		<button onclick="get_moem()">현재 모임</button>
-		<h5 id="remained_moem">참가 중인 모임</h5>
-		<div id="moem_list" class="text-center text-white"></div>
+		<button id="get_moem_btn" onclick="get_moem()">모임 더보기</button>
+		<div style="border: 1px solid red;">
+			<h5 id="remained_moem">참가 중인 모임</h5>
+			<div id="moem_list" class="text-center text-white"></div>
+		</div>
 		<div id="item_list" class="text-center text-white"></div>
 	</div>
 
@@ -488,20 +490,29 @@
 	      /*참석중인 모임 리스팅 함수 */
 	      
 	      let next_page_moem = 0;
+	      get_moem();
 	      
 	       function get_moem(){
+	    	   if(next_page_moem > item_list.length){
+	    		   return;
+	    	   }
 	    	   for(i in item_list){
 	    		   if(i > 9){
 	    			   next_page_moem += Number(i);
 	    			   break;
 	    		   }
-	    		   i = Number(i) + next_page_moem;
-		    	   document.getElementById("moem_list").innerHTML += 
-		    		   '<div class="moem_list_wrap"><div class="cards_image"><img class="card_image_image" src=' +
-		    		   				item_list[i].img +
-			                ' alt="..." /></div><div class="moem_list_wrap_text"><h5 class="fw-bolder3">' +
-	                		item_list[i].name +
-	                        '</h5></div></div>'
+	    		   try{
+		    		   i = Number(i) + next_page_moem;
+			    	   document.getElementById("moem_list").innerHTML += 
+			    		   '<div class="moem_list_wrap"><div class="cards_image"><img class="card_image_image" src=' +
+			    		   				item_list[i].img +
+				                ' alt="..." /></div><div class="moem_list_wrap_text"><h5 class="fw-bolder3">' +
+		                		item_list[i].name +
+		                        '</h5></div></div>'
+	    		   }catch(error){
+	    			   next_page_moem = item_list.length;
+	    			   break;
+	    		   }
 		       }
 	    	   document.getElementById("remained_moem").innerText = "남은 모임 : " + (item_list.length - next_page_moem);
 	       }
