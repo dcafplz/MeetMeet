@@ -5,4 +5,8 @@ pom.xml
 persistence.xml
 pom.properties
 application.properties
+<<<<<<< HEAD
 banner.txt
+=======
+banner.txt
+>>>>>>> 9e3665d9ee79a9193d805498b816ff07b8019862
