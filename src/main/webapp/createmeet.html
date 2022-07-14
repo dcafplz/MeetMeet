@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<title>빠르고 간편한 모임</title>
+<!-- Bootstrap Icons-->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+	rel="stylesheet" />
+<!-- Google fonts-->
+<link
+	href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700"
+	rel="stylesheet" />
+<link
+	href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic"
+	rel="stylesheet" type="text/css" />
+<!-- SimpleLightbox plugin CSS-->
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css"
+	rel="stylesheet" />
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="css/styles_jw.css" rel="stylesheet" />
+</head>
+<!-- Contact-->
+<body>
+	<!-- Navigation-->
+	<div w3-include-html="nav.html"></div>
+	<section class="page-section" id="contact">
+		<div class="container px-4 px-lg-5">
+			<div class="row gx-4 gx-lg-5 justify-content-center">
+				<div class="col-lg-8 col-xl-6 text-center">
+					<h2 class="mt-0">모임 만들기</h2>
+					<hr class="divider" />
+				</div>
+			</div>
+			<div class="row gx-4 gx-lg-5 justify-content-center mb-5">
+				<div class="col-lg-6">
+					<form id="signupform" novalidate>
+						<div id="image-block" class="form-floating mb-3"
+							style="display: none">
+							<img id="image-block-image" class="card-img-top" src="" alt="..." />
+						</div>
+						<div class="form-floating mb-3">
+							<input id='create-meet' type='file'
+								accept="image/jpeg,image/png,image/gif" name='image'
+								onchange="change_image(event)">모임 사진을 올려주세요</input>
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" id="available" type="number" min="2"
+								required onchange="av_valid()" /> <label for="available">참여
+								인원</label>
+							<div class="available invalid-feedback">인원은 최소 2명 이상이어야
+								합니다.</div>
+							<div class="available valid-feedback" style="display: none">OK</div>
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" id="place" type="text" required
+								pattern="^[ㄱ-ㅎ|가-힣|0-9|]+$" onchange="placeval()" /> <label
+								for="place">Place</label>
+							<div class="place invalid-feedback">한글과 숫자만 입력 가능합니다.</div>
+							<div class="place valid-feedback" style="display: none">정상적인
+								장소입니다.</div>
+						</div>
+
+						<div class="form-floating mb-3">
+							<input class="form-control" id="date" type="date" required
+								onchange="dateval()" min="" /> <label for="date">Date</label>
+							<div class="date invalid-feedback">오늘 이후의 날짜를 입력해주세요</div>
+							<div class="date valid-feedback" style="display: none">OK</div>
+						</div>
+
+						<div>
+							모임 주제를 체크하세요 <br> <label class="form-check"><input
+								type="checkbox" value="sports"> 스포츠</label> <label
+								class="form-check"><input type="checkbox" value="book">
+								독서</label> <label class="form-check"><input type="checkbox"
+								value="game"> 게임</label> <label class="form-check"><input
+								type="checkbox" value="friendship"> 친목</label> <label
+								class="form-check"><input type="checkbox" value="movie">
+								영화</label> <label class="form-check"><input type="checkbox"
+								value="pet"> 반려동물</label>
+						</div>
+						<div class="d-grid">
+							<button class="btn btn-primary btn-xl" id="singupButton"
+								type="submit" disabled="ture">create</button>
+						</div>
+
+					</form>
+				</div>
+			</div>
+			<div class="row gx-4 gx-lg-5 justify-content-center">
+				<div class="col-lg-4 text-center mb-5 mb-lg-0">
+					<i class="bi-phone fs-2 mb-3 text-muted"></i>
+					<div>+82 (02)123-4567</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Footer-->
+	<footer class="bg-light py-5">
+		<div class="container px-4 px-lg-5">
+			<div class="small text-center text-muted">Copyright &copy; 2022
+				- Company Name</div>
+		</div>
+	</footer>
+	<!-- Bootstrap core JS-->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- SimpleLightbox plugin JS-->
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
+	<!-- Core theme JS-->
+	<script type="text/javascript">
+		let nums = new Array(3);
+		nums.fill(0);
+
+		function av_valid() {
+
+			var e = document.getElementById("available");
+			var ei = document.getElementsByClassName('available invalid-feedback');
+			var ev = document.getElementsByClassName('available valid-feedback');
+
+			if (e.checkValidity()) {
+				ev[0].style.display = "block";
+				ei[0].style.display = "none";
+				nums[0] = 1;
+			} else {
+				ev[0].style.display = "none";
+				ei[0].style.display = "block";
+				nums[0] = 0;
+			}
+			;
+			val();
+		};
+
+		function placeval() {
+
+			var e = document.getElementById("place");
+			var ei = document.getElementsByClassName('place invalid-feedback');
+			var ev = document.getElementsByClassName('place valid-feedback');
+
+			if (e.checkValidity()) {
+				ev[0].style.display = "block";
+				ei[0].style.display = "none";
+				nums[1] = 1;
+			} else {
+				ev[0].style.display = "none";
+				ei[0].style.display = "block";
+				nums[1] = 0;
+			}
+			;
+			val();
+		};
+		
+		function dateval() {
+
+			var e = document.getElementById("date");
+			var ei = document.getElementsByClassName('date invalid-feedback');
+			var ev = document.getElementsByClassName('date valid-feedback');
+			if (new Date(e.value).getTime() > new Date().getTime()) {
+				ev[0].style.display = "block";
+				ei[0].style.display = "none";
+				nums[2] = 1;
+			} else {
+				ev[0].style.display = "none";
+				ei[0].style.display = "block";
+				nums[2] = 0;
+			}
+			;
+			val();
+		};
+
+		function val() {
+			var k = 1;
+			for (i = 0; i < 3; i++) {
+				if (nums[i] == 0) {
+					k = 0;
+					break;
+				}
+			}
+			if (k == 0) {
+				document.getElementById("singupButton").disabled = true;
+			} else {
+				document.getElementById("singupButton").disabled = false;
+			}
+			;
+		};
+
+		/* image 미리보기 기능  */
+		const reader = new FileReader();
+		
+		reader.onload = (readerEvent) => {
+			console.log(document.querySelector("#image-block-image"));
+			document.querySelector("#image-block-image").setAttribute("src", readerEvent.target.result);
+            //파일을 읽는 이벤트가 발생하면 img_section의 src 속성을 readerEvent의 결과물로 대체함
+        };
+		
+		function change_image(e) {
+			document.getElementById("image-block").style.display = "block";
+			const imgFile = e.target.files[0];
+			console.log(imgFile);
+			reader.readAsDataURL(imgFile);
+			console.log(reader);
+			
+            //업로드한 이미지의 URL을 reader에 등록
+		}
+		
+		/* 오늘 날짜 반환 */
+		
+		document.getElementById("date").min = get_current_date();
+		
+		function get_current_date(){
+			return new Date();
+		}
+		
+		/* html include*/ 
+		 includeHTML();
+	       function includeHTML() {
+	    	   var z, i, elmnt, file, xhttp;
+	    	   /* Loop through a collection of all HTML elements: */
+	    	   z = document.getElementsByTagName("*");
+	    	   for (i = 0; i < z.length; i++) {
+	    	     elmnt = z[i];
+	    	     /*search for elements with a certain atrribute:*/
+	    	     file = elmnt.getAttribute("w3-include-html");
+	    	     if (file) {
+	    	       /* Make an HTTP request using the attribute value as the file name: */
+	    	       xhttp = new XMLHttpRequest();
+	    	       xhttp.onreadystatechange = function() {
+	    	         if (this.readyState == 4) {
+	    	           if (this.status == 200) {elmnt.innerHTML = this.responseText;}
+	    	           if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+	    	           /* Remove the attribute, and call this function once more: */
+	    	           elmnt.removeAttribute("w3-include-html");
+	    	           includeHTML();
+	    	         }
+	    	       }
+	    	       xhttp.open("GET", file, true);
+	    	       xhttp.send();
+	    	       /* Exit the function: */
+	    	       return;
+	    	     }
+	    	   }
+	    	 }
+		
+	</script>
+
+</body>
+</html>
+
+

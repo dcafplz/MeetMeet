@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<title>밋밋</title>
+<!-- Favicon-->
+<link rel="icon" type="image/x-icon" href="assets/handshaking.png" />
+<!-- Bootstrap icons-->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+	rel="stylesheet" />
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="css/styles.css" rel="stylesheet" />
+</head>
+<body>
+	<!-- Navigation-->
+	<div w3-include-html="nav.html"></div>
+
+
+	<!-- Header-->
+	<div style="border: 1px solid black;">
+		<img alt="??" src="images/밋밋환영문구.png"
+			style="height: 420px; margin: auto;">
+		<!-- <div style="height:290px; width:1200px; border:1px solid blue; margin:auto;">
+    			
+    		</div> -->
+
+	</div>
+
+
+	<!-- Section-->
+	<div
+		style="border: 1px solid black; margin-left: 20%; margin-right: 20%;">
+		<br> <br> <br>
+		<h1 align="center">밋밋에 오신걸 환영해요</h1>
+		<br> <br> <br> <br>
+
+
+		<h2 align="center" style="font-family: newfont;">취향이 같은 사람들과 만나봐요</h2>
+		<p align="center">내용</p>
+
+		<br> <br> <br>
+
+		<h2 align="center" style="font-family: newfont;">모두가 가까운 지역에서
+			만나봐요</h2>
+		<p align="center">내용</p>
+		<br> <br> <br>
+
+		<h2 align="center">3번</h2>
+		<p align="center">내용</p>
+	</div>
+
+
+
+
+
+	<!-- Footer-->
+	<footer class="py-5 bg-dark">
+		<div class="container">
+			<p class="m-0 text-center text-white">Copyright &copy; Your
+				Website 2022</p>
+		</div>
+	</footer>
+	<!-- Bootstrap core JS-->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- Core theme JS-->
+	<script src="js/scripts.js"></script>
+	<script>
+		includeHTML();
+		function includeHTML() {
+			var z, i, elmnt, file, xhttp;
+			/* Loop through a collection of all HTML elements: */
+			z = document.getElementsByTagName("*");
+			for (i = 0; i < z.length; i++) {
+				elmnt = z[i];
+				/*search for elements with a certain atrribute:*/
+				file = elmnt.getAttribute("w3-include-html");
+				if (file) {
+					/* Make an HTTP request using the attribute value as the file name: */
+					xhttp = new XMLHttpRequest();
+					xhttp.onreadystatechange = function() {
+						if (this.readyState == 4) {
+							if (this.status == 200) {
+								elmnt.innerHTML = this.responseText;
+							}
+							if (this.status == 404) {
+								elmnt.innerHTML = "Page not found.";
+							}
+							/* Remove the attribute, and call this function once more: */
+							elmnt.removeAttribute("w3-include-html");
+							includeHTML();
+						}
+					}
+					xhttp.open("GET", file, true);
+					xhttp.send();
+					/* Exit the function: */
+					return;
+				}
+			}
+		}
+	</script>
+</body>
+</html>

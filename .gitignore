@@ -1,0 +1,8 @@
+# Log file
+*.log
+
+pom.xml
+persistence.xml
+pom.properties
+application.properties
+banner.txt

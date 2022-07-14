@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<title>밋밋</title>
+<!-- Favicon-->
+<link rel="icon" type="image/x-icon" href="assets/handshaking.png" />
+<!-- Bootstrap icons-->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+	rel="stylesheet" />
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="css/styles.css" rel="stylesheet" />
+</head>
+<body>
+	<!-- Navigation-->
+	<div w3-include-html="nav.html"></div>
+	<!-- Header-->
+	<div
+		style="border: 1px solid black; height: 300px; text-align: center;">
+		<img alt="??" src="images/보안이미지.png" style="height: 100%;">
+	</div>
+	<!-- Section-->
+	<div style="border: 1px solid red; display: flex;">
+		<div style="border: 1px solid black; width: 20%; height: 100px;">
+			내 정보 <br> <a href="mypage.html?command=meettype">선호모임 설정</a><br>
+			<a href="mypage.html?command=myinfo">개인정보 변경</a><br> <a
+				href="mypage.html?command=mypw">패스워드 찾기</a><br>
+		</div>
+
+		<div id="changing1"
+			style="border: 1px solid black; width: 60%; height: 700px; display: none;">
+
+			<div>
+				<form action="">
+					선호하는 모임을 체크하세요 <br> <label><input type="checkbox"
+						value="sports" onclick="cb1()" checked> 스포츠</label>
+					<div id="1" style="display: none;">
+						<b>변경됨</b>
+					</div>
+					<br> <label><input type="checkbox" value="book"
+						onclick="cb2()" checked> 독서</label>
+					<div id="2" style="display: none;">
+						<b>변경됨</b>
+					</div>
+					<br> <label><input type="checkbox" value="game"
+						onclick="cb3()" checked> 게임</label>
+					<div id="3" style="display: none;">
+						<b>변경됨</b>
+					</div>
+					<br> <label><input type="checkbox" value="friendship"
+						onclick="cb4()"> 친목</label>
+					<div id="4" style="display: none;">
+						<b>변경됨</b>
+					</div>
+					<br> <label><input type="checkbox" value="movie"
+						onclick="cb5()"> 영화</label>
+					<div id="5" style="display: none;">
+						<b>변경됨</b>
+					</div>
+					<br> <label><input type="checkbox" value="pet"
+						onclick="cb6()"> 반려동물</label>
+					<div id="6" style="display: none;">
+						<b>변경됨</b>
+					</div>
+					<br> <input type="submit" value="변경하기">
+				</form>
+			</div>
+			<script>
+				const c1 = document.getElementById("1");
+				const c2 = document.getElementById("2");
+				const c3 = document.getElementById("3");
+				const c4 = document.getElementById("4");
+				const c5 = document.getElementById("5");
+				const c6 = document.getElementById("6");
+				function cb1() {
+					console.log(c1);
+					console.log(c1.style.display);
+					if (c1.style.display == "none") {
+						c1.style.display = "inline";
+					} else {
+						c1.style.display = "none";
+					}
+				}
+				function cb2() {
+					console.log(c2);
+					console.log(c2.style.display);
+					if (c2.style.display == "none") {
+						c2.style.display = "inline";
+					} else {
+						c2.style.display = "none";
+					}
+				}
+				function cb3() {
+					console.log(c3);
+					console.log(c3.style.display);
+					if (c3.style.display == "none") {
+						c3.style.display = "inline";
+					} else {
+						c3.style.display = "none";
+					}
+				}
+				function cb4() {
+					console.log(c4);
+					console.log(c4.style.display);
+					if (c4.style.display == "none") {
+						c4.style.display = "inline";
+					} else {
+						c4.style.display = "none";
+					}
+				}
+				function cb5() {
+					console.log(c5);
+					console.log(c5.style.display);
+					if (c5.style.display == "none") {
+						c5.style.display = "inline";
+					} else {
+						c5.style.display = "none";
+					}
+				}
+				function cb6() {
+					console.log(c6);
+					console.log(c6.style.display);
+					if (c6.style.display == "none") {
+						c6.style.display = "inline";
+					} else {
+						c6.style.display = "none";
+					}
+				}
+			</script>
+
+
+		</div>
+		<div id="changing2"
+			style="border: 1px solid black; width: 60%; height: 700px; display: none;">
+			<form action="@@@주소@@@">
+				아이디 : <input type="text" name="id" value="원래아이디"><br>
+				닉네임 : <input type="text" name="nickname" value="원래닉네임"><br>
+				<input type="submit" value="변경하기">
+			</form>
+		</div>
+		<div id="changing3"
+			style="border: 1px solid black; width: 60%; height: 700px; display: none;">
+
+			<form action="qeqeeqwe12331">
+				비밀번호 찾기 질문 : 남들이 모르는 당신만의 은밀한 취미는?<br> <input type="text"
+					size=100><br> <input type="submit" value="제출하기">
+			</form>
+
+
+		</div>
+
+	</div>
+
+
+
+
+
+	<!-- Footer-->
+	<footer class="py-5 bg-dark">
+		<div class="container">
+			<p class="m-0 text-center text-white">Copyright &copy; Your
+				Website 2022</p>
+		</div>
+	</footer>
+	<!-- Bootstrap core JS-->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- Core theme JS-->
+	<script src="js/scripts.js"></script>
+
+	<script>
+		sectionDiv();
+		function sectionDiv() {
+			let query = window.location.search;
+			let param = new URLSearchParams(query);
+			let command = param.get('command');
+			document.getElementById("changing1").style.display = "none";
+			document.getElementById("changing2").style.display = "none";
+			document.getElementById("changing3").style.display = "none";
+			if (command == "meettype") {
+				document.getElementById("changing1").style.display = "block";
+			} else if (command == "myinfo") {
+				document.getElementById("changing2").style.display = "block";
+			} else if (command == "mypw") {
+				document.getElementById("changing3").style.display = "block";
+			} else {
+				console.log("오류발생!!!");
+			}
+		}
+	</script>
+	<script>
+		includeHTML();
+		function includeHTML() {
+			var z, i, elmnt, file, xhttp;
+			/* Loop through a collection of all HTML elements: */
+			z = document.getElementsByTagName("*");
+			for (i = 0; i < z.length; i++) {
+				elmnt = z[i];
+				/*search for elements with a certain atrribute:*/
+				file = elmnt.getAttribute("w3-include-html");
+				if (file) {
+					/* Make an HTTP request using the attribute value as the file name: */
+					xhttp = new XMLHttpRequest();
+					xhttp.onreadystatechange = function() {
+						if (this.readyState == 4) {
+							if (this.status == 200) {
+								elmnt.innerHTML = this.responseText;
+							}
+							if (this.status == 404) {
+								elmnt.innerHTML = "Page not found.";
+							}
+							/* Remove the attribute, and call this function once more: */
+							elmnt.removeAttribute("w3-include-html");
+							includeHTML();
+						}
+					}
+					xhttp.open("GET", file, true);
+					xhttp.send();
+					/* Exit the function: */
+					return;
+				}
+			}
+		}
+	</script>
+</body>
+</html>
