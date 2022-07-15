@@ -6,3 +6,4 @@ persistence.xml
 pom.properties
 application.properties
 banner.txt
+secret.json
