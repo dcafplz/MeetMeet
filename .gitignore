@@ -1,6 +1,7 @@
 # Log file
 *.log
 
+api.js
 pom.xml
 persistence.xml
 pom.properties

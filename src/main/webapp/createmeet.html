@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+
+<!-- sessionStorage.setItem("naver", "" );
+sessionStorage.setItem("odsay", "" ); -->
+<script>
+	const naverid = sessionStorage.getItem("naver");
+	var script_element = document.createElement('script');
+	var script_element2 = document.createElement('script');
+	script_element.setAttribute('src', 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=' + naverid);
+	script_element.setAttribute('type', 'text/javascript');
+	script_element2.setAttribute('src', 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=' + naverid + '&submodules=geocoder');
+	script_element2.setAttribute('type', 'text/javascript');
+	document.head.appendChild(script_element);
+	document.head.appendChild(script_element2);
+</script>
 <meta charset="utf-8" />
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -35,12 +50,10 @@ img {
 </style>
 </head>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="js/api.js"></script>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script type="text/javascript"
-	src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId="></script>
-<script type="text/javascript"
-	src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=&submodules=geocoder"></script>
+<script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=6b3psnulwi&submodules=geocoder"></script>
 <!-- Contact-->
 
 <body>
@@ -72,7 +85,7 @@ img {
 						</div>
 						<div class="form-floating mb-3">
 							<input class="form-control" id="place" type="text" required
-								pattern="^[ㄱ-ㅎ|가-힣|0-9|]+$" onchange="placeval()" /> <label
+								pattern="^[ㄱ-ㅎ|가-힣|0-9|\s]+$" onchange="placeval()" /> <label
 								for="place">Place</label>
 							<div class="place invalid-feedback">한글과 숫자만 입력 가능합니다.</div>
 							<div class="place valid-feedback" style="display: none">정상적인
@@ -80,9 +93,9 @@ img {
 						</div>
 						<div class="form-floating mb-3">
 							<input class="form-control" id="address" type="text"
-								placeholder="검색할 주소" value="불정로 6">
-							<input type="hidden" id="lat" type="text" value="">
-							<input type="hidden" id="lng" type="text" value="">
+								placeholder="검색할 주소" value="", onchange="initGeocoder()"> <input type="hidden"
+								id="lat" type="text" value=""> <input type="hidden"
+								id="lng" type="text" value="">
 						</div>
 
 
@@ -125,8 +138,7 @@ img {
 						style="display: none">
 						<img id="image-block-image" class="card-img-top" src="" alt="..." />
 					</div>
-					<div id="map"
-						style="width: 800px; height: 500px; margin-top: 40px"></div>
+					<div id="map" style="width: 800px; height: 500px; margin-top: 40px"></div>
 				</div>
 			</div>
 			<div class="row gx-4 gx-lg-5 justify-content-center">
@@ -152,6 +164,7 @@ img {
 		src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
 	<!-- Core theme JS-->
 	<script type="text/javascript">
+	
 		let nums = new Array(4);
 		nums.fill(0);
 
@@ -303,7 +316,10 @@ img {
 	       
 	       /* 지도관련 script문 */
 	       
-	       var mapOptions = {
+	       const odsay = sessionStorage.getItem("odsay");
+
+	       
+ 	       var mapOptions = {
 	   			center : new naver.maps.LatLng(37.3595704, 127.105399),
 	   			zoom : 15,
 	   			mapTypeControl : true
@@ -317,7 +333,7 @@ img {
 
 	   		map.setCursor('pointer');
 
-	   		function searchCoordinateToAddress(latlng) {
+ 	   		function searchCoordinateToAddress(latlng) {
 
 	   			infoWindow.close();
 
@@ -375,12 +391,14 @@ img {
 	   							});
 	   		}
 
-	   		function searchAddressToCoordinate(address) {
-	   			address = document.getElementById("address").value
+	   		function searchAddressToCoordinate(arr) {
+	   			if (arr == null){
+	   				arr = document.getElementById("address").value
+	   			}
 	   			naver.maps.Service
 	   					.geocode(
 	   							{
-	   								query : address
+	   								address : arr
 	   							},
 	   							function(status, response) {
 	   								if (status === naver.maps.Service.Status.ERROR) {
@@ -420,7 +438,7 @@ img {
 	   										.setContent([
 	   												'<div style="padding:10px;min-width:200px;line-height:150%;">',
 	   												'<h4 style="margin-top:5px;">검색 주소 : '
-	   														+ address
+	   														+ arr
 	   														+ '</h4><br />',
 	   												htmlAddresses.join('<br />'),
 	   												'</div>' ].join('\n'));
@@ -450,10 +468,10 @@ img {
 	   				searchAddressToCoordinate($('#address').val());
 	   			});
 
-	   			searchAddressToCoordinate('정자동 178-1');
+	   			searchAddressToCoordinate();
 	   		}
 
-	   		naver.maps.onJSContentLoaded = initGeocoder;
+ 	   		naver.maps.onJSContentLoaded = initGeocoder;
 
 	   		// 지도에 선표시 API
 
@@ -468,7 +486,7 @@ img {
 	   			//ODsay apiKey 입력
 	   			var url = "https://api.odsay.com/v1/api/searchPubTransPath?SX="
 	   					+ sx + "&SY=" + sy + "&EX=" + ex + "&EY=" + ey
-	   					+ "&apiKey=";
+	   					+ "&apiKey=" + odsay;
 	   			xhr.open("GET", url, true);
 	   			xhr.send();
 	   			xhr.onreadystatechange = function() {
@@ -487,7 +505,7 @@ img {
 	   			var xhr = new XMLHttpRequest();
 	   			//ODsay apiKey 입력
 	   			var url = "https://api.odsay.com/v1/api/loadLane?mapObject=0:0@"
-	   					+ mabObj + "&apiKey=uObgrqZOrswtls0XwGkV9w";
+	   					+ mabObj + "&apiKey=" + odsay;
 	   			xhr.open("GET", url, true);
 	   			xhr.send();
 	   			xhr.onreadystatechange = function() {
