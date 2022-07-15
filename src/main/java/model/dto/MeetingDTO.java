@@ -13,10 +13,13 @@ import lombok.Setter;
 public class MeetingDTO {
 	
 	private long meetingId;
-	private java.util.Date meetingDate;
+	private java.util.Date meetingStartDate;
+	private java.util.Date meetingEndDate;
 	private String meetingName;
 	private String meetingDetail;
 	private String meetingPlace;
+	private String meetingPlaceLat;
+	private String meetingPlaceLng;
 	private String master_id;
 	private String category;
 	private int maxParticipant;
