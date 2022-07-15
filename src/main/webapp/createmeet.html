@@ -412,7 +412,10 @@ img {
 	   									htmlAddresses.push('[영문명 주소] '
 	   											+ item.englishAddress);
 	   								}
-
+	   								
+	   								document.getElementById("lat").value = item.y;
+	   								document.getElementById("lng").value = item.x;
+		
 	   								infoWindow
 	   										.setContent([
 	   												'<div style="padding:10px;min-width:200px;line-height:150%;">',
@@ -465,7 +468,7 @@ img {
 	   			//ODsay apiKey 입력
 	   			var url = "https://api.odsay.com/v1/api/searchPubTransPath?SX="
 	   					+ sx + "&SY=" + sy + "&EX=" + ex + "&EY=" + ey
-	   					+ "&apiKey=uObgrqZOrswtls0XwGkV9w";
+	   					+ "&apiKey=";
 	   			xhr.open("GET", url, true);
 	   			xhr.send();
 	   			xhr.onreadystatechange = function() {

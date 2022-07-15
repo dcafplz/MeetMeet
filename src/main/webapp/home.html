@@ -160,10 +160,13 @@
 			<div id="slider-wrap" style="border: 1px solid blue;">
 
 				<ul id="slider">
-					<li><img alt="사진못찾음" src="images/(13).png" style="max-width:1200px; max-height:265px;"></li>
+					<li><img alt="사진못찾음" src="images/(13).png"
+						style="max-width: 1200px; max-height: 265px;"></li>
 
-					<li><img alt="사진못찾음" src="images/(14).png" style="max-width:1200px; max-height:265px;"></li>
-					<li><img alt="사진못찾음" src="images/(15).png" style="max-width:1200px; max-height:265px;"></li>
+					<li><img alt="사진못찾음" src="images/(14).png"
+						style="max-width: 1200px; max-height: 265px;"></li>
+					<li><img alt="사진못찾음" src="images/(15).png"
+						style="max-width: 1200px; max-height: 265px;"></li>
 				</ul>
 				<div class="slider-btns" id="next">
 					<span>▶</span>
@@ -184,9 +187,9 @@
 
 	<div class="container px-4 px-lg-5 my-5">
 		<button id="get_moem_btn" onclick="get_moem()">모임 더보기</button>
-		<div style="border: 1px solid red;">
+		<div>
 			<h5 id="remained_moem">참가 중인 모임</h5>
-			<div id="moem_list" class="text-center text-white"></div>
+			<div id="moem_list" class="text-center text-white" style="background-color: rgb(244 98 58 / 70%); border-radius: 5%;"></div>
 		</div>
 		<div id="item_list" class="text-center text-white"></div>
 	</div>
@@ -199,15 +202,15 @@
 			</div>
 			<div class="close-area">X</div>
 			<div class="content">
-				<div class="cards">
-					<div class="card h-100">
+				<div class="card-body p-4">
+					<div class="text-center">
 						<img class="card-img-top" src="" alt="..." />
-						<div class="card-body p-4">
-							<div class="text-center">
-								<h5 class="fw-bolder"></h5>
-								<h8 class="fw-bolder2"></h8>
-							</div>
-						</div>
+					</div>
+				</div>
+				<div class="card-body p-4">
+					<div class="text-center">
+						<h5 class="fw-bolder"></h5>
+						<h8 class="fw-bolder2"></h8>
 					</div>
 				</div>
 			</div>
@@ -504,7 +507,7 @@
 	    		   try{
 		    		   i = Number(i) + next_page_moem;
 			    	   document.getElementById("moem_list").innerHTML += 
-			    		   '<div class="moem_list_wrap"><div class="cards_image"><img class="card_image_image" src=' +
+			    		   '<div class="moem_list_wrap" onclick="modalOn(event)"><div class="cards_image"><img class="card_image_image" src=' +
 			    		   				item_list[i].img +
 				                ' alt="..." /></div><div class="moem_list_wrap_text"><h5 class="fw-bolder3">' +
 		                		item_list[i].name +
