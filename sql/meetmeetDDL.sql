@@ -4,7 +4,7 @@ use 데이터베이스이름;
 
 CREATE TABLE account(
 	account_id varchar(20) PRIMARY KEY,
-	pw varchar(50) NOT NULL,
+	pw varchar(100) NOT NULL,
 	hash_salt varchar(10) NOT NULL,
 	pw_question varchar(20) NOT NULL,
 	nick_name varchar(20) NOT NULL
@@ -40,7 +40,7 @@ CREATE TABLE friend_reqeust(
 CREATE TABLE preference(
 	preference_id int AUTO_INCREMENT PRIMARY KEY,
 	account_id varchar(20) NOT NULL,
-	category varchar(20) NOT NULL,
+	category varchar(20) NOT NULL
 );
 
 CREATE TABLE meeting(

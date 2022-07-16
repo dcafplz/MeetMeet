@@ -1,21 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-
-<!-- sessionStorage.setItem("naver", "" );
-sessionStorage.setItem("odsay", "" ); -->
-<script>
-	const naverid = sessionStorage.getItem("naver");
-	var script_element = document.createElement('script');
-	var script_element2 = document.createElement('script');
-	script_element.setAttribute('src', 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=' + naverid);
-	script_element.setAttribute('type', 'text/javascript');
-	script_element2.setAttribute('src', 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=' + naverid + '&submodules=geocoder');
-	script_element2.setAttribute('type', 'text/javascript');
-	document.head.appendChild(script_element);
-	document.head.appendChild(script_element2);
-</script>
 <meta charset="utf-8" />
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -50,23 +35,13 @@ img {
 </style>
 </head>
 <body>
+<script src = 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=6b3psnulwi&submodules=geocoder'></script>
 <script>var check=123;</script>
 <script>console.log(check);</script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="js/api.js"></script>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<<<<<<< HEAD
-<script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=6b3psnulwi&submodules=geocoder"></script>
-<!-- Contact-->
-=======
->>>>>>> a69c6620aae6fbfa9e96b2fc6ccb0e56fb8cc16f
-
-
-
-Contact
-
-
 	<!-- Navigation-->
 	<div w3-include-html="nav.html"></div>
 	<section class="page-section" id="contact">

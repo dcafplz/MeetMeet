@@ -24,6 +24,7 @@
 	rel="stylesheet" />
 <!-- Core theme CSS (includes Bootstrap)-->
 <link href="css/styles_jw.css" rel="stylesheet" />
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <!-- Contact-->
 <body>
@@ -37,20 +38,21 @@
 			</div>
 			<div class="row gx-4 gx-lg-5 justify-content-center mb-5">
 				<div class="col-lg-6">
-					<form id="signupform" novalidate>
+					<form id="signupform" action="account/signup" method="post">
 						<!-- ID input-->
 						<div class="form-floating mb-3">
-							<input class="form-control" id="id" type="text" required
+							<input class="form-control" name="accountId" id="id" type="text" required
 								minlength="4" maxlength="15" pattern="^[a-zA-Z0-9]+$"
 								onchange="idval()" /> <label for="id">ID</label>
 							<div class="id invalid-feedback">ID의 길이는 영문과 숫자만 사용 가능하며
 								4자이상 15자 이하여야 합니다.</div>
+							<div class="idd invalid-feedback" style="display: none">중복된 ID 입니다.</div>
 							<div class="id valid-feedback" style="display: none">사용 가능한
 								ID입니다.</div>
 						</div>
 						<!-- PW input-->
 						<div class="form-floating mb-3">
-							<input class="form-control" id="pw" type="password" required
+							<input class="form-control" name="pw" id="pw" type="password" required
 								minlength="4" maxlength="15" onchange="pwval()" /> <label
 								for="pw">Password</label>
 							<div class="pw invalid-feedback">pw의 길이는 4자이상 15자 이하여야 합니다.</div>
@@ -66,14 +68,14 @@
 								확인이 일치합니다.</div>
 						</div>
 						<div class="form-floating mb-3">
-							<input class="form-control" id="pwq" type="text" required
+							<input class="form-control" name="pwQuestion" id="pwq" type="text" required
 								pattern="^[가-힣]+$"
 								onchange="pwqval()" /> <label for="pwq">비밀번호 찾기 질문: 남들이 모르는 당신만의 은밀한 취미는?</label>
 							<div class="pwq invalid-feedback">한글로 입력해주세요</div>
 							<div class="pwq valid-feedback" style="display: none">정상입니다.</div>
 						</div>
 						<div class="form-floating mb-3">
-							<input class="form-control" id="nickname" type="text" required
+							<input class="form-control" name="nickName" id="nickname" type="text" required
 								pattern="^[a-zA-Z0-9ㄱ-ㅎ가-힣]+$" onchange="nicknameval()" /> <label
 								for="nickname">Nick Name</label>
 							<div class="nickname invalid-feedback">특수문자는 사용할 수 없습니다.</div>
@@ -81,7 +83,7 @@
 								가능한 닉네임 입니다.</div>
 						</div>
 						<div class="form-floating mb-3">
-							<input class="form-control" id="place" type="text" required
+							<input class="form-control" name="place" id="place" type="text" required
 								pattern="^[ㄱ-ㅎ|가-힣|0-9|]+$" onchange="placeval()" /> <label
 								for="place">Place</label>
 							<div class="place invalid-feedback">한글과 숫자만 입력 가능합니다.</div>
@@ -90,7 +92,8 @@
 						</div>
 						<div>
 							선호하는 모임을 체크하세요 <br> <label class="form-check"><input
-								type="checkbox" value="sports"> 스포츠</label> <label
+								type="checkbox" value="sports"> 스포츠</label>
+								<label
 								class="form-check"><input type="checkbox" value="book">
 								독서</label> <label class="form-check"><input type="checkbox"
 								value="game"> 게임</label> <label class="form-check"><input
@@ -137,19 +140,35 @@
 
 			var e = document.getElementById("id");
 			var ei = document.getElementsByClassName('id invalid-feedback');
+			var ei2 = document.getElementsByClassName('idd invalid-feedback');
 			var ev = document.getElementsByClassName('id valid-feedback');
-
-			if (e.checkValidity()) {
-				ev[0].style.display = "block";
-				ei[0].style.display = "none";
-				nums[0] = 1;
-			} else {
-				ev[0].style.display = "none";
-				ei[0].style.display = "block";
-				nums[0] = 0;
-			}
-			;
-			val();
+			
+			axios.get("account/check", {
+		        params: {
+		          	accountId: e.value
+		        }
+		    }).then(function (response) {
+		    	console.log();
+				if (e.checkValidity() ) {
+					ev[0].style.display = "block";
+					ei[0].style.display = "none";
+					if(response.data == "Y"){
+						ev[0].style.display = "none";
+						ei2[0].style.display = "block";
+						nums[0] = 0;
+					}else{
+						ei2[0].style.display = "none";
+						nums[0] = 1;				
+					}
+				} else {
+					ev[0].style.display = "none";
+					ei[0].style.display = "block";
+					nums[0] = 0;
+				}
+				;
+				val();
+		    });
+				
 		};
 
 		function pwval() {
