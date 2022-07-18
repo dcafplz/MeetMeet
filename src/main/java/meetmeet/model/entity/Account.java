@@ -21,7 +21,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 
-@ToString
 @Entity
 public class Account {
 
@@ -47,5 +46,8 @@ public class Account {
 
 	@OneToMany(mappedBy = "requestedId")
 	private List<FriendRequest> friendRequest2 = new ArrayList<FriendRequest>();
+	
+	@OneToMany(mappedBy = "accountId")
+	private List<Preference> preference = new ArrayList<Preference>();
 
 }

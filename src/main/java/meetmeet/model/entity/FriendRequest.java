@@ -22,7 +22,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@ToString
 @IdClass(FriendRequestId.class)
 public class FriendRequest implements Serializable {
 	@Id

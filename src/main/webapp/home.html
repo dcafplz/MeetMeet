@@ -235,6 +235,9 @@
 		<!-- Core theme JS-->
 		<script src="js/scripts.js"></script>
 		<script>
+			const account = sessionStorage.getItem("account");
+			console.log(account);
+			
             var slideWrapper = document.getElementById('slider-wrap');
             //current slideIndexition
             var slideIndex = 0;
