@@ -1,5 +1,6 @@
 package meetmeet.model.entity;
 
+<<<<<<< HEAD
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -13,17 +14,25 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+=======
+import javax.persistence.Entity;
+import javax.persistence.Id;
+>>>>>>> 786581eb55fffb82c73722630ad380c640916168
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+<<<<<<< HEAD
 import lombok.ToString;
+=======
+>>>>>>> 786581eb55fffb82c73722630ad380c640916168
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+<<<<<<< HEAD
 @ToString
 @Entity
 @IdClass(FriendListId.class)
@@ -41,4 +50,15 @@ public class FriendList implements Serializable {
 	@JsonIgnore
 	private Account id2;
 
+=======
+
+@Entity
+public class FriendList {
+	
+	@Id
+	private long friendListId;
+	private String id1;
+	private String id2;
+	
+>>>>>>> 786581eb55fffb82c73722630ad380c640916168
 }

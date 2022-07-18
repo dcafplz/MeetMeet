@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>meeting 상세 페이지</title>
+</head>
+<body>
+resources/statics/
+	<h1 th:text="${meeting}"></h1>
+	<h1 th:text="${meeting.filepath}"></h1>
+	<a th:href="@{${meeting.filepath}}">다운받기</a>
+	<a th:href="@{/meetmeet/delete(meetingId=${meeting.meetingId})}">글삭제</a>
+	<a th:href="@{/meetmeet/modify/{meetingId}(meetingId=${meeting.meetingId})}">수정</a>
+</body>
+<script>
+</script>
+</html>

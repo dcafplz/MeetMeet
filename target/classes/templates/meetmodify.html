@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-
-
 <!-- sessionStorage.setItem("naver", "" );
 sessionStorage.setItem("odsay", "" ); -->
 <script>
 	const naverid = sessionStorage.getItem("naver");
 	var script_element = document.createElement('script');
 	var script_element2 = document.createElement('script');
-	script_element.setAttribute('src', 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=' + "dshwu50x93");
+	script_element.setAttribute('src', 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=' + naverid);
 	script_element.setAttribute('type', 'text/javascript');
-	script_element2.setAttribute('src', 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=' + "dshwu50x93" + '&submodules=geocoder');
+	script_element2.setAttribute('src', 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=' + naverid + '&submodules=geocoder');
 	script_element2.setAttribute('type', 'text/javascript');
 	document.head.appendChild(script_element);
 	document.head.appendChild(script_element2);
@@ -38,7 +36,7 @@ sessionStorage.setItem("odsay", "" ); -->
 	href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css"
 	rel="stylesheet" />
 <!-- Core theme CSS (includes Bootstrap)-->
-<link href="css/styles_jw.css" rel="stylesheet" />
+<link href="../../css/styles_jw.css" rel="stylesheet" />
 <style>
 img {
 	width: 1000px;
@@ -50,56 +48,35 @@ img {
 </style>
 </head>
 <body>
-<<<<<<< HEAD
-<script>var check=123;</script>
-<script>console.log(check);</script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="js/api.js"></script>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-
-<script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k7j0ig44z6&submodules=geocoder"></script>
-
-
-<!-- Contact-->
-
-
-
-
-Contact
-
-
-=======
 	<script>var check=123;</script>
 	<script>console.log(check);</script>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-	<script src="js/api.js"></script>
+	<script src="../../js/api.js"></script>
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script
 		src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k7j0ig44z6&submodules=geocoder"></script>
 	<!-- Contact-->
->>>>>>> 786581eb55fffb82c73722630ad380c640916168
 	<!-- Navigation-->
-	<div w3-include-html="nav.html"></div>
+	<div w3-include-html="../../nav.html"></div>
 	<section class="page-section" id="contact">
 		<div class="container px-4 px-lg-5">
 			<div class="row gx-4 gx-lg-5 justify-content-center">
 				<div class="col-lg-8 col-xl-6 text-center">
-					<h2 class="mt-0">모임 만들기</h2>
+					<h2 class="mt-0">모임 수정하기</h2>
 					<hr class="divider" />
 				</div>
 			</div>
 			<div class="row gx-4 gx-lg-5 justify-content-center mb-5">
 				<div class="col-lg-6">
-					<form id="signupform" action="/meetmeet/create-meet" method="post"
+					<form id="signupform" th:action="@{/meetmeet/update/{meetingId}(meetingId=${meeting.meetingId})}" method="post"
 						enctype="multipart/form-data">
 						<div class="form-floating mb-3">
 							<input class="form-control" id="title" type="text" required
 								pattern="^[ㄱ-ㅎ|가-힣|0-9|\s|a-z|A-Z]+$"
 								onchange="title_valid('title', 'title invalid-feedback', 'title valid-feedback')"
-								name="meetingName" /> <label for="title">미팅 이름</label>
+								name="meetingName" th:value="${meeting.meetingName}" /> <label
+								for="title"></label>
 							<div class="title invalid-feedback">50자 이내로 입력해주세요.</div>
 							<div class="title2 invalid-feedback">한글, 숫자, 영어만 사용 가능합니다.</div>
 							<div class="title valid-feedback" style="display: none">OK</div>
@@ -108,7 +85,8 @@ Contact
 							<textarea class="form-control" id="detail" required
 								pattern="^[ㄱ-ㅎ|가-힣|0-9|\s|a-z|A-Z]+$"
 								onchange="detail_valid('detail', 'detail invalid-feedback', 'detail valid-feedback')"
-								name="meetingDetail" style="height: 300px" /></textarea>
+								name="meetingDetail" style="height: 300px"
+								th:field="${meeting.meetingDetail}" /></textarea>
 							<label for="title">미팅 내용</label>
 							<div class="detail invalid-feedback">250자 이내로 입력해주세요.</div>
 							<div class="detail2 invalid-feedback">한글, 숫자, 영어만 사용 가능합니다.</div>
@@ -117,12 +95,15 @@ Contact
 						<!--  novalidate-->
 						<div class="form-floating mb-3">
 							<input id='create-meet' type='file' name='file'
-								onchange="change_image(event)">모임 사진을 올려주세요</input>
+								onchange="change_image(event)" th:value="${meeting.filepath}">모임
+							사진을 올려주세요
 						</div>
 						<div class="form-floating mb-3">
 							<input class="form-control" id="available" type="number" min="2"
-								required onchange="av_valid()" name="maxParticipant" /> <label
-								for="available">참여 인원</label>
+								required onchange="av_valid()" name="maxParticipant"
+								th:field="${meeting.maxParticipant}"/> <label
+								for="available">참여
+								인원</label>
 							<div class="available invalid-feedback">인원은 최소 2명 이상이어야
 								합니다.</div>
 							<div class="available valid-feedback" style="display: none">OK</div>
@@ -130,7 +111,8 @@ Contact
 						<div class="form-floating mb-3">
 							<input class="form-control" id="place" type="text" required
 								pattern="^[ㄱ-ㅎ|가-힣|0-9|\s]+$" onchange="placeval()"
-								name="meetingPlace" /> <label for="place">미팅 장소</label>
+								name="meetingPlace" th:field="${meeting.meetingPlace}" /> <label
+								for="place">미팅 장소</label>
 							<div class="place invalid-feedback">한글과 숫자만 입력 가능합니다.</div>
 							<div class="place valid-feedback" style="display: none">정상적인
 								장소입니다.</div>
@@ -139,23 +121,22 @@ Contact
 							<input class="form-control" id="address" type="text"
 								placeholder="검색할 주소" value="" onchange="initGeocoder()">
 							<label for="address">미팅 주소</label> <input type="hidden" id="lat"
-								type="text" value="" name="meetingPlaceLat"> <input
-								type="hidden" id="lng" type="text" value=""
-								name="meetingPlaceLng">
+								value="" name="meetingPlaceLat"> <input type="hidden"
+								id="lng" value="" name="meetingPlaceLng">
 						</div>
 
 
 						<div class="form-floating mb-3" style="display: flex; flex: auto;">
 							<div style="padding: 30px;">
 								<input class="form-control" id="dateFrom" type="date" required
-									onchange="datevalFrom()" min="" name="meetingStartDate" /> <label
+									onchange="datevalFrom()" min="" name="meetingStartDate" th:value="${meeting.meetingStartDate}"/> <label
 									for="date">From</label>
 								<div class="date invalid-feedbackFrom">오늘 이후의 날짜를 입력해주세요</div>
 								<div class="date valid-feedbackFrom" style="display: none">OK</div>
 							</div>
 							<div style="padding: 30px;">
 								<input class="form-control" id="dateTo" type="date" required
-									onchange="datevalTo()" min="" name="meetingEndDate" /> <label
+									onchange="datevalTo()" min="" name="meetingEndDate" th:value="${meeting.meetingEndDate}"/> <label
 									for="date">To</label>
 								<div class="date invalid-feedbackTo">From 이후의 날짜를 입력해주세요</div>
 								<div class="date valid-feedbackTo" style="display: none">OK</div>
@@ -179,7 +160,7 @@ Contact
 						</div>
 						<div class="d-grid">
 							<button class="btn btn-primary btn-xl" id="singupButton"
-								type="submit" disabled="true">create</button>
+								type="submit">create</button>
 						</div>
 
 					</form>
@@ -215,10 +196,18 @@ Contact
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
 	<!-- Core theme JS-->
-	<script type="text/javascript">
+	<script th:inline="javascript">
+		
+		/* backend에서 받아온 기초값 저장 */
+	   /*<![CDATA[*/
+	    let file_path = /*[[ ${meeting.filepath} ]]*/;
+	    let lat = /*[[ ${meeting.meetingPlaceLat} ]]*/;
+	    let lng = /*[[ ${meeting.meetingPlaceLng} ]]*/;
+	    /*]]*/
+    
 	
 		let nums = new Array(6);
-		nums.fill(0);
+		nums.fill(1);
 
 		function title_valid(e_id, e_class_invalid, e_class_valid) {
 
@@ -380,6 +369,14 @@ Contact
 			document.querySelector("#image-block-image").setAttribute("src", readerEvent.target.result);
             //파일을 읽는 이벤트가 발생하면 img_section의 src 속성을 readerEvent의 결과물로 대체함
         };
+        
+        default_image(file_path);
+		function default_image(file_path) {
+			document.getElementById("image-block").style.display = "block";
+			document.querySelector("#image-block-image").setAttribute("src", file_path);
+/* 			reader.readAsDataURL(document.getElementById("create-meet").value);
+			console.log(reader); */
+		}
 		
 		function change_image(e) {
 			console.log(e);
@@ -435,10 +432,9 @@ Contact
 	       /* 지도관련 script문 */
 	       
 	       const odsay = sessionStorage.getItem("odsay");
-
 	       
  	       var mapOptions = {
-	   			center : new naver.maps.LatLng(37.3595704, 127.105399),
+	   			center : new naver.maps.LatLng(lat, lng),
 	   			zoom : 15,
 	   			mapTypeControl : true
 	   		};
@@ -450,7 +446,8 @@ Contact
 	   		});
 
 	   		map.setCursor('pointer');
-
+			
+	   		searchCoordinateToAddress({y: lat, _lat: lat, x: lng, _lng: lng})
  	   		function searchCoordinateToAddress(latlng) {
 
 	   			infoWindow.close();
@@ -575,6 +572,7 @@ Contact
 
 	   			map.addListener('click', function(e) {
 	   				searchCoordinateToAddress(e.coord);
+	   				console.log(e.coord);
 	   			});
 
 	   			$('#address').on('keydown', function(e) {
@@ -705,5 +703,3 @@ Contact
 
 </body>
 </html>
-
-

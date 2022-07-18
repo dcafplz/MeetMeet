@@ -1,5 +1,6 @@
 package meetmeet.model.dao;
 
+<<<<<<< HEAD
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -16,4 +17,13 @@ public interface FriendListRepository extends CrudRepository<FriendList, Long> {
 	@Query("SELECT fl.id2.accountId, fl.id2.nickName FROM FriendList fl WHERE fl.id1.accountId=:id1")
 	public abstract List<List<String>> findId2ById1AccountId(String id1);
 
+=======
+import org.springframework.data.repository.CrudRepository;
+
+import meetmeet.model.entity.FriendList;
+
+
+public interface FriendListRepository extends CrudRepository<FriendList, Long>{
+	
+>>>>>>> 786581eb55fffb82c73722630ad380c640916168
 }
