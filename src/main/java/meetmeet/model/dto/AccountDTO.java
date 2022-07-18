@@ -16,11 +16,7 @@ import lombok.ToString;
 public class AccountDTO {
 
 	private String accountId;
-<<<<<<< HEAD
-	private	String pw;
-=======
 	private String pw;
->>>>>>> 9fe9137117702b39062f7012f6ae96b14e373f55
 	private String hashSalt;
 	private String pwQuestion;
 	private String nickName;

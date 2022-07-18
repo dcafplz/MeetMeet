@@ -26,15 +26,15 @@ CREATE TABLE hot_place(
 );
 
 CREATE TABLE friend_list(
-	friend_list_id int AUTO_INCREMENT PRIMARY key,
 	id1 varchar(20) NOT NULL,
-	id2 varchar(20) NOT NULL
+	id2 varchar(20) NOT null,
+	primary key (id1, id2)
 );
 
-CREATE TABLE friend_reqeust(
-	friend_reqeust_id int AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE friend_request(
 	request_id varchar(20) NOT NULL,
-	requested_id varchar(20) NOT NULL
+	requested_id varchar(20) NOT null,
+	primary key (request_id, requested_id)
 );
 
 CREATE TABLE preference(
@@ -63,6 +63,7 @@ CREATE TABLE meeting_participant(
 ALTER TABLE place ADD FOREIGN KEY (account_id) REFERENCES account  (account_id) on delete cascade;
 ALTER TABLE friend_list ADD FOREIGN KEY (id1) REFERENCES account  (account_id) on delete cascade;
 ALTER TABLE friend_list ADD FOREIGN KEY (id2) REFERENCES account  (account_id) on delete cascade;
+alter table friend_list add constraint ck_friendList check (id1 != id2);
 ALTER TABLE friend_reqeust ADD FOREIGN KEY (request_id) REFERENCES account  (account_id) on delete cascade;
 ALTER TABLE friend_reqeust ADD FOREIGN KEY (requested_id) REFERENCES account  (account_id) on delete cascade;
 ALTER TABLE preference ADD FOREIGN KEY (account_id) REFERENCES account  (account_id) on delete cascade;

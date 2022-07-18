@@ -1,15 +1,5 @@
 package meetmeet.model.entity;
 
-<<<<<<< HEAD
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-=======
-<<<<<<< HEAD
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-=======
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
@@ -19,8 +9,6 @@ import javax.persistence.Id;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
->>>>>>> 786581eb55fffb82c73722630ad380c640916168
->>>>>>> 9fe9137117702b39062f7012f6ae96b14e373f55
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,27 +21,14 @@ import lombok.Setter;
 
 @Entity
 public class Meeting {
-	
+
 	@Id
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 9fe9137117702b39062f7012f6ae96b14e373f55
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long meetingId;
-	private java.util.Date meetingDate;
-	private String meetingName;
-	private String meetingDetail;
-	private String meetingPlace;
-	private String master_id;
-<<<<<<< HEAD
-=======
-=======
-	@GeneratedValue(strategy = GenerationType.IDENTITY) 
-	private long meetingId;
-	
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate meetingStartDate;
-	
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate meetingEndDate;
 	private String meetingName;
@@ -63,9 +38,8 @@ public class Meeting {
 	private String meetingPlaceLng;
 	private String master_id;
 	private String filename;
-    private String filepath;
->>>>>>> 786581eb55fffb82c73722630ad380c640916168
->>>>>>> 9fe9137117702b39062f7012f6ae96b14e373f55
+	private String filepath;
+
 	private String category;
 	private int maxParticipant;
 }
