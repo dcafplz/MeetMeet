@@ -5,17 +5,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import javax.transaction.Transactional;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.ModelAndView;
 
 import meetmeet.model.dao.AccountRepository;
 import meetmeet.model.dao.PreferenceRepository;
@@ -26,7 +23,6 @@ import meetmeet.model.entity.Account;
 import meetmeet.model.entity.Preference;
 
 
-@SessionAttributes("account")
 @Controller
 public class AccountController {
 	
@@ -37,6 +33,7 @@ public class AccountController {
 	private PreferenceRepository pDao;
 	
 	private ModelMapper modelMapper = new ModelMapper();
+	
 	
 	@PostMapping("account/signup")
 	public String signup(AccountDTO account, @RequestParam(required = false) List<String> preference) throws NoSuchAlgorithmException {
@@ -72,18 +69,21 @@ public class AccountController {
 	}
 	
 	@PostMapping("account/login")
-	public String login(Model model, String accountId, String pw) throws NoSuchAlgorithmException {
+	public ModelAndView login( String accountId, String pw) throws NoSuchAlgorithmException {
+		ModelAndView modelAndView = new ModelAndView();
+		
 		Optional<Account> account = dao.findById(accountId);
 		try {
 			if(PwSecurity.checkPw(account.get(), pw)) {
-				model.addAttribute("account", modelMapper.map(account.get(), AccountDTO.class));
-//				return "redirect:../test.jsp";
-				return "redirect:../home.html";
+				modelAndView.setViewName("home.html");
+				modelAndView.addObject("account", modelMapper.map(account.get(), AccountDTO.class));
+				
+				return modelAndView;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "redirect:../login.html";
+		return modelAndView;
 	}
 
 }
