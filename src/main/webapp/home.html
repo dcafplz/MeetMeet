@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -212,6 +213,12 @@
 					</div>
 				</div>
 			</div>
+			<form id="detailform" action="" method="get">
+				<input class="form-control" id="meetingId" type="hidden"
+								name="meetingId" />
+				<button class="btn btn-primary btn-xl" id="detailButton"
+									type="submit">자세히보기</button>
+			</form>
 		</div>
 	</div>
 	<!-- Section-->
@@ -323,158 +330,51 @@
             }, 3000);
         </script>
 		<script>
-		
-/* 			function loadItem(){
+			
+			var item_list = [];
+			var my_item_list = [];
+	        var count = 12;
+	        
+			loadItem();
+ 			function loadItem(){
 				axios({
 					method: 'get',
 					url: '/getall'
 				}).then(function (res){
-					console.log(res.data);
+					to_item_list(res.data);
+				}).catch(function (err){
+					console.log(err);
+				});
+			}
+ 			
+ 			/* function get_my_item(){
+				axios({
+					method: 'get',
+					url: '/getall'
+				}).then(function (res){
+					to_item_list(res.data);
 				}).catch(function (err){
 					console.log(err);
 				});
 			} */
-        	var item_list = [
-			        		{"name": "당구모",
-			        			"img": "images/1.jpeg",
-			        			"content": "합정역 7시 당구"},
-		        			{"name": "산책모",
-		            			"img": "images/2.jpeg",
-		            			"content": "한강산책 9시!"},
-	            			{"name": "술먹으실 분!",
-	                			"img": "images/1.jpg",
-	                			"content": "강남 7시 술!!"},
-                			{"name": "독서모임1",
-                    			"img": "images/(2).jpg",
-                    			"content": "같이 책읽으실 분"},
-                   			{"name": "독서모임2",
-                       			"img": "images/(3).jpg",
-                       			"content": "같이 책읽으실 분"},
-                   			{"name": "독서모임3",
-                        			"img": "images/(4).jpg",
-                       			"content": "같이 책읽으실 분"},
-                       			{"name": "독서모임34",
-                        			"img": "images/(5).jpg",
-                       			"content": "같이 책읽으실 분"},
-                       			{"name": "독서모임5",
-                        			"img": "images/(6).jpg",
-                       			"content": "같이 책읽으실 분"},
-                       			{"name": "독서모임6",
-                        			"img": "images/2.jpeg",
-                       			"content": "같이 책읽으실 분"},
-                       			{"name": "독서모임7",
-                        			"img": "images/(7).jpg",
-                       			"content": "같이 책읽으실 분"},
-                       			{"name": "독서모임8",
-                        			"img": "images/(8).jpg",
-                       			"content": "같이 책읽으실 분"},
-                       			{"name": "독서모임9",
-                        			"img": "images/(9).jpg",
-                       			"content": "같이 책읽으실 분"},
-                       			{"name": "독서모임12",
-                           			"img": "images/(10).jpg",
-                           			"content": "같이 책읽으실 분"},
-                       			{"name": "독서모임13",
-                            			"img": "images/(11).jpg",
-                           			"content": "같이 책읽으실 분"},
-                           			{"name": "독서모임14",
-                            			"img": "images/(12).jpg",
-                           			"content": "같이 책읽으실 분"},
-                           			{"name": "독서모임15",
-                            			"img": "images/(13).jpg",
-                           			"content": "같이 책읽으실 분"},
-                           			{"name": "독서모임16",
-                            			"img": "images/(14).jpg",
-                           			"content": "같이 책읽으실 분"},
-                           			{"name": "독서모임17",
-                            			"img": "images/(15).jpg",
-                           			"content": "같이 책읽으실 분"},
-                           			{"name": "독서모임18",
-                            			"img": "",
-                           			"content": "같이 책읽으실 분"},
-                           			{"name": "독서모임19",
-                            			"img": "",
-                           			"content": "같이 책읽으실 분"}, 
-                           			{"name": "독서모임29",
-                            			"img": "",
-                           			"content": "같이 책읽으실 분"},
-                           			{"name": "독서모임22",
-                               			"img": "",
-                               			"content": "같이 책읽으실 분"},
-                           			{"name": "독서모임23",
-                                			"img": "",
-                               			"content": "같이 책읽으실 분"},
-                               			{"name": "독서모임24",
-                                			"img": "",
-                               			"content": "같이 책읽으실 분"},
-                               			{"name": "독서모임25",
-                                			"img": "",
-                               			"content": "같이 책읽으실 분"},
-                               			{"name": "독서모임26",
-                                			"img": "",
-                               			"content": "같이 책읽으실 분"},
-                               			{"name": "독서모임27",
-                                			"img": "",
-                               			"content": "같이 책읽으실 분"},
-                               			{"name": "독서모임28",
-                                			"img": "",
-                               			"content": "같이 책읽으실 분"},
-                               			{"name": "독서모임29",
-                                			"img": "",
-                               			"content": "같이 책읽으실 분"},
-                               			{"name": "당구모",
-            			        			"img": "images/1.jpeg",
-            			        			"content": "합정역 7시 당구"},
-            		        			{"name": "산책모",
-            		            			"img": "images/2.jpeg",
-            		            			"content": "한강산책 9시!"},
-            	            			{"name": "술먹으실 분!",
-            	                			"img": "images/2.jpeg",
-            	                			"content": "강남 7시 술!!"},
-                            			{"name": "독서모임1",
-                                			"img": "images/2.jpeg",
-                                			"content": "같이 책읽으실 분"},
-                               			{"name": "독서모임2",
-                                   			"img": "images/2.jpeg",
-                                   			"content": "같이 책읽으실 분"},
-                               			{"name": "독서모임3",
-                                    			"img": "images/2.jpeg",
-                                   			"content": "같이 책읽으실 분"},
-                                   			{"name": "독서모임34",
-                                    			"img": "images/2.jpeg",
-                                   			"content": "같이 책읽으실 분"},
-                                   			{"name": "독서모임5",
-                                    			"img": "images/2.jpeg",
-                                   			"content": "같이 책읽으실 분"},
-                                   			{"name": "독서모임6",
-                                    			"img": "images/2.jpeg",
-                                   			"content": "같이 책읽으실 분"},
-                                   			{"name": "독서모임7",
-                                    			"img": "",
-                                   			"content": "같이 책읽으실 분"},
-                                   			{"name": "독서모임8",
-                                    			"img": "",
-                                   			"content": "같이 책읽으실 분"},
-                                   			{"name": "독서모임9",
-                                    			"img": "",
-                                   			"content": "같이 책읽으실 분"},
-                                   			{"name": "독서모임12",
-                                       			"img": "",
-                                       			"content": "같이 책읽으실 분"},
-                                   			{"name": "독서모임13",
-                                        			"img": "",
-                                       			"content": "같이 책읽으실 분"},
-	                			]
-        	
-	       	
-        	
-        	/* 무한스크롤 함수 */
-	        get_new_item(0, 12);
-	        var count = 12;
-	        
+ 			
+ 			function to_item_list(lists){
+ 				for(let i = 0; i < lists.length; i ++){
+ 					item_list.push(
+ 							{	"meetingId" : lists[i].meetingId,
+ 								"name": lists[i].meetingName,
+			        			"img": lists[i].filepath,
+			        			"content": lists[i].meetingDetail}
+ 							)
+ 				}
+ 				/* 무한스크롤 함수 */
+ 		        get_new_item(0, 12);
+ 				console.log(item_list);
+ 			}
+ 			     	   
 	        function get_new_item(start, end){
 		       for(start; start < end; start ++){
-		    	   var new_id = "btn-modal" + start
+		    	   var new_id = item_list[start].meetingId	/* "btn-modal" +   */
 		    	   document.getElementById("item_list").innerHTML += 
 		    		   '<div id="' + new_id + '"class="cards"><div class="card h-100"><img class="card-img-top" src=' +
 		    		   				item_list[start].img +
@@ -482,7 +382,7 @@
 			                		item_list[start].name +
 			                        '</h5><h8 class="fw-bolder2">' +
 			                        item_list[start].content +
-			                    '</h8></div></div><div class="card-footer p-4 pt-0 border-top-0 bg-transparent"><div class="text-center"><button class="btn btn-outline-dark mt-auto" onclick="modalOn(event)">View options</button></div></div></div></div>';
+			                    '</h8></div></div><div class="card-footer p-4 pt-0 border-top-0 bg-transparent"><div class="text-center"><button class="btn btn-outline-dark mt-auto" onclick="modalOn1(event)">View options</button></div></div></div></div>';
                     
                    /*  document.getElementById("btn-modal" + start).addEventListener("click", e => {
                         modalOn();
@@ -518,10 +418,11 @@
 	    		   }
 	    		   try{
 		    		   i = Number(i) + next_page_moem;
+		    		   var new_id = item_list[i].meetingId;
 			    	   document.getElementById("moem_list").innerHTML += 
-			    		   '<div class="moem_list_wrap" onclick="modalOn(event)"><div class="cards_image"><img class="card_image_image" src=' +
+			    		   '<div id="' + new_id + '" class="moem_list_wrap"><div class="cards_image" ><img class="card_image_image" src=' +
 			    		   				item_list[i].img +
-				                ' alt="..." /></div><div class="moem_list_wrap_text"><h5 class="fw-bolder3">' +
+				                ' alt="..." onclick="modalOn2(event)" /></div><div class="moem_list_wrap_text"><h5 class="fw-bolder3">' +
 		                		item_list[i].name +
 		                        '</h5></div></div>'
 	    		   }catch(error){
@@ -537,9 +438,16 @@
 	       
 	       const modal = document.getElementById("modal");
 	       
-	       function modalOn(e) {
+	       function modalOn1(e) {
+    		   console.log(e.target.parentElement.parentElement.parentElement.parentElement);
 	           modal.style.display = "flex";
 	           modal_content(e.target.parentElement.parentElement.parentElement.parentElement.id);
+	       };
+	       
+	       function modalOn2(e) {
+	    	   console.log(e.target.parentElement.parentElement.id);
+	           modal.style.display = "flex";
+	           modal_content(e.target.parentElement.parentElement.id);
 	       };
 	       
 	       function isModalOn() {
@@ -572,11 +480,20 @@
 	       
 	       function modal_content(parent_id){
 	    	   var parent_tag = document.getElementById(parent_id);
+	    	   console.log(item_list[parent_id]);
 	    	   var modal_tag = document.getElementById("modal");
-	    	   console.log(parent_tag);
-	    	   modal_tag.getElementsByClassName("card-img-top")[0].src = parent_tag.getElementsByClassName("card-img-top")[0].src;
+	    	   document.getElementById("detailform").action = "/meetmeet/detail?meetingId=" + parent_id;
+	    	   document.getElementById("meetingId").value = parent_id;
+	    	   for(let i = 0; i < item_list.length; i ++){
+	    		   if(item_list[i].meetingId == parent_id){
+			    	   modal_tag.getElementsByClassName("card-img-top")[0].src = item_list[i].img;
+			    	   modal_tag.getElementsByClassName("fw-bolder")[0].innerText = item_list[i].name;
+			    	   modal_tag.getElementsByClassName("fw-bolder2")[0].innerText = item_list[i].content;
+	    		   }
+	    	   }
+/* 	    	   modal_tag.getElementsByClassName("card-img-top")[0].src = parent_tag.getElementsByClassName("card-img-top")[0].src;
 	    	   modal_tag.getElementsByClassName("fw-bolder")[0].innerText = parent_tag.getElementsByClassName("fw-bolder")[0].innerText;
-	    	   modal_tag.getElementsByClassName("fw-bolder2")[0].innerText = parent_tag.getElementsByClassName("fw-bolder2")[0].innerText;
+	    	   modal_tag.getElementsByClassName("fw-bolder2")[0].innerText = parent_tag.getElementsByClassName("fw-bolder2")[0].innerText; */
 	       }
 	       
 	       includeHTML();
