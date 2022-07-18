@@ -54,18 +54,17 @@ public class MeetingController {
 
         MeetingDTO meetingTemp = meetingService.meetView(meetingId);
         meetingTemp.setMeetingName(meeting.getMeetingName());
-        meetingTemp.setMeetingPlace(meeting.getMeetingName());
+        meetingTemp.setMeetingPlace(meeting.getMeetingPlace());
         meetingTemp.setMeetingPlaceLat(meeting.getMeetingPlaceLat());
         meetingTemp.setMeetingPlaceLng(meeting.getMeetingPlaceLng());
         meetingTemp.setMeetingDetail(meeting.getMeetingDetail());
         meetingTemp.setCategory(meeting.getCategory());
         meetingTemp.setMaxParticipant(meeting.getMaxParticipant());
-        meetingTemp.setMaxParticipant(meeting.getMaxParticipant());
-        meetingTemp.setMaxParticipant(meeting.getMaxParticipant());
         meetingTemp.setMeetingStartDate(meeting.getMeetingStartDate());
         meetingTemp.setMeetingEndDate(meeting.getMeetingEndDate());
         
         ModelAndView modelAndView = new ModelAndView();
+        System.out.println(file);
         Long id = meetingService.meetCreate(meetingTemp, file);
         modelAndView.setViewName("redirect:../detail?meetingId=" + id);
 		modelAndView.addObject("meeting", meetingService.meetView(id));
@@ -80,5 +79,15 @@ public class MeetingController {
 		modelAndView.setViewName("redirect:../home.html");
 		return modelAndView;
 	}
+	
+//	@GetMapping("/getall")
+//	public ModelAndView getAll(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file) throws Exception {
+//
+//		ModelAndView modelAndView = new ModelAndView();
+//		modelAndView.setViewName("meetdetail.html");
+//		modelAndView.addObject("meeting", meetingService.meetView(meetingId));
+//
+//		return modelAndView;
+//	}
 
 }

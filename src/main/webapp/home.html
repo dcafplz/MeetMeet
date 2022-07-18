@@ -15,10 +15,8 @@
 	rel="stylesheet" />
 <!-- Core theme CSS (includes Bootstrap)-->
 <link href="css/styles_dh.css" rel="stylesheet" />
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
-
-
-
 <style>
 #slider-wrap {
 	box-sizing: content-box;
@@ -322,6 +320,17 @@
             }, 3000);
         </script>
 		<script>
+		
+/* 			function loadItem(){
+				axios({
+					method: 'get',
+					url: '/getall'
+				}).then(function (res){
+					console.log(res.data);
+				}).catch(function (err){
+					console.log(err);
+				});
+			} */
         	var item_list = [
 			        		{"name": "당구모",
 			        			"img": "images/1.jpeg",
