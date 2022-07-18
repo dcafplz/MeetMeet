@@ -13,50 +13,46 @@
 	<div w3-include-html="../../nav.html"></div>
 	<section class="page-section" id="contact">
 		<div class="row gx-4 gx-lg-5 justify-content-center">
-			<div class="col-lg-8 col-xl-6 text-center">
-				<h2 class="mt-0" th:text="${meeting.meetingName}"></h2>
+			<div class="col-lg-8 col-xl-6 text-center" style="display: flex; flex-direction: row;">
+				<div class="mt-0" th:text="${meeting.meetingName}"></div>
+				<div class="mt-0" th:text="${meeting.meetingPlace}"></div>
+				<div class="mt-0" id="dateFrom" th:text="${meeting.meetingStartDate}"></div>
+				<div class="mt-0" id="dateEnd" th:text="${meeting.meetingEndDate}"></div>
 			</div>
 		</div>
 		<div class="container px-4 px-lg-5"
 			style="display: flex; flex-direction: column;">
 			<div class="row gx-4 gx-lg-5 justify-content-center mb-5"
-				style="display: flex">
+				style="display: flex; flex-grow: 1; flex-direction: row;">
 				<div class="col-lg-6" style="flex-grow: 1;">
-					<div id="map" style="width: 800px; height: 500px; margin-top: 40px"></div>
+					<div id="map" style="width: 588px; height: 500px; margin-top: 40px"></div>
 					<div class="form-floating mb-3">
 						<input class="form-control" id="address" disabled="disabled"
-							placeholder="검색할 주소" th:value="${meeting.meetingPlace}"> <label for="address">도착지</label> <input
-							type="hidden" id="lat" th:value="${meeting.meetingPlaceLat}" name="meetingPlaceLat"> <input
-							type="hidden" id="lng" th:value="${meeting.meetingPlaceLng}" name="meetingPlaceLng">
-						<input
-							class="form-control" id="departure" type="text"
+							placeholder="검색할 주소" th:value="${meeting.meetingPlace}">
+							<label for="address">도착지</label>
+							<input type="hidden" id="lat" th:value="${meeting.meetingPlaceLat}" name="meetingPlaceLat">
+							<input type="hidden" id="lng" th:value="${meeting.meetingPlaceLng}" name="meetingPlaceLng">
+						<input class="form-control" id="departure" type="text"
 							placeholder="검색할 주소" value="" onchange="initGeocoder()">
 						<input type="hidden" id="lat_de" value="" name="meetingPlaceLatDe">
 						<input type="hidden" id="lng_de" value="" name="meetingPlaceLngDe">
 					</div>
 				</div>
 				<div class="col-lg-6" style="flex-grow: 1;">
-					<h1 th:text="${meeting}"></h1>
-					<h1 th:text="${meeting.filepath}"></h1>
-					<div id="image-block" class="form-floating mb-3"
-						style="display: none">
-						<img id="image-block-image" class="card-img-top" src="" alt="..." />
+					<div id="result-route" class="col-lg-6" style="flex-grow: 1;  margin-top: 40px">
 					</div>
-					<div id="map" style="width: 800px; height: 500px; margin-top: 40px"></div>
 				</div>
 			</div>
-			<div class="row gx-4 gx-lg-5 justify-content-center">
-				<div class="col-lg-4 text-center mb-5 mb-lg-0">
-					<i class="bi-phone fs-2 mb-3 text-muted"></i>
-					<div>+82 (02)123-4567</div>
+			<div class="row gx-4 gx-lg-5 justify-content-center mb-5" style="display: flex; flex-grow: 1; flex-direction: row;">
+				<div class="col-lg-6" style="flex-grow: 1;">
+
 				</div>
 			</div>
+			<a th:href="@{${meeting.filepath}}">다운받기</a>
+			<a th:href="@{/meetmeet/delete(meetingId=${meeting.meetingId})}">글삭제</a>
+			<a th:href="@{/meetmeet/modify/{meetingId}(meetingId=${meeting.meetingId})}">수정</a>
 		</div>
 	</section>
-	<a th:href="@{${meeting.filepath}}">다운받기</a>
-	<a th:href="@{/meetmeet/delete(meetingId=${meeting.meetingId})}">글삭제</a>
-	<a
-		th:href="@{/meetmeet/modify/{meetingId}(meetingId=${meeting.meetingId})}">수정</a>
 </body>
 <script th:inline="javascript">
 
@@ -297,7 +293,8 @@
 		xhr.send();
 		xhr.onreadystatechange = function() {
 			if (xhr.readyState == 4 && xhr.status == 200) {
-				console.log(JSON.parse(xhr.responseText)); // <- xhr.responseText 로 결과를 가져올 수 있음
+				getRoute(JSON.parse(xhr.responseText)); // <- xhr.responseText 로 결과를 가져올 수 있음
+				
 				//노선그래픽 데이터 호출
 				callMapObjApiAJAX((JSON.parse(xhr.responseText))["result"]["path"][0].info.mapObj);
 			}
@@ -387,6 +384,42 @@
 					});
 				}
 			}
+		}
+	}
+	
+	function getRoute(result){
+		for(let i = 0; i < result["result"]["path"].length; i ++){
+			console.log(result["result"]["path"][i]);
+			var payment = result["result"]["path"][i].info.payment;
+			var totalTime = result["result"]["path"][i].info.totalTime;
+			var totalDistance = result["result"]["path"][i].info.totalDistance;
+			var subPath = result["result"]["path"][i].subPath;
+			var trans = "";
+			var distance = "";
+			var new_html = '<div class="path_station_box ng-star-inserted expanding" style="height: 30px;">'
+			
+			for(let j = 0; j < subPath.length; j ++){
+				console.log(subPath[j]);
+				if(typeof subPath[j].lane === 'undefined'){
+					trans = "도보";
+					distance = subPath[j].distance;
+				}else{
+					console.log(subPath[j].lane[0]);
+					if(typeof subPath[j].lane[0].busNo === 'undefined'){
+						trans = subPath[j].lane[0].name;
+						distance = subPath[j].distance;
+					}else{
+						trans = subPath[j].lane[0].busNo;
+						distance = subPath[j].distance;
+					}
+				}
+				new_html += '<span class="path_station ng-star-inserted"><i _ngcontent-cmf-c197="" class="path_icon" style="border-color: rgb(135, 199, 0);"></i>' + trans + " -> " + '</span>'
+				console.log(trans);
+				console.log(distance);
+			}
+			new_html += '</div>';
+			document.getElementById('result-route').innerHTML += new_html;
+			console.log(new_html);
 		}
 	}
 </script>

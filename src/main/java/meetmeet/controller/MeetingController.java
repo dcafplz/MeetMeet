@@ -1,5 +1,7 @@
 package meetmeet.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import meetmeet.model.dto.AccountDTO;
 import meetmeet.model.dto.MeetingDTO;
+import meetmeet.model.entity.Account;
 import meetmeet.model.entity.Meeting;
 import meetmeet.service.MeetingService;
 
@@ -23,17 +27,16 @@ public class MeetingController {
 
 	@PostMapping("/create-meet")
 	public ModelAndView meetCreatePage(Model model) throws Exception {
-		
 		ModelAndView modelAndView = new ModelAndView();
-		System.out.println(model);
 		modelAndView.setViewName("createmeet.html");
 		
 		return modelAndView;
 	}
 	
 	@PostMapping("/meetmeet/create-meet")
-	public ModelAndView meetCreate(MeetingDTO meeting, Model model, MultipartFile file) throws Exception {
-
+	public ModelAndView meetCreate(MeetingDTO meeting, Model model, MultipartFile file, HttpServletRequest req) throws Exception {
+//		System.out.println(req.getSession().getAttribute("account"));
+//		meeting.setMaster_id(((AccountDTO) (req.getSession().getAttribute("account"))).getAccountId());
 		ModelAndView modelAndView = new ModelAndView();
 		Long id = meetingService.meetCreate(meeting, file);
 		modelAndView.setViewName("redirect:../meetmeet/detail?meetingId=" + id);
