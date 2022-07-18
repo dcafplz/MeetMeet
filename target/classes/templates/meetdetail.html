@@ -4,18 +4,69 @@
 <meta charset="UTF-8">
 <title>meeting 상세 페이지</title>
 </head>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k7j0ig44z6&submodules=geocoder"></script>
 <link href="../../css/styles_jw.css" rel="stylesheet" />
 <body>
 	<div w3-include-html="../../nav.html"></div>
-	resources/statics/
-	<h1 th:text="${meeting}"></h1>
-	<h1 th:text="${meeting.filepath}"></h1>
+	<section class="page-section" id="contact">
+		<div class="row gx-4 gx-lg-5 justify-content-center">
+			<div class="col-lg-8 col-xl-6 text-center">
+				<h2 class="mt-0" th:text="${meeting.meetingName}"></h2>
+			</div>
+		</div>
+		<div class="container px-4 px-lg-5"
+			style="display: flex; flex-direction: column;">
+			<div class="row gx-4 gx-lg-5 justify-content-center mb-5"
+				style="display: flex">
+				<div class="col-lg-6" style="flex-grow: 1;">
+					<div id="map" style="width: 800px; height: 500px; margin-top: 40px"></div>
+					<div class="form-floating mb-3">
+						<input class="form-control" id="address" disabled="disabled"
+							placeholder="검색할 주소" th:value="${meeting.meetingPlace}"> <label for="address">도착지</label> <input
+							type="hidden" id="lat" th:value="${meeting.meetingPlaceLat}" name="meetingPlaceLat"> <input
+							type="hidden" id="lng" th:value="${meeting.meetingPlaceLng}" name="meetingPlaceLng">
+						<input
+							class="form-control" id="departure" type="text"
+							placeholder="검색할 주소" value="" onchange="initGeocoder()">
+						<input type="hidden" id="lat_de" value="" name="meetingPlaceLatDe">
+						<input type="hidden" id="lng_de" value="" name="meetingPlaceLngDe">
+					</div>
+				</div>
+				<div class="col-lg-6" style="flex-grow: 1;">
+					<h1 th:text="${meeting}"></h1>
+					<h1 th:text="${meeting.filepath}"></h1>
+					<div id="image-block" class="form-floating mb-3"
+						style="display: none">
+						<img id="image-block-image" class="card-img-top" src="" alt="..." />
+					</div>
+					<div id="map" style="width: 800px; height: 500px; margin-top: 40px"></div>
+				</div>
+			</div>
+			<div class="row gx-4 gx-lg-5 justify-content-center">
+				<div class="col-lg-4 text-center mb-5 mb-lg-0">
+					<i class="bi-phone fs-2 mb-3 text-muted"></i>
+					<div>+82 (02)123-4567</div>
+				</div>
+			</div>
+		</div>
+	</section>
 	<a th:href="@{${meeting.filepath}}">다운받기</a>
 	<a th:href="@{/meetmeet/delete(meetingId=${meeting.meetingId})}">글삭제</a>
 	<a
 		th:href="@{/meetmeet/modify/{meetingId}(meetingId=${meeting.meetingId})}">수정</a>
 </body>
-<script>
+<script th:inline="javascript">
+
+	/* backend에서 받아온 기초값 저장 */
+	/*<![CDATA[*/
+	 let file_path = /*[[ ${meeting.filepath} ]]*/;
+	 let lat = /*[[ ${meeting.meetingPlaceLat} ]]*/;
+	 let lng = /*[[ ${meeting.meetingPlaceLng} ]]*/;
+	 /*]]*/
+	 
 	/* html include*/
 	includeHTML();
 	function includeHTML() {
@@ -46,6 +97,295 @@
 				xhttp.send();
 				/* Exit the function: */
 				return;
+			}
+		}
+	}
+
+	/* 지도관련 script문 */
+
+	const odsay = sessionStorage.getItem("odsay");
+
+	var mapOptions = {
+		center : new naver.maps.LatLng(lat, lng),
+		zoom : 15,
+		mapTypeControl : true
+	};
+
+	var map = new naver.maps.Map('map', mapOptions);
+
+	var infoWindow = new naver.maps.InfoWindow({
+		anchorSkew : true
+	});
+
+	map.setCursor('pointer');
+
+	searchCoordinateToAddress({
+		y : lat,
+		_lat : lat,
+		x : lng,
+		_lng : lng
+	})
+	function searchCoordinateToAddress(latlng) {
+
+		infoWindow.close();
+
+		naver.maps.Service
+				.reverseGeocode(
+						{
+							coords : latlng,
+							orders : [ naver.maps.Service.OrderType.ADDR,
+									naver.maps.Service.OrderType.ROAD_ADDR ]
+									.join(',')
+						},
+						function(status, response) {
+							if (status === naver.maps.Service.Status.ERROR) {
+								if (!latlng) {
+									return alert('ReverseGeocode Error, Please check latlng');
+								}
+								if (latlng.toString) {
+									return alert('ReverseGeocode Error, latlng:'
+											+ latlng.toString());
+								}
+								if (latlng.x && latlng.y) {
+									return alert('ReverseGeocode Error, x:'
+											+ latlng.x + ', y:' + latlng.y);
+								}
+								return alert('ReverseGeocode Error, Please check latlng');
+							}
+
+							var address = response.v2.address, htmlAddresses = [];
+
+							if (address.jibunAddress !== '') {
+								htmlAddresses.push('[지번 주소] '
+										+ address.jibunAddress);
+							}
+
+							if (address.roadAddress !== '') {
+								htmlAddresses.push('[도로명 주소] '
+										+ address.roadAddress);
+							}
+							// 찍은곳 마커 찍기
+							drawNaverMarker(latlng._lng, latlng._lat, true);
+							document.getElementById("departure").value = htmlAddresses[0]
+									.replace("[지번 주소] ", "");
+							document.getElementById("lat_de").value = latlng._lat;
+							document.getElementById("lat_de").innerText = latlng._lat;
+							document.getElementById("lng_de").value = latlng._lng;
+							document.getElementById("lng_de").innerText = latlng._lng;
+							
+							dx =  document.getElementById("lng").value;
+							dy =  document.getElementById("lat").value;
+							ax = latlng._lng;
+							ay = latlng._lat;
+							searchPubTransPathAJAX();
+
+							/* infoWindow
+									.setContent([
+											'<div id="" style="padding:10px;min-width:200px;line-height:150%;" value=true>',
+											'<h4 style="margin-top:5px;">검색 좌표</h4><br />',
+											htmlAddresses.join('<br />'),
+											'<c:if test="${not empty cookie.name.value}"><button onclick="setStartingPoint()">출발지</button></c:if><br />',
+											'</div>' ].join('\n')); */
+
+							/* infoWindow.open(map, latlng); */
+						});
+	}
+
+	function searchAddressToCoordinate(arr) {
+		if (arr == null) {
+			arr = document.getElementById("departure").value
+		}
+		naver.maps.Service
+				.geocode(
+						{
+							address : arr
+						},
+						function(status, response) {
+							if (status === naver.maps.Service.Status.ERROR) {
+								if (!address) {
+									return alert('Geocode Error, Please check address');
+								}
+								return alert('Geocode Error, address:'
+										+ address);
+							}
+
+							if (response.v2.meta.totalCount === 0) {
+								return alert('No result.');
+							}
+
+							var htmlAddresses = [], item = response.v2.addresses[0], point = new naver.maps.Point(
+									item.x, item.y);
+
+							if (item.roadAddress) {
+								htmlAddresses.push('[도로명 주소] '
+										+ item.roadAddress);
+							}
+
+							if (item.jibunAddress) {
+								htmlAddresses.push('[지번 주소] '
+										+ item.jibunAddress);
+							}
+
+							if (item.englishAddress) {
+								htmlAddresses.push('[영문명 주소] '
+										+ item.englishAddress);
+							}
+
+							document.getElementById("lat_de").value = item.y;
+							document.getElementById("lat_de").innerText = item.y;
+							document.getElementById("lng_de").value = item.x;
+							document.getElementById("lng_de").innerText = item.x;
+							
+							dx =  document.getElementById("lng").value;
+							dy =  document.getElementById("lat").value;
+							ax = item.x;
+							ay = item.y;
+							searchPubTransPathAJAX();
+
+					/* 		infoWindow
+									.setContent([
+											'<div style="padding:10px;min-width:200px;line-height:150%;">',
+											'<h4 style="margin-top:5px;">검색 주소 : '
+													+ arr + '</h4><br />',
+											htmlAddresses.join('<br />'),
+											'</div>' ].join('\n')); */
+
+							map.setCenter(point);
+							/* infoWindow.open(map, point); */
+						});
+	}
+
+	function initGeocoder() {
+
+		map.addListener('click', function(e) {
+			searchCoordinateToAddress(e.coord);
+		});
+
+		$('#address').on('keydown', function(e) {
+			var keyCode = e.which;
+
+			if (keyCode === 13) { // Enter Key
+				searchAddressToCoordinate($('#address').val());
+			}
+		});
+
+		$('#submit').on('click', function(e) {
+			e.preventDefault();
+
+			searchAddressToCoordinate($('#address').val());
+		});
+
+		searchAddressToCoordinate();
+	}
+
+	naver.maps.onJSContentLoaded = initGeocoder;
+
+	// 지도에 선표시 API
+
+	var dx = 126.93737555322481;
+	var dy = 37.55525165729346;
+	var ax = 126.88265238619182;
+	var ay = 37.481440035175375;
+
+	//
+	function searchPubTransPathAJAX() {
+		var xhr = new XMLHttpRequest();
+		//ODsay apiKey 입력
+		var url = "https://api.odsay.com/v1/api/searchPubTransPath?SX=" + dx
+				+ "&SY=" + dy + "&EX=" + ax + "&EY=" + ay + "&apiKey=" + odsay;
+		xhr.open("GET", url, true);
+		xhr.send();
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState == 4 && xhr.status == 200) {
+				console.log(JSON.parse(xhr.responseText)); // <- xhr.responseText 로 결과를 가져올 수 있음
+				//노선그래픽 데이터 호출
+				callMapObjApiAJAX((JSON.parse(xhr.responseText))["result"]["path"][0].info.mapObj);
+			}
+		}
+	}
+
+	//길찾기 API 호출
+	// searchPubTransPathAJAX();
+
+	function callMapObjApiAJAX(mabObj) {
+		var xhr = new XMLHttpRequest();
+		//ODsay apiKey 입력
+		var url = "https://api.odsay.com/v1/api/loadLane?mapObject=0:0@"
+				+ mabObj + "&apiKey=" + odsay;
+		xhr.open("GET", url, true);
+		xhr.send();
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState == 4 && xhr.status == 200) {
+				var resultJsonData = JSON.parse(xhr.responseText);
+				drawNaverMarker(dx, dy, true); // 출발지 마커 표시
+				drawNaverMarker(ax, ay, false); // 도착지 마커 표시
+				drawNaverPolyLine(resultJsonData); // 노선그래픽데이터 지도위 표시
+				// boundary 데이터가 있을경우, 해당 boundary로 지도이동
+				if (resultJsonData.result.boundary) {
+					var boundary = new naver.maps.LatLngBounds(
+							new naver.maps.LatLng(
+									resultJsonData.result.boundary.top,
+									resultJsonData.result.boundary.left),
+							new naver.maps.LatLng(
+									resultJsonData.result.boundary.bottom,
+									resultJsonData.result.boundary.right));
+					map.panToBounds(boundary);
+				}
+			}
+		}
+	}
+	
+ 	var marker = new naver.maps.Marker({
+	    position: new naver.maps.LatLng(37.3595704, 127.105399),
+	    map: map
+	});
+
+	// 지도위 마커 표시해주는 함수
+	function drawNaverMarker(x, y, result) {
+		if(result){
+			marker.setMap(null);
+		}
+		marker = new naver.maps.Marker({
+			position : new naver.maps.LatLng(y, x),
+			map : map
+		});
+	}
+
+	// 노선그래픽 데이터를 이용하여 지도위 폴리라인 그려주는 함수
+	function drawNaverPolyLine(data) {
+		var lineArray;
+		for (var i = 0; i < data.result.lane.length; i++) {
+			for (var j = 0; j < data.result.lane[i].section.length; j++) {
+				lineArray = null;
+				lineArray = new Array();
+				for (var k = 0; k < data.result.lane[i].section[j].graphPos.length; k++) {
+					lineArray.push(new naver.maps.LatLng(
+							data.result.lane[i].section[j].graphPos[k].y,
+							data.result.lane[i].section[j].graphPos[k].x));
+				}
+
+				//지하철결과의 경우 노선에 따른 라인색상 지정하는 부분 (1,2호선의 경우만 예로 들음)
+				if (data.result.lane[i].type == 1) {
+					var polyline = new naver.maps.Polyline({
+						map : map,
+						path : lineArray,
+						strokeWeight : 3,
+						strokeColor : '#003499'
+					});
+				} else if (data.result.lane[i].type == 2) {
+					var polyline = new naver.maps.Polyline({
+						map : map,
+						path : lineArray,
+						strokeWeight : 3,
+						strokeColor : '#37b42d'
+					});
+				} else {
+					var polyline = new naver.maps.Polyline({
+						map : map,
+						path : lineArray,
+						strokeWeight : 3
+					});
+				}
 			}
 		}
 	}
