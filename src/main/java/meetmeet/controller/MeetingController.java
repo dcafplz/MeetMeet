@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import meetmeet.model.dto.MeetingDTO;
+import meetmeet.model.entity.Meeting;
 import meetmeet.service.MeetingService;
 
 @RestController
@@ -20,6 +21,16 @@ public class MeetingController {
 	@Autowired
 	private MeetingService meetingService;
 
+	@PostMapping("/create-meet")
+	public ModelAndView meetCreatePage(Model model) throws Exception {
+		
+		ModelAndView modelAndView = new ModelAndView();
+		System.out.println(model);
+		modelAndView.setViewName("createmeet.html");
+		
+		return modelAndView;
+	}
+	
 	@PostMapping("/meetmeet/create-meet")
 	public ModelAndView meetCreate(MeetingDTO meeting, Model model, MultipartFile file) throws Exception {
 
@@ -33,7 +44,7 @@ public class MeetingController {
 
 	@GetMapping("/meetmeet/detail")
 	public ModelAndView meetView(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file) throws Exception {
-
+		System.out.println(meetingId);
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("meetdetail.html");
 		modelAndView.addObject("meeting", meetingService.meetView(meetingId));
@@ -80,14 +91,13 @@ public class MeetingController {
 		return modelAndView;
 	}
 	
-//	@GetMapping("/getall")
-//	public ModelAndView getAll(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file) throws Exception {
-//
-//		ModelAndView modelAndView = new ModelAndView();
-//		modelAndView.setViewName("meetdetail.html");
-//		modelAndView.addObject("meeting", meetingService.meetView(meetingId));
-//
-//		return modelAndView;
-//	}
+	@GetMapping("/getall")
+	public Iterable<Meeting> getAll(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file) throws Exception {
+
+		Iterable<Meeting> i = meetingService.meetList();
+		System.out.println(i);
+
+		return i;
+	}
 
 }
