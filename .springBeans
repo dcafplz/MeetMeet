@@ -7,7 +7,14 @@
 	</configSuffixes>
 	<enableImports><![CDATA[false]]></enableImports>
 	<configs>
+<<<<<<< HEAD
 		<config>java:meetmeet.MeetMeetApplication</config>
+=======
+<<<<<<< HEAD
+		<config>java:meetmeet.MeetMeetApplication</config>
+=======
+>>>>>>> 786581eb55fffb82c73722630ad380c640916168
+>>>>>>> 9fe9137117702b39062f7012f6ae96b14e373f55
 	</configs>
 	<autoconfigs>
 	</autoconfigs>
