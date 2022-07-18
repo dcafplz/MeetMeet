@@ -1,9 +1,15 @@
 package meetmeet.controller;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,13 +52,7 @@ public class AccountController {
 		account.setPw(PwSecurity.hashing(account.getPw(), account.getHashSalt()));
 		Account accountEntity = modelMapper.map(account, Account.class);
 		dao.save(accountEntity);
-		if (preference != null) {
-			for(String s: preference) {
-				PreferenceDTO dto = PreferenceDTO.builder().category(s).accountId(account.getAccountId()).build();
-				Preference entity = modelMapper.map(dto, Preference.class);
-				pDao.save(entity);
-			}
-		}
+		if (preference != null) {savePreference(account.getAccountId(), preference);}
 		return "redirect:../login.html";
 	}
 	
@@ -69,21 +69,92 @@ public class AccountController {
 	}
 	
 	@PostMapping("account/login")
-	public ModelAndView login( String accountId, String pw) throws NoSuchAlgorithmException {
-		ModelAndView modelAndView = new ModelAndView();
-		
+	public String login(String accountId, String pw, HttpSession session) throws NoSuchAlgorithmException {
+			
 		Optional<Account> account = dao.findById(accountId);
 		try {
 			if(PwSecurity.checkPw(account.get(), pw)) {
-				modelAndView.setViewName("home.html");
-				modelAndView.addObject("account", modelMapper.map(account.get(), AccountDTO.class));
-				
-				return modelAndView;
+		        session.setAttribute("accountId", account.get().getAccountId());
+		        session.setAttribute("nickName", account.get().getNickName());
+				return "home";
+//		        return "redirect:../test.jsp";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return modelAndView;
+		return "redirect:login.html";
+	}
+	
+	@ResponseBody
+	@PostMapping("account/logincheck")
+	public String loginCheck(HttpSession session) {
+
+	    if (session != null) {
+	        return "Y";
+	    }
+
+	    return "N";
+	}
+	
+	@PostMapping("account/logout")
+	public String logout(HttpSession session) {
+
+	    if (session != null) {
+	        session.invalidate();   // 세션 날림
+	    }
+
+	    return "home.html";
 	}
 
+//	@PostMapping("account/findpw")
+//	public ModelAndView findPw(String pwQuestion, String accountId) {
+//		ModelAndView modelAndView = new ModelAndView();
+//		
+//		Optional<Account> account = dao.findById(accountId);
+//		try {
+//			if(account.get().getPwQuestion().equals(pwQuestion)) {
+//				modelAndView.setViewName("home.html");
+//				
+//				return modelAndView;
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		modelAndView.setViewName("mypage.html?command=mypw");
+//		return modelAndView;
+//	}
+	
+	@PostMapping("account/changepreference")
+	public ModelAndView changePreference(String accountId, @RequestParam(required = false) List<String> preference) throws NoSuchAlgorithmException {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("mypage.html?command=meettype");
+		
+		pDao.deleteByAccountId(accountId);
+		savePreference(accountId, preference);
+		
+		return modelAndView;
+	}
+	
+	public void savePreference(String accountid, List<String> preference) {
+		for(String s: preference) {
+			PreferenceDTO dto = PreferenceDTO.builder().category(s).accountId(accountid).build();
+			Preference entity = modelMapper.map(dto, Preference.class);
+			pDao.save(entity);
+		}
+	}
+	
+	@ResponseBody
+	@GetMapping("account/getpreference")
+	public List<String> getPreference(String accountId) {
+		List<Preference> dto = pDao.findByAccountId(accountId);
+		List<String> r = new ArrayList<>();
+		if (dto != null) {
+			for(Preference p: dto) {
+				r.add(p.getCategory());
+			}
+		}
+
+		return r;
+	}
+	
 }

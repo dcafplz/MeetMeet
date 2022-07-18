@@ -14,7 +14,7 @@
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
 	rel="stylesheet" />
 <!-- Core theme CSS (includes Bootstrap)-->
-<link href="css/styles_dh.css" rel="stylesheet" />
+<link href="../css/styles_dh.css" rel="stylesheet" />
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <style>
@@ -150,8 +150,10 @@
 
 
 <body>
+	<div th:if="${session.accountId == 'ffff'}">  id 넘어왔음  </div>
+	<div th:if="${session.nickName == '닉네임'}">  닉네임 넘어왔음 </div>
 	<!-- Navigation-->
-	<div w3-include-html="nav.html"></div>
+	<div th:insert="nav.html"></div>
 	<!-- Header-->
 	<header class="bg-dark py-5">
 		<div style="border: 1px solid red;">
@@ -523,12 +525,5 @@
 	      	
         </script>
         
-        <script th:inline="javascript">
-        /*<![CDATA[*/
-	   	 let file_path = /*[[ ${account} ]]*/;
-	   	 /*]]*/
-	   	 console.log(file_path);
-
-		</script>
 </body>
 </html>

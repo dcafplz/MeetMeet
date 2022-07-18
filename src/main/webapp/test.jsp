@@ -7,7 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-	${account}
-	${preference}
+	${sessionScope.account}
 </body>
 </html>
