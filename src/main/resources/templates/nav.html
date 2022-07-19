@@ -31,11 +31,13 @@
 				<li class="nav-item"><a class="nav-link"
 					href="../../friends.html?command=friendlist">Friends</a></li>
 				<li class="nav-item">
-					<form class="nav-link" action="/create-meet" method="post"
-					onclick="document.getElementById('makemeetButton').click()">Make Meet
-						<button class="btn btn-primary btn-xl" id="makemeetButton"
-								type="submit" style="display: none"></button>
-					</form>
+					<div th:if="${session.accountId != null}">
+						<form class="nav-link" action="/create-meet" method="post"
+						onclick="document.getElementById('makemeetButton').click()">Make Meet
+							<button class="btn btn-primary btn-xl" id="makemeetButton"
+									type="submit" style="display: none"></button>
+						</form>
+					</div>
 				</li>
 			</ul>
 			<!-- <form class="d-flex" action="로그인주소">

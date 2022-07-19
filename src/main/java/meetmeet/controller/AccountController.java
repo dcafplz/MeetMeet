@@ -122,7 +122,7 @@ public class AccountController {
 	        session.invalidate();   // 세션 날림
 	    }
 
-	    return "home.html";
+	    return "redirect:/tohome";
 	}
 
 	@PostMapping("account/changenickname")
