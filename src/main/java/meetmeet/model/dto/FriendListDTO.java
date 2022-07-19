@@ -14,7 +14,7 @@ import lombok.ToString;
 @ToString
 @Builder
 public class FriendListDTO {
-
+	private int id;
 	private AccountDTO id1;
 	private AccountDTO id2;
 

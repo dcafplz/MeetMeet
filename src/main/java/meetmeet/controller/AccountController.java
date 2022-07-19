@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import meetmeet.model.dao.AccountRepository;
@@ -108,6 +109,8 @@ public class AccountController {
 	    return "N";
 	}
 	
+<<<<<<< HEAD
+=======
 	@ResponseBody
 	@PostMapping("/getsession")
 	public String[] getSession(HttpSession session) {
@@ -115,6 +118,7 @@ public class AccountController {
 	}
 
 	
+>>>>>>> 46e5604c2a2df3d006296eeee5d272458de7a66a
 	@GetMapping("account/logout")
 	public String logout(HttpSession session) {
 
@@ -197,6 +201,27 @@ public class AccountController {
 
 		return r;
 	}
+	@ResponseBody
+	@GetMapping("searchUser")
+	public List<List<String>> searchUser(String searching){
+		System.out.println(searching);
+		List<Account> result = new ArrayList<Account>();
+		result= dao.findByNickNameContaining(searching);
+		List<List<String>> result2 = new ArrayList<List<String>>();
+		
+		for (Account i : result) {
+			AccountDTO j = new AccountDTO();
+			j = modelMapper.map(i,AccountDTO.class);
+			List<String> temp = new ArrayList<String>();
+			temp.add(j.getAccountId());
+			temp.add(j.getNickName());
+			result2.add(temp);
+		};
+		System.out.println(result2);
+		System.out.println("성공확인용");
+		return result2;
+	}
+	
 	
 	@GetMapping("/mypage/{page}")
 	public ModelAndView toMypage(HttpSession session, @PathVariable("page") String page) {
@@ -223,6 +248,26 @@ public class AccountController {
 	public String toAbout(HttpSession session) {
 		return "about";
 	}
+	
+	@GetMapping("/tofriends")
+	public String toFriends(HttpSession session, String command) throws NoSuchAlgorithmException {
+		System.out.println(command);
+		if (command.equals("friendlist")) {
+			System.out.println("friendlist확인용");
+			return "forward:friends.html?command=friendlist";
+		}else if (command.equals("addfriend")) {
+			System.out.println("addfriend확인용");
+			return "forward:friends.html?command=addfriend";
+		}else {
+			System.out.println("에러페이지로연결해주기!!");
+		}
+		return "friends"; //에러페이지러변경!!
+	}
 
+	@ResponseBody
+	@PostMapping("/getsession")
+	public String[] getSession(HttpSession session) {
+		return new String[] {session.getAttribute("accountId").toString(), session.getAttribute("nickName").toString()};
+	}
 	
 }

@@ -41,23 +41,23 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 		return result;
 	}
 
-	public String save(AccountDTO requestId, AccountDTO requestedId) {
-		System.out.println(requestId);
-		try {
-			Account account1 = modelMapper.map(requestId, Account.class);
-			Account account2 = modelMapper.map(requestedId, Account.class);
-			System.out.println(account1);
-//			FriendRequest friendRequest = new FriendRequest();
-//			friendRequest.setRequestId(account1);
-//			friendRequest.setRequestedId(account2);
-			FriendRequest friendRequest = modelMapper.map(requestedId, FriendRequest.class);
-			System.out.println(friendRequest);
-			friendRequestRepository.save(friendRequest);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "친구 신청에 실패했습니다";
-		}
-		return "친구 신청을 보냈습니다";
-	}
+//	public String save(AccountDTO requestId, AccountDTO requestedId) {
+//		System.out.println(requestId);
+//		try {
+//			Account account1 = modelMapper.map(requestId, Account.class);
+//			Account account2 = modelMapper.map(requestedId, Account.class);
+//			System.out.println(account1);
+////			FriendRequest friendRequest = new FriendRequest();
+////			friendRequest.setRequestId(account1);
+////			friendRequest.setRequestedId(account2);
+//			FriendRequest friendRequest = modelMapper.map(requestedId, FriendRequest.class);
+//			System.out.println(friendRequest);
+//			friendRequestRepository.save(friendRequest);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return "친구 신청에 실패했습니다";
+//		}
+//		return "친구 신청을 보냈습니다";
+//	}
 
 }

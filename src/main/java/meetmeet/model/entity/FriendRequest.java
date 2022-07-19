@@ -22,15 +22,15 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@IdClass(FriendRequestId.class)
 public class FriendRequest implements Serializable {
 	@Id
+	private int id;
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "request_id")
 	@JsonIgnore
 	private Account requestId;
 
-	@Id
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "requested_id")
 	@JsonIgnore
