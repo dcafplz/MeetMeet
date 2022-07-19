@@ -102,5 +102,19 @@ public class MeetingController {
 
 		return i;
 	}
+	
+	@PostMapping("/getone")
+	public MeetingDTO getAll(Long meetingId) throws Exception {	
+		return meetingService.meetView(meetingId);
+	}
+	
+	@PostMapping("/meetmeet/iswriter")
+	public boolean isWriter(MeetingDTO meeting, HttpServletRequest req) throws Exception {
+		if(req.getSession().getAttribute("accountId") != null) {
+			return req.getSession().getAttribute("accountId").equals(meeting.getMaster_id());
+		}else {
+			return false;
+		}
+	}
 
 }
