@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,17 +28,15 @@ public class MeetingController {
 	private MeetingService meetingService;
 
 	@PostMapping("/create-meet")
-	public ModelAndView meetCreatePage(Model model, HttpSession session) throws Exception {
+	public ModelAndView meetCreatePage(Model model, HttpSession session, HttpServletRequest req) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("createmeet.html");
-		
 		return modelAndView;
 	}
 	
 	@PostMapping("/meetmeet/create-meet")
 	public ModelAndView meetCreate(MeetingDTO meeting, Model model, MultipartFile file, HttpServletRequest req) throws Exception {
-//		System.out.println(req.getSession().getAttribute("account"));
-		meeting.setMaster_id(((AccountDTO) (req.getSession().getAttribute("account"))).getAccountId());
+		meeting.setMaster_id((String) req.getSession().getAttribute("accountId"));
 		ModelAndView modelAndView = new ModelAndView();
 		Long id = meetingService.meetCreate(meeting, file);
 		modelAndView.setViewName("redirect:../meetmeet/detail?meetingId=" + id);
@@ -91,7 +90,7 @@ public class MeetingController {
 	public ModelAndView meetDelete(Long meetingId) {
 		ModelAndView modelAndView = new ModelAndView();
 		meetingService.meetDelete(meetingId);
-		modelAndView.setViewName("redirect:../home.html");
+		modelAndView.setViewName("redirect:/tohome");
 		return modelAndView;
 	}
 	
