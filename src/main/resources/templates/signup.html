@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<title>빠르고 간편한 모임</title>
+<!-- Bootstrap Icons-->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+	rel="stylesheet" />
+<!-- Google fonts-->
+<link
+	href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700"
+	rel="stylesheet" />
+<link
+	href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic"
+	rel="stylesheet" type="text/css" />
+<!-- SimpleLightbox plugin CSS-->
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css"
+	rel="stylesheet" />
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="css/styles_jw.css" rel="stylesheet" />
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<!-- Contact-->
+<body>
+	<section class="page-section" id="contact">
+		<div class="container px-4 px-lg-5">
+			<div class="row gx-4 gx-lg-5 justify-content-center">
+				<div class="col-lg-8 col-xl-6 text-center">
+					<h2 class="mt-0">SIGN UP</h2>
+					<hr class="divider" />
+				</div>
+			</div>
+			<div class="row gx-4 gx-lg-5 justify-content-center mb-5">
+				<div class="col-lg-6">
+					<form id="signupform" action="account/signup" method="post">
+						<!-- ID input-->
+						<div class="form-floating mb-3">
+							<input class="form-control" name="accountId" id="id" type="text"
+								required minlength="4" maxlength="15" pattern="^[a-zA-Z0-9]+$"
+								onchange="idval()" /> <label for="id">ID</label>
+							<div class="id invalid-feedback">ID의 길이는 영문과 숫자만 사용 가능하며
+								4자이상 15자 이하여야 합니다.</div>
+							<div class="idd invalid-feedback" style="display: none">중복된
+								ID 입니다.</div>
+							<div class="id valid-feedback" style="display: none">사용 가능한
+								ID입니다.</div>
+						</div>
+						<!-- PW input-->
+						<div class="form-floating mb-3">
+							<input class="form-control" name="pw" id="pw" type="password"
+								required minlength="4" maxlength="15" onchange="pwval()" /> <label
+								for="pw">Password</label>
+							<div class="pw invalid-feedback">pw의 길이는 4자이상 15자 이하여야 합니다.</div>
+							<div class="pw valid-feedback" style="display: none">사용 가능한
+								pw입니다.</div>
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" id="pw2" type="password" required
+								minlength="4" maxlength="15" onchange="pw2val()" /> <label
+								for="pw2">Password confirm</label>
+							<div class="pw2 invalid-feedback">비밀번호 확인이 일치하지 않습니다.</div>
+							<div class="pw2 valid-feedback" style="display: none">비밀번호
+								확인이 일치합니다.</div>
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" name="pwQuestion" id="pwq"
+								type="text" required pattern="^[가-힣]+$" onchange="pwqval()" />
+							<label for="pwq">비밀번호 찾기 질문: 남들이 모르는 당신만의 은밀한 취미는?</label>
+							<div class="pwq invalid-feedback">한글로 입력해주세요</div>
+							<div class="pwq valid-feedback" style="display: none">정상입니다.</div>
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" name="nickName" id="nickname"
+								type="text" required pattern="^[a-zA-Z0-9ㄱ-ㅎ가-힣]+$"
+								onchange="nicknameval()" /> <label for="nickname">Nick
+								Name</label>
+							<div class="nickname invalid-feedback">특수문자는 사용할 수 없습니다.</div>
+							<div class="nickname valid-feedback" style="display: none">사용
+								가능한 닉네임 입니다.</div>
+						</div>
+						<div class="form-floating mb-3">
+							<input class="form-control" name="place" id="place" type="text"
+								required pattern="^[ㄱ-ㅎ|가-힣|0-9|]+$" onchange="placeval()" /> <label
+								for="place">Place</label>
+							<div class="place invalid-feedback">한글과 숫자만 입력 가능합니다.</div>
+							<div class="place valid-feedback" style="display: none">정상적인
+								장소입니다.</div>
+						</div>
+						<div>
+							선호하는 모임을 체크하세요 <br> <label class="form-check"><input
+								type="checkbox" name="preference" value="sports"> 스포츠</label> <label
+								class="form-check"><input type="checkbox"
+								name="preference" value="book"> 독서</label> <label
+								class="form-check"><input type="checkbox"
+								name="preference" value="game"> 게임</label> <label
+								class="form-check"><input type="checkbox"
+								name="preference" value="friendship"> 친목</label> <label
+								class="form-check"><input type="checkbox"
+								name="preference" value="movie"> 영화</label> <label
+								class="form-check"><input type="checkbox"
+								name="preference" value="pet"> 반려동물</label>
+						</div>
+						<div class="d-grid">
+							<button class="btn btn-primary btn-xl" id="singupButton"
+								type="submit" disabled="ture">sign up</button>
+						</div>
+
+					</form>
+				</div>
+			</div>
+			<div class="row gx-4 gx-lg-5 justify-content-center">
+				<div class="col-lg-4 text-center mb-5 mb-lg-0">
+					<i class="bi-phone fs-2 mb-3 text-muted"></i>
+					<div>+82 (02)123-4567</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Footer-->
+	<footer class="bg-light py-5">
+		<div class="container px-4 px-lg-5">
+			<div class="small text-center text-muted">Copyright &copy; 2022
+				- Company Name</div>
+		</div>
+	</footer>
+	<!-- Bootstrap core JS-->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+	<!-- SimpleLightbox plugin JS-->
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
+	<!-- Core theme JS-->
+	<script type="text/javascript">
+		let nums = new Array(6);
+		nums.fill(0);
+
+		function idval() {
+
+			var e = document.getElementById("id");
+			var ei = document.getElementsByClassName('id invalid-feedback');
+			var ei2 = document.getElementsByClassName('idd invalid-feedback');
+			var ev = document.getElementsByClassName('id valid-feedback');
+
+			axios.get("account/check", {
+				params : {
+					accountId : e.value
+				}
+			}).then(function(response) {
+				console.log();
+				if (e.checkValidity()) {
+					ev[0].style.display = "block";
+					ei[0].style.display = "none";
+					if (response.data == "Y") {
+						ev[0].style.display = "none";
+						ei2[0].style.display = "block";
+						nums[0] = 0;
+					} else {
+						ei2[0].style.display = "none";
+						nums[0] = 1;
+					}
+				} else {
+					ev[0].style.display = "none";
+					ei[0].style.display = "block";
+					nums[0] = 0;
+				}
+				;
+				val();
+			});
+
+		};
+
+		function pwval() {
+
+			var e = document.getElementById("pw");
+			var ei = document.getElementsByClassName('pw invalid-feedback');
+			var ev = document.getElementsByClassName('pw valid-feedback');
+
+			if (e.checkValidity()) {
+				ev[0].style.display = "block";
+				ei[0].style.display = "none";
+				nums[1] = 1;
+			} else {
+				ev[0].style.display = "none";
+				ei[0].style.display = "block";
+				nums[1] = 0;
+			}
+			;
+			val();
+		};
+
+		function pw2val() {
+
+			var e1 = document.getElementById("pw");
+			var e2 = document.getElementById("pw2");
+			var ei = document.getElementsByClassName('pw2 invalid-feedback');
+			var ev = document.getElementsByClassName('pw2 valid-feedback');
+
+			if (e1.value == e2.value) {
+				ev[0].style.display = "block";
+				ei[0].style.display = "none";
+				nums[2] = 1;
+			} else {
+				ev[0].style.display = "none";
+				ei[0].style.display = "block";
+				nums[2] = 0;
+			}
+			;
+			val();
+		};
+
+		function pwqval() {
+
+			var e = document.getElementById("pwq");
+			var ei = document.getElementsByClassName('pwq invalid-feedback');
+			var ev = document.getElementsByClassName('pwq valid-feedback');
+
+			if (e.checkValidity()) {
+				ev[0].style.display = "block";
+				ei[0].style.display = "none";
+				nums[3] = 1;
+			} else {
+				ev[0].style.display = "none";
+				ei[0].style.display = "block";
+				nums[3] = 0;
+			}
+			;
+			val();
+		};
+
+		function nicknameval() {
+
+			var e = document.getElementById("nickname");
+			var ei = document
+					.getElementsByClassName('nickname invalid-feedback');
+			var ev = document.getElementsByClassName('nickname valid-feedback');
+
+			if (e.checkValidity()) {
+				ev[0].style.display = "block";
+				ei[0].style.display = "none";
+				nums[4] = 1;
+			} else {
+				ev[0].style.display = "none";
+				ei[0].style.display = "block";
+				nums[4] = 0;
+			}
+			;
+			val();
+		};
+
+		function placeval() {
+
+			var e = document.getElementById("place");
+			var ei = document.getElementsByClassName('place invalid-feedback');
+			var ev = document.getElementsByClassName('place valid-feedback');
+
+			if (e.checkValidity()) {
+				ev[0].style.display = "block";
+				ei[0].style.display = "none";
+				nums[5] = 1;
+			} else {
+				ev[0].style.display = "none";
+				ei[0].style.display = "block";
+				nums[5] = 0;
+			}
+			;
+			val();
+		};
+
+		function val() {
+			var k = 1;
+			for (i = 0; i < 5; i++) {
+				if (nums[i] == 0) {
+					k = 0;
+					break;
+				}
+			}
+			if (k == 0) {
+				document.getElementById("singupButton").disabled = true;
+			} else {
+				document.getElementById("singupButton").disabled = false;
+			}
+			;
+		};
+	</script>
+
+</body>
+</html>
+
+

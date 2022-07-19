@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -34,7 +34,7 @@
                         <!-- To make this form functional, sign up at-->
                         <!-- https://startbootstrap.com/solution/contact-forms-->
                         <!-- to get an API token!-->
-                        <form id="loginform" action="account/login" method="post">
+                        <form id="loginform" action="login" method="post">
                             <!-- ID input-->
                             <div class="form-floating mb-3">
                                 <input class="form-control" name="accountId" id="id" type="text" required/>
@@ -50,8 +50,10 @@
                             <br>
                             <div class="d-grid"><button class="btn btn-primary btn-xl" id="signupButton" type="button" style="opacity:0.8" onclick="location.href='signup.html'">sign up</button></div>
                             <br>
-                            <div class="d-grid"><button class="btn btn-primary btn-xl" id="seekButton" type="button" style="opacity:0.6" onclick="location.href='home.html'">비회원으로 둘러보기</button></div>
-
+                            <form action="nonSign" method="get">
+                            	<!-- <div class="d-grid"><button class="btn btn-primary btn-xl" id="seekButton" type="button" style="opacity:0.6" onclick="location.href='home.html'">비회원으로 둘러보기</button></div> -->
+                            	<div class="d-grid"><input type="submit" class="btn btn-primary btn-xl" id="seekButton" type="button" style="opacity:0.6" ">비회원으로 둘러보기</button></div>
+							</form>
                         </div>
                 </div>
                 <div class="row gx-4 gx-lg-5 justify-content-center">

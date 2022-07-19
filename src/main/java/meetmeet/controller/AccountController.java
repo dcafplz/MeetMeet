@@ -68,7 +68,7 @@ public class AccountController {
 		return "Y";
 	}
 	
-	@PostMapping("account/login")
+	@PostMapping("login")
 	public String login(String accountId, String pw, HttpSession session) throws NoSuchAlgorithmException {
 			
 		Optional<Account> account = dao.findById(accountId);
@@ -83,6 +83,10 @@ public class AccountController {
 			e.printStackTrace();
 		}
 		return "redirect:login.html";
+	}
+	@GetMapping("nonSign")
+	public String nonSign(HttpSession session)  {
+		return "home";
 	}
 	
 	@ResponseBody

@@ -150,7 +150,11 @@
 
 
 <body>
+	<div th:if="${session.sessionTest == 'Y'}"> ???  </div>
+	<span th:text="${session.accountId}"></span>
+	
 	<div th:if="${session.accountId == 'ffff'}">  id 넘어왔음  </div>
+	<div th:if="${session.accountId == null}">  ????????  </div>
 	<div th:if="${session.nickName == '닉네임'}">  닉네임 넘어왔음 </div>
 	<!-- Navigation-->
 	<div th:insert="nav.html"></div>
@@ -285,7 +289,7 @@
 
 
             function plusSlides(n) {
-            	console.log("plusslide");
+            	//console.log("plusslide");
                 showSlides(slideIndex += n);
             }
 
@@ -307,13 +311,13 @@
 
             //pagination
             slides.forEach(function () {
-            	console.log("slide.foreach");
+            	//console.log("slide.foreach");
                 var li = document.createElement('li');
                 document.querySelector('#slider-pagination-wrap ul').appendChild(li);
             })
 
             function pagination() {
-            	console.log("pagination");
+            	//console.log("pagination");
                 var dots = document.querySelectorAll('#slider-pagination-wrap ul li');
                 dots.forEach(function (element) {
                     element.classList.remove('active');
@@ -323,7 +327,7 @@
 
             pagination();
             var autoSlider = setInterval(function () {
-            	console.log("autoslider");
+            	//console.log("autoslider");
                 plusSlides(1);
             }, 3000);
         </script>

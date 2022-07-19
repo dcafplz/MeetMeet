@@ -1,0 +1,4 @@
+spring :
+      web:
+        resources:
+          static-locations: classpath:/views/ , classpath:/templates/, classpath:/static/
