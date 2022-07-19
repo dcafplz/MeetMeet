@@ -37,14 +37,14 @@ public class FriendRequestController {
 		return result;
 	}
 
-	@PostMapping("save")
-	public String save(AccountDTO requestId, AccountDTO requestedId) {
-		String msg = "?";
-		requestId = AccountDTO.builder().accountId("1").pw("wer").hashSalt("12").pwQuestion("123").nickName("wqe")
-				.build();
-		requestedId = AccountDTO.builder().accountId("2").pw("wer").hashSalt("12").pwQuestion("123").nickName("wqe")
-				.build();
-		msg = friendRequestService.save(requestId, requestedId);
-		return msg;
-	}
+//	@PostMapping("post")
+//	public String save(AccountDTO requestId, AccountDTO requestedId) {
+//		String msg = "?";
+//		requestId = AccountDTO.builder().accountId("1").pw("wer").hashSalt("12").pwQuestion("123").nickName("wqe")
+//				.build();
+//		requestedId = AccountDTO.builder().accountId("2").pw("wer").hashSalt("12").pwQuestion("123").nickName("wqe")
+//				.build();
+//		msg = friendRequestService.save(requestId, requestedId);
+//		return msg;
+//	}
 }

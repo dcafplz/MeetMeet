@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cusotm Context Menu</title>
+    <style type="text/css">
+      html, body { height: 100%; }
+
+      .custom-context-menu {
+        position: absolute;
+        box-sizing: border-box;
+        min-height: 100px;
+        min-width: 200px;
+        background-color: #ffffff;
+        box-shadow: 0 0 1px 2px lightgrey;
+      }
+      
+      .custom-context-menu ul {
+        list-style: none;
+        padding: 0;
+        background-color: transparent;
+      }
+      
+      .custom-context-menu li {
+        padding: 3px 5px;
+        cursor: pointer;
+      }
+      
+      .custom-context-menu li:hover {
+        background-color: #f0f0f0;
+      }    
+    </style>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="http://gmail.com/">구글</a></li>
+        <li><a href="http://heodolf.tistory.com/">블로그</a></li>
+        <li><img src="https://tistory1.daumcdn.net/tistory/2803323/skin/images/img.jpg" width="100"></li>
+      </ul>
+    </nav>
+    <div id='dochi_context_menu' class="custom-context-menu" style="display: none;">
+      <ul>
+        <li><a>메뉴1</a></li>
+        <li><a>메뉴2</a></li>
+      </ul>
+    </div>
+    <script type="text/javascript">
+      // Context Menu 생성
+      function handleCreateContextMenu(event){
+        // 기본 Context Menu가 나오지 않게 차단
+        event.preventDefault();
+        
+        const ctxMenu = document.getElementById('dochi_context_menu');
+        
+        // 노출 설정
+        ctxMenu.style.display = 'block';
+        
+        // 위치 설정
+        ctxMenu.style.top = event.pageY+'px';
+        ctxMenu.style.left = event.pageX+'px';
+      }
+      
+      // Context Menu 제거
+      function handleClearContextMenu(event){
+        const ctxMenu = document.getElementById('dochi_context_menu');
+        
+        // 노출 초기화
+        ctxMenu.style.display = 'none';   
+        ctxMenu.style.top = null;
+        ctxMenu.style.left = null;
+      }
+      
+      // 이벤트 바인딩
+      document.addEventListener('contextmenu', handleCreateContextMenu, false);
+      document.addEventListener('click', handleClearContextMenu, false);
+    </script>
+  </body>
+</html>

@@ -20,16 +20,15 @@
 						Page</a>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<li><a class="dropdown-item"
-							href="../../mypage.html?command=meettype">선호모임 설정</a></li>
+							href="../../mypage.html?command=meettype">선호모임</a></li>
 						<li><hr class="dropdown-divider" /></li>
 						<li><a class="dropdown-item"
 							href="../../mypage.html?command=myinfo">개인정보 변경</a></li>
-						<li><a class="dropdown-item" href="../../mypage.html?command=mypw">패스워드
-								변경</a></li>
-						<li><a class="dropdown-item" href="../../mymeeting.jsp">내 모임 보기</a></li>
+						<li><a class="dropdown-item" href="../../mypage.html?command=mypw">패스워드 변경</a></li>
+						<li><a class="dropdown-item" href="../../mymeeting.jsp">내 모임</a></li>
 					</ul></li>
 				<li class="nav-item"><a class="nav-link"
-					href="../../friends.html?command=friendlist">Friends</a></li>
+					href="tofriends?command=friendlist">Friends</a></li>
 				<li class="nav-item">
 					<form class="nav-link" action="/create-meet" method="post"
 					onclick="document.getElementById('makemeetButton').click()">Make Meet
@@ -38,21 +37,21 @@
 					</form>
 				</li>
 			</ul>
-			<!-- <form class="d-flex" action="로그인주소">
+			<!-- <form class="d-flex" action="濡쒓렇�씤二쇱냼">
 			</form> -->
 			<div th:if="${session.accountId == null}">
-				<button class="btn " type="submit" name = "loginout"
+				<button class="btn " type="submit" name = "login"
 					onclick="location.href='/tologin'">로그인</button>
 				/
-				<button class="btn " type="submit" name = "loginout"
+				<button class="btn " type="submit" name = "signup"
 					onclick="location.href='signup.html'">회원가입</button>
 			</div>
 			<div th:if="${session.accountId != null}">
 				<button class="btn " type="submit" name = "logout"
-					onclick="location.href='login.html'">로그아웃</button>
+					onclick="location.href='account/logout'">로그아웃</button>
 			</div>
 			
-			<!-- <form class="d-flex" action="회원가입주소">
+			<!-- <form class="d-flex" action="�쉶�썝媛��엯二쇱냼">
 			</form> -->
 		</div>
 	</div>

@@ -14,7 +14,7 @@ import lombok.ToString;
 @Builder
 @ToString
 public class FriendRequestDTO {
-
+	private int id;
 	private AccountDTO requestId;
 	private AccountDTO requestedId;
 }
