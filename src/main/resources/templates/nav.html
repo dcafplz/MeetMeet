@@ -2,7 +2,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
 	<div class="container px-4 px-lg-5">
 		<p class="navbar-brand" style="margin: auto; font-size: 23px;"
-			onclick="location.href='../../home.html'">밋밋</p>
+			onclick="location.href='/tohome'">밋밋</p>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
 			data-bs-target="#navbarSupportedContent"
 			aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -12,8 +12,8 @@
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			<ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
 				<li class="nav-item"><a class="nav-link" aria-current="page"
-					href="../../home.html">Home</a></li>
-				<li class="nav-item"><a class="nav-link" href="../../about.html">About</a></li>
+					href="/tohome">Home</a></li>
+				<li class="nav-item"><a class="nav-link" href="toabout">About</a></li>
 				<li class="nav-item dropdown"><a
 					class="nav-link dropdown-toggle" id="navbarDropdown" href="#"
 					role="button" data-bs-toggle="dropdown" aria-expanded="false">My
@@ -40,21 +40,20 @@
 			</ul>
 			<!-- <form class="d-flex" action="로그인주소">
 			</form> -->
-			<button class="btn " type="submit" name = "loginout"
-				onclick="location.href='login.html'">로그인</button>
-			/
-			<button class="btn " type="submit" name = "loginout"
-				onclick="location.href='signup.html'">회원가입</button>
-			
-			<button class="btn " type="submit" name = "logout"
-				onclick="location.href='login.html'">로그아웃</button>
+			<div th:if="${session.accountId == null}">
+				<button class="btn " type="submit" name = "loginout"
+					onclick="location.href='/tologin'">로그인</button>
+				/
+				<button class="btn " type="submit" name = "loginout"
+					onclick="location.href='signup.html'">회원가입</button>
+			</div>
+			<div th:if="${session.accountId != null}">
+				<button class="btn " type="submit" name = "logout"
+					onclick="location.href='login.html'">로그아웃</button>
+			</div>
 			
 			<!-- <form class="d-flex" action="회원가입주소">
 			</form> -->
 		</div>
 	</div>
-<<<<<<< HEAD
-	
-=======
-	
->>>>>>> a9c285ee90655247137e4224536137d400fb6289
+</nav>

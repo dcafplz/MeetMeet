@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport"
@@ -18,7 +18,7 @@
 </head>
 <body>
 	<!-- Navigation-->
-	<div w3-include-html="nav.html"></div>
+	<div th:insert="nav.html"></div>
 	<!-- Header-->
 	<div
 		style="border: 1px solid black; height: 300px; padding-left: 50px; padding-bottom: 20px; display: flex; align-items: flex-end;">

@@ -161,4 +161,20 @@ public class AccountController {
 		return r;
 	}
 	
+	@GetMapping("/tohome")
+	public String toHome(HttpSession session) throws NoSuchAlgorithmException {
+		return "home";
+	}
+	
+	@GetMapping("/tologin")
+	public String toLogin(HttpSession session) throws NoSuchAlgorithmException {
+		return "login";
+	}
+	
+	@GetMapping("/toabout")
+	public String toAbout(HttpSession session) throws NoSuchAlgorithmException {
+		return "about";
+	}
+
+	
 }
