@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport"
@@ -14,68 +14,76 @@
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
 	rel="stylesheet" />
 <!-- Core theme CSS (includes Bootstrap)-->
-<link href="css/styles_dh.css" rel="stylesheet" />
+<link href="css/styles_jw.css" rel="stylesheet" />
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
 	<!-- Navigation-->
 	<div w3-include-html="nav.html"></div>
 	<!-- Header-->
-	<div
-		style="border: 1px solid black; height: 300px; text-align: center;">
-		<img alt="??" src="images/보안이미지.png" style="height: 100%;">
-	</div>
 	<!-- Section-->
-	<div style="border: 1px solid red; display: flex;">
-		<div style="border: 1px solid black; width: 20%; height: 100px;">
-			내 정보 <br> <a href="mypage.html?command=meettype">선호모임 설정</a><br>
-			<a href="mypage.html?command=myinfo">개인정보 변경</a><br> <a
-				href="mypage.html?command=mypw">패스워드 찾기</a><br>
-		</div>
+	<div style="border: 1px solid red; display: block">
+		<button class="btn btn-primary" type="button" style="opacity: 0.8"
+			onclick="sectionDiv(1)">선호모임 변경</button>
+		<button class="btn btn-primary" type="button" style="opacity: 0.8"
+			onclick="sectionDiv(2)">개인정보 변경</button>
+		<button class="btn btn-primary" type="button" style="opacity: 0.8"
+			onclick="sectionDiv(3)">비밀번호 변경</button>
 
 		<div id="changing1"
-			style="border: 1px solid black; width: 60%; height: 700px; display: none;">
+			style="border: 1px solid black; width: 80%; height: 700px; display: none">
 
 			<div>
-				<form action="">
-					선호하는 모임을 체크하세요 <br> <label><input name="preference" type="checkbox"
-						value="sports" onclick="cb(1)"> 스포츠</label>
+				<form action="account/changepreference">
+					선호하는 모임을 체크하세요 <br> <label><input name="preference"
+						type="checkbox" value="sports" onclick="cb(1)"> 스포츠</label>
 					<div id="1" style="display: none;">
 						<b>변경됨</b>
 					</div>
-					<br> <label><input name="preference" type="checkbox" value="book"
-						onclick="cb(2)" > 독서</label>
+					<br> <label><input name="preference" type="checkbox"
+						value="book" onclick="cb(2)"> 독서</label>
 					<div id="2" style="display: none;">
 						<b>변경됨</b>
 					</div>
-					<br> <label><input name="preference" type="checkbox" value="game"
-						onclick="cb(3)"> 게임</label>
+					<br> <label><input name="preference" type="checkbox"
+						value="game" onclick="cb(3)"> 게임</label>
 					<div id="3" style="display: none;">
 						<b>변경됨</b>
 					</div>
-					<br> <label><input name="preference" type="checkbox" value="friendship"
-						onclick="cb(4)"> 친목</label>
+					<br> <label><input name="preference" type="checkbox"
+						value="friendship" onclick="cb(4)"> 친목</label>
 					<div id="4" style="display: none;">
 						<b>변경됨</b>
 					</div>
-					<br> <label><input name="preference" type="checkbox" value="movie"
-						onclick="cb(5)"> 영화</label>
+					<br> <label><input name="preference" type="checkbox"
+						value="movie" onclick="cb(5)"> 영화</label>
 					<div id="5" style="display: none;">
 						<b>변경됨</b>
 					</div>
-					<br> <label><input name="preference" type="checkbox" value="pet"
-						onclick="cb(6)"> 반려동물</label>
+					<br> <label><input name="preference" type="checkbox"
+						value="pet" onclick="cb(6)"> 반려동물</label>
 					<div id="6" style="display: none;">
 						<b>변경됨</b>
 					</div>
 					<br> <input type="submit" value="변경하기">
 				</form>
 			</div>
-			<script th:inline="javascript">
-		        /*<![CDATA[*/
-			   	 let account = /*[[ ${account} ]]*/;
-			   	 /*]]*/
-			
-				function cb(n){
+
+			<script>
+				axios.get("account/getpreference").then(function(response) {
+					const checked = response.data;
+					var chbox = document.getElementsByName("preference");
+					for (i in chbox) {
+						var s = chbox[i].value;
+						if (checked.indexOf(s) >= 0) {
+							chbox[i].checked = true;
+						}
+						;
+					}
+					;
+				});
+
+				function cb(n) {
 					const c = document.getElementById(n);
 					console.log(c);
 					console.log(c.style.display);
@@ -85,44 +93,152 @@
 						c.style.display = "none";
 					}
 				}
-				
-				axios.get("account/getpreference", {
-					params : {
-						accountId : account.accountId
-					}
-				}).then(function(response) {
-						console.log(response);
-						ch = Document.getElementsByName("preference");
-						console.log(ch);
-				});
-				
 			</script>
 
 
 		</div>
 		<div id="changing2"
-			style="border: 1px solid black; width: 60%; height: 700px; display: none;">
-			<form action="@@@주소@@@">
-				아이디 : <input type="text" name="id" value="원래아이디"><br>
-				닉네임 : <input type="text" name="nickname" value="원래닉네임"><br>
-				<input type="submit" value="변경하기">
+			style="border: 1px solid black; height: 700px; display: none;">
+			<form action="account/changenickname" method="post">
+				<div class="form-floating mb-3">
+					<input class="form-control" name="nickName" id="nickNameChange"
+						type="text" required pattern="^[a-zA-Z0-9ㄱ-ㅎ가-힣]+$"
+						onchange="nicknameval()" /> <label for="nickname">Nick
+						Name</label>
+					<div class="nickname invalid-feedback">특수문자는 사용할 수 없습니다.</div>
+					<div class="nickname valid-feedback" style="display: none">사용
+						가능한 닉네임 입니다.</div>
+				</div>
+				<div class="d-grid">
+				<button class="btn btn-primary btn-xl" id="nickNameChangeButton"
+					type="submit" disabled="ture">변경하기</button>
+			</div>
 			</form>
+
 		</div>
+
+		<script type="text/javascript">
+			function nicknameval() {
+
+				var e = document.getElementById("nickNameChange");
+				var ei = document
+						.getElementsByClassName('nickname invalid-feedback');
+				var ev = document
+						.getElementsByClassName('nickname valid-feedback');
+
+				if (e.checkValidity()) {
+					ev[0].style.display = "block";
+					ei[0].style.display = "none";
+					document.getElementById("nickNameChangeButton").disabled = false;
+				} else {
+					ev[0].style.display = "none";
+					ei[0].style.display = "block";
+					document.getElementById("nickNameChangeButton").disabled = true;
+				}
+				;
+			};
+		</script>
+
+		<script type="text/javascript">
+			axios
+					.post("getsession")
+					.then(
+							function(response) {
+								console.log(response);
+								/* document.getElementById("idchange").value = response.data[0]; */
+								document.getElementById("nickNameChange").value = response.data[1];
+							});
+		</script>
+
 		<div id="changing3"
-			style="border: 1px solid black; width: 60%; height: 700px; display: none;">
+			style="border: 1px solid black; height: 700px; display: none;">
 
-			<form action="qeqeeqwe12331">
-				비밀번호 찾기 질문 : 남들이 모르는 당신만의 은밀한 취미는?<br> <input type="text"
-					size=100><br> <input type="submit" value="제출하기">
+			<form id="signupform" action="account/changepw" method="post">
+				<div class="form-floating mb-3">
+					<input class="form-control" name="pw" id="pw" type="password"
+						required minlength="4" maxlength="15" onchange="pwval()" /> <label
+						for="pw">Password</label>
+					<div class="pw invalid-feedback">pw의 길이는 4자이상 15자 이하여야 합니다.</div>
+					<div class="pw valid-feedback" style="display: none">사용 가능한
+						pw입니다.</div>
+				</div>
+				<div class="form-floating mb-3">
+					<input class="form-control" id="pw2" type="password" required
+						minlength="4" maxlength="15" onchange="pw2val()" /> <label
+						for="pw2">Password confirm</label>
+					<div class="pw2 invalid-feedback">비밀번호 확인이 일치하지 않습니다.</div>
+					<div class="pw2 valid-feedback" style="display: none">비밀번호
+						확인이 일치합니다.</div>
+				</div>
+				<div class="d-grid">
+					<button class="btn btn-primary btn-xl" id="changePwButton"
+						type="submit" disabled="ture">변경하기</button>
+				</div>
 			</form>
-
-
 		</div>
+
+		<script type="text/javascript">
+			let nums = new Array(2);
+			nums.fill(0);
+
+			function pwval() {
+
+				var e = document.getElementById("pw");
+				var ei = document.getElementsByClassName('pw invalid-feedback');
+				var ev = document.getElementsByClassName('pw valid-feedback');
+
+				if (e.checkValidity()) {
+					ev[0].style.display = "block";
+					ei[0].style.display = "none";
+					nums[0] = 1;
+				} else {
+					ev[0].style.display = "none";
+					ei[0].style.display = "block";
+					nums[0] = 0;
+				}
+				;
+				val();
+			};
+
+			function pw2val() {
+
+				var e1 = document.getElementById("pw");
+				var e2 = document.getElementById("pw2");
+				var ei = document
+						.getElementsByClassName('pw2 invalid-feedback');
+				var ev = document.getElementsByClassName('pw2 valid-feedback');
+
+				if (e1.value == e2.value) {
+					ev[0].style.display = "block";
+					ei[0].style.display = "none";
+					nums[1] = 1;
+				} else {
+					ev[0].style.display = "none";
+					ei[0].style.display = "block";
+					nums[1] = 0;
+				}
+				;
+				val();
+			};
+
+			function val() {
+				var k = 1;
+				for (i = 0; i < 2; i++) {
+					if (nums[i] == 0) {
+						k = 0;
+						break;
+					}
+				}
+				if (k == 0) {
+					document.getElementById("changePwButton").disabled = true;
+				} else {
+					document.getElementById("changePwButton").disabled = false;
+				}
+				;
+			};
+		</script>
 
 	</div>
-
-
-
 
 
 	<!-- Footer-->
@@ -135,27 +251,17 @@
 	<!-- Bootstrap core JS-->
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-	<!-- Core theme JS-->
-	<script src="js/scripts.js"></script>
 
-	<script>
-		sectionDiv();
-		function sectionDiv() {
-			let query = window.location.search;
-			let param = new URLSearchParams(query);
-			let command = param.get('command');
+	<script th:inline="javascript">
+		const urlParams = new URL(location.href).searchParams;
+		const a = urlParams.get('page');
+
+		sectionDiv(a);
+		function sectionDiv(a) {
 			document.getElementById("changing1").style.display = "none";
 			document.getElementById("changing2").style.display = "none";
 			document.getElementById("changing3").style.display = "none";
-			if (command == "meettype") {
-				document.getElementById("changing1").style.display = "block";
-			} else if (command == "myinfo") {
-				document.getElementById("changing2").style.display = "block";
-			} else if (command == "mypw") {
-				document.getElementById("changing3").style.display = "block";
-			} else {
-				console.log("오류발생!!!");
-			}
+			document.getElementById("changing" + a).style.display = "block";
 		}
 	</script>
 	<script>

@@ -36,8 +36,7 @@ public class MeetingController {
 	
 	@PostMapping("/meetmeet/create-meet")
 	public ModelAndView meetCreate(MeetingDTO meeting, Model model, MultipartFile file, HttpServletRequest req) throws Exception {
-//		System.out.println(req.getSession().getAttribute("account"));
-		meeting.setMaster_id(((AccountDTO) (req.getSession().getAttribute("account"))).getAccountId());
+		meeting.setMaster_id((String) req.getSession().getAttribute("accountId"));
 		ModelAndView modelAndView = new ModelAndView();
 		Long id = meetingService.meetCreate(meeting, file);
 		modelAndView.setViewName("redirect:../meetmeet/detail?meetingId=" + id);
@@ -45,6 +44,7 @@ public class MeetingController {
 
 		return modelAndView;
 	}
+
 
 	@GetMapping("/meetmeet/detail")
 	public ModelAndView meetView(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file) throws Exception {

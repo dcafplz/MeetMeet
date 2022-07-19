@@ -25,6 +25,8 @@
 <!-- Core theme CSS (includes Bootstrap)-->
 <link href="css/styles_jw.css" rel="stylesheet" />
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script
+	src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k7j0ig44z6&submodules=geocoder"></script>
 </head>
 <!-- Contact-->
 <body>
@@ -54,8 +56,8 @@
 						<!-- PW input-->
 						<div class="form-floating mb-3">
 							<input class="form-control" name="pw" id="pw" type="password"
-								required minlength="4" maxlength="15" onchange="pwval()" /> <label
-								for="pw">Password</label>
+								required minlength="4" maxlength="15" onchange="valc(1, 'pw')" />
+							<label for="pw">Password</label>
 							<div class="pw invalid-feedback">pw의 길이는 4자이상 15자 이하여야 합니다.</div>
 							<div class="pw valid-feedback" style="display: none">사용 가능한
 								pw입니다.</div>
@@ -70,27 +72,32 @@
 						</div>
 						<div class="form-floating mb-3">
 							<input class="form-control" name="pwQuestion" id="pwq"
-								type="text" required pattern="^[가-힣]+$" onchange="pwqval()" />
-							<label for="pwq">비밀번호 찾기 질문: 남들이 모르는 당신만의 은밀한 취미는?</label>
+								type="text" required pattern="^[가-힣]+$"
+								onchange="valc(3, 'pwq')" /> <label for="pwq">비밀번호 찾기
+								질문: 남들이 모르는 당신만의 은밀한 취미는?</label>
 							<div class="pwq invalid-feedback">한글로 입력해주세요</div>
 							<div class="pwq valid-feedback" style="display: none">정상입니다.</div>
 						</div>
 						<div class="form-floating mb-3">
 							<input class="form-control" name="nickName" id="nickname"
 								type="text" required pattern="^[a-zA-Z0-9ㄱ-ㅎ가-힣]+$"
-								onchange="nicknameval()" /> <label for="nickname">Nick
+								onchange="valc(4, 'nickname')" /> <label for="nickname">Nick
 								Name</label>
 							<div class="nickname invalid-feedback">특수문자는 사용할 수 없습니다.</div>
 							<div class="nickname valid-feedback" style="display: none">사용
 								가능한 닉네임 입니다.</div>
 						</div>
 						<div class="form-floating mb-3">
-							<input class="form-control" name="place" id="place" type="text"
-								required pattern="^[ㄱ-ㅎ|가-힣|0-9|]+$" onchange="placeval()" /> <label
-								for="place">Place</label>
-							<div class="place invalid-feedback">한글과 숫자만 입력 가능합니다.</div>
+							<input class="form-control" name="placeName" id="place"
+								type="text" required pattern="^[ㄱ-ㅎ|가-힣|0-9|]+$"
+								onchange="valc(5, 'place'); searchAddressToCoordinate(this.value)" />
+							<label for="place">Place</label>
+							<div class="place invalid-feedback">도로명이나 지번주소를 입력해주세요, 한글과
+								숫자만 입력 가능합니다</div>
 							<div class="place valid-feedback" style="display: none">정상적인
 								장소입니다.</div>
+							<input type="hidden" id="lat" value="" name="lat"> <input
+								type="hidden" id="lng" value="" name="lng">
 						</div>
 						<div>
 							선호하는 모임을 체크하세요 <br> <label class="form-check"><input
@@ -137,6 +144,36 @@
 		src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
 	<!-- Core theme JS-->
 	<script type="text/javascript">
+		function searchAddressToCoordinate(arr) {
+			naver.maps.Service.geocode({
+				address : arr
+			}, function(status, response) {
+				if (status !== naver.maps.Service.Status.OK) {
+					console.log('error');
+				}
+
+				var result = response.result, items = result.items;
+				var ei = document
+						.getElementsByClassName('place invalid-feedback');
+				var ev = document
+						.getElementsByClassName('place valid-feedback');
+				console.log(items);
+				if (items.length == 0) {
+					ev[0].style.display = "none";
+					ei[0].style.display = "block";
+
+				} else {
+					document.getElementById("lat").value = items[0].point.x;
+					document.getElementById("lng").value = items[0].point.y;
+					ev[0].style.display = "block";
+					ei[0].style.display = "none";
+
+				}
+				;
+			});
+			val();
+		};
+
 		let nums = new Array(6);
 		nums.fill(0);
 
@@ -175,20 +212,20 @@
 
 		};
 
-		function pwval() {
+		function valc(i, s) {
 
-			var e = document.getElementById("pw");
-			var ei = document.getElementsByClassName('pw invalid-feedback');
-			var ev = document.getElementsByClassName('pw valid-feedback');
+			var e = document.getElementById(s);
+			var ei = document.getElementsByClassName(s + ' invalid-feedback');
+			var ev = document.getElementsByClassName(s + ' valid-feedback');
 
 			if (e.checkValidity()) {
 				ev[0].style.display = "block";
 				ei[0].style.display = "none";
-				nums[1] = 1;
+				nums[i] = 1;
 			} else {
 				ev[0].style.display = "none";
 				ei[0].style.display = "block";
-				nums[1] = 0;
+				nums[i] = 0;
 			}
 			;
 			val();
@@ -209,64 +246,6 @@
 				ev[0].style.display = "none";
 				ei[0].style.display = "block";
 				nums[2] = 0;
-			}
-			;
-			val();
-		};
-
-		function pwqval() {
-
-			var e = document.getElementById("pwq");
-			var ei = document.getElementsByClassName('pwq invalid-feedback');
-			var ev = document.getElementsByClassName('pwq valid-feedback');
-
-			if (e.checkValidity()) {
-				ev[0].style.display = "block";
-				ei[0].style.display = "none";
-				nums[3] = 1;
-			} else {
-				ev[0].style.display = "none";
-				ei[0].style.display = "block";
-				nums[3] = 0;
-			}
-			;
-			val();
-		};
-
-		function nicknameval() {
-
-			var e = document.getElementById("nickname");
-			var ei = document
-					.getElementsByClassName('nickname invalid-feedback');
-			var ev = document.getElementsByClassName('nickname valid-feedback');
-
-			if (e.checkValidity()) {
-				ev[0].style.display = "block";
-				ei[0].style.display = "none";
-				nums[4] = 1;
-			} else {
-				ev[0].style.display = "none";
-				ei[0].style.display = "block";
-				nums[4] = 0;
-			}
-			;
-			val();
-		};
-
-		function placeval() {
-
-			var e = document.getElementById("place");
-			var ei = document.getElementsByClassName('place invalid-feedback');
-			var ev = document.getElementsByClassName('place valid-feedback');
-
-			if (e.checkValidity()) {
-				ev[0].style.display = "block";
-				ei[0].style.display = "none";
-				nums[5] = 1;
-			} else {
-				ev[0].style.display = "none";
-				ei[0].style.display = "block";
-				nums[5] = 0;
 			}
 			;
 			val();

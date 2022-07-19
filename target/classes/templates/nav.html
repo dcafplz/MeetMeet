@@ -20,11 +20,11 @@
 						Page</a>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<li><a class="dropdown-item"
-							href="../../mypage.html?command=meettype">선호모임 설정</a></li>
+							href="/mypage/1">선호모임 설정</a></li>
 						<li><hr class="dropdown-divider" /></li>
 						<li><a class="dropdown-item"
-							href="../../mypage.html?command=myinfo">개인정보 변경</a></li>
-						<li><a class="dropdown-item" href="../../mypage.html?command=mypw">패스워드
+							href="/mypage/2">개인정보 변경</a></li>
+						<li><a class="dropdown-item" href="/mypage/3">패스워드
 								변경</a></li>
 						<li><a class="dropdown-item" href="../../mymeeting.jsp">내 모임 보기</a></li>
 					</ul></li>
@@ -49,7 +49,7 @@
 			</div>
 			<div th:if="${session.accountId != null}">
 				<button class="btn " type="submit" name = "logout"
-					onclick="location.href='login.html'">로그아웃</button>
+					onclick="location.href='/account/logout'">로그아웃</button>
 			</div>
 			
 			<!-- <form class="d-flex" action="회원가입주소">

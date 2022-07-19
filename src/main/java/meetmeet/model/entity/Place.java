@@ -20,6 +20,6 @@ public class Place {
 	private long placeId;
 	private String accountId;
 	private String placeName;
-	private double xCoordinate;
-	private double yCoordinate;
+	private double lat;
+	private double lng;
 }
