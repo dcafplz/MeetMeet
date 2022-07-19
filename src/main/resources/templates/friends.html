@@ -22,12 +22,11 @@
 	<!-- Header-->
 	<div
 		style="border: 1px solid black; height: 300px; padding-left: 50px; padding-bottom: 20px; display: flex; align-items: flex-end;">
-		<div style="border: 3px solid green; width: 250px; height: 250px;">
-			<img alt="?" src="images/프로필1.png"
-				style="max-width: 250px; max-height: 250px; width:244px; height:244px; object-fit: cover;">
+		<div id="myProfile" style="border: 3px solid green; width: 250px; height: 250px;">
+			
 		</div>
-		<div style="margin: 10px;">
-			<span style="font-size: 25px;"><b>아이유</b></span>
+		<div id="myProfileName" style="margin: 10px;">
+			<span style="font-size: 25px;"></span>
 		</div>
 	</div>
 	<!-- Section-->
@@ -42,30 +41,6 @@
 		<div id="changing1"
 			style="border: 1px solid black; width: 60%; height: 1200px; display: none; flex-wrap: wrap;">
 
-			<div style="border: 1px solid blue; width: 240px; height: 300px;">
-				친구1</div>
-			<div style="border: 1px solid blue; width: 240px; height: 300px;">
-				?</div>
-			<div style="border: 1px solid blue; width: 240px; height: 300px;">
-				?</div>
-			<div style="border: 1px solid blue; width: 240px; height: 300px;">
-				?</div>
-			<div style="border: 1px solid blue; width: 240px; height: 300px;">
-				?</div>
-			<div style="border: 1px solid blue; width: 240px; height: 300px;">
-				?</div>
-			<div style="border: 1px solid blue; width: 240px; height: 300px;">
-				?</div>
-			<div style="border: 1px solid blue; width: 240px; height: 300px;">
-				?</div>
-			<div style="border: 1px solid blue; width: 240px; height: 300px;">
-				?</div>
-			<div style="border: 1px solid blue; width: 240px; height: 300px;">
-				?</div>
-			<div style="border: 1px solid blue; width: 240px; height: 300px;">
-				?</div>
-			<div style="border: 1px solid blue; width: 240px; height: 300px;">
-				?</div>
 		</div>
 
 
@@ -167,5 +142,45 @@
 			}
 		}
 	</script>
+	<script>
+	const User = "a1234";/* 세션에서 내 아이디 받아오기 */
+	const Username = "표시해줄닉넴"; //이거도 세션에서받아오기
+	showMe();
+	function showMe(){
+		console.log("내프로필띄우기");
+		var profilebox = document.getElementById("myProfile");
+		console.log(profilebox);
+		console.log(User);
+		console.log(Username);
+		profilebox.innerHTML = `<img src="../images/profile/${User}_profile.png" alt="" style="width:235px; height:235px; max-width: 235px; max-height: 235px;object-fit: cover;">`;
+		var namebox = document.getElementById("myProfileName");
+		namebox.innerHTML = `${Username}`;
+	} 
+	showFriends();
+	function showFriends(){
+		console.log("비동기실행확인");
+		console.log("사용중유저 : " + User);
+		const xhttp = new XMLHttpRequest();
+		xhttp.onload = function() {
+			let res_data = this.responseText;
+			let data = JSON.parse(res_data);
+			var div = document.getElementById("changing1");
+			console.log(div);
+			div.innerHTML = "";
+			for (i in data){
+				div.innerHTML += `<div style="border: 1px solid blue; width: 240px; height: 300px;">
+				<img src="images/profile/${data[i][0]}_profile.png" alt="" style="width:235px; height:235px;
+				max-width: 235px; max-height: 235px;"><br>
+				닉네임 : ${data[i][1]}<br>
+				아이디 : ${data[i][0]}</div>`;
+			}
+			
+		}
+		xhttp.open("get", `friendlist/findFriendListById1?id1=${User}`, true);
+		xhttp.setRequestHeader("Content-type",
+				"application/x-www-form-urlencoded;charset=UTF-8");
+		xhttp.send();
+	}
+</script>
 </body>
 </html>
