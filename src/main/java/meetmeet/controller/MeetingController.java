@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,10 +28,9 @@ public class MeetingController {
 	private MeetingService meetingService;
 
 	@PostMapping("/create-meet")
-	public ModelAndView meetCreatePage(Model model, HttpSession session) throws Exception {
+	public ModelAndView meetCreatePage(Model model, HttpSession session, HttpServletRequest req) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("createmeet.html");
-		
 		return modelAndView;
 	}
 	
@@ -91,7 +91,7 @@ public class MeetingController {
 	public ModelAndView meetDelete(Long meetingId) {
 		ModelAndView modelAndView = new ModelAndView();
 		meetingService.meetDelete(meetingId);
-		modelAndView.setViewName("redirect:../home.html");
+		modelAndView.setViewName("redirect:/tohome");
 		return modelAndView;
 	}
 	
@@ -102,6 +102,20 @@ public class MeetingController {
 		System.out.println(i);
 
 		return i;
+	}
+	
+	@PostMapping("/getone")
+	public MeetingDTO getAll(Long meetingId) throws Exception {	
+		return meetingService.meetView(meetingId);
+	}
+	
+	@PostMapping("/meetmeet/iswriter")
+	public boolean isWriter(MeetingDTO meeting, HttpServletRequest req) throws Exception {
+		if(req.getSession().getAttribute("accountId") != null) {
+			return req.getSession().getAttribute("accountId").equals(meeting.getMaster_id());
+		}else {
+			return false;
+		}
 	}
 
 }

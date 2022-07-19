@@ -8,17 +8,42 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script
 	src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=k7j0ig44z6&submodules=geocoder"></script>
-<link href="../../css/styles_jw.css" rel="stylesheet" />
+<link href="../css/styles_jw.css" rel="stylesheet" />
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<style>
+</style>
 <body>
 	<div th:insert="nav.html"></div>
 	<section class="page-section" id="contact">
-		<div class="row gx-4 gx-lg-5 justify-content-center">
-			<div class="col-lg-8 col-xl-6 text-center" style="display: flex; flex-direction: row;">
-				<div class="mt-0" th:text="${meeting.meetingName}"></div>
-				<div class="mt-0" th:text="${meeting.meetingPlace}"></div>
-				<div class="mt-0" id="dateFrom" th:text="${meeting.meetingStartDate}"></div>
-				<div class="mt-0" id="dateEnd" th:text="${meeting.meetingEndDate}"></div>
-			</div>
+		<div class="row gx-4 gx-lg-5 justify-content-center" style="display: flex; flex-direction: column; align-content: center;">
+			<table border="1" style="width: 660px; align-content: center;">
+				<th>
+                    <div class="" th:text="모임이름"></div>
+                </th>
+				<th>
+                    <div th:text="모임장소"></div>
+                </th>
+                <th>
+                    <div th:text="모임시작"></div>
+                </th>
+               	<th>
+                    <div th:text="모임끝"></div>
+                </th>
+                <tr>
+                	<td>
+                    	<div class="" th:text="${meeting.meetingName}"></div>
+	                </td>
+					<td>
+	                    <div th:text="${meeting.meetingPlace}"></div>
+	                </td>
+	                <td>
+	                    <div th:text="${meeting.meetingStartDate}"></div>
+	                </td>
+	               	<td>
+	                    <div th:text="${meeting.meetingEndDate}"></div>
+	                </td>
+				</tr>
+			</table>
 		</div>
 		<div class="container px-4 px-lg-5"
 			style="display: flex; flex-direction: column;">
@@ -48,9 +73,11 @@
 
 				</div>
 			</div>
-			<a th:href="@{${meeting.filepath}}">다운받기</a>
-			<a th:href="@{/meetmeet/delete(meetingId=${meeting.meetingId})}">글삭제</a>
-			<a th:href="@{/meetmeet/modify/{meetingId}(meetingId=${meeting.meetingId})}">수정</a>
+			<a id="button-participate" class="btn btn-primary btn-xl"  style="display: none" onclick="meetparticipate()">참여하기</a>
+			<a id="button-participate-cancel" class="btn btn-primary btn-xl" style="display: none" onclick="meetparticipatecancel()">취소하기</a>
+			<a id="button-delete" class="btn btn-primary btn-xl" style="display: none" th:href="@{/meetmeet/delete(meetingId=${meeting.meetingId})}">모임삭제</a>
+			<br>
+			<a id="button-modify" class="btn btn-primary btn-xl" style="display: none; opacity:0.8" th:href="@{/meetmeet/modify/{meetingId}(meetingId=${meeting.meetingId})}">모임수정</a>
 		</div>
 	</section>
 </body>
@@ -59,6 +86,8 @@
 	/* backend에서 받아온 기초값 저장 */
 	/*<![CDATA[*/
 	 let file_path = /*[[ ${meeting.filepath} ]]*/;
+	 let master_id = /*[[ ${meeting.master_id} ]]*/;
+	 let meeting_id = /*[[ ${meeting.meetingId} ]]*/;
 	 let lat = /*[[ ${meeting.meetingPlaceLat} ]]*/;
 	 let lng = /*[[ ${meeting.meetingPlaceLng} ]]*/;
 	 /*]]*/
@@ -390,40 +419,169 @@
 		}
 	}
 	
-	function getRoute(result){
-		for(let i = 0; i < result["result"]["path"].length; i ++){
-			console.log(result["result"]["path"][i]);
-			var payment = result["result"]["path"][i].info.payment;
-			var totalTime = result["result"]["path"][i].info.totalTime;
-			var totalDistance = result["result"]["path"][i].info.totalDistance;
-			var subPath = result["result"]["path"][i].subPath;
-			var trans = "";
-			var distance = "";
-			var new_html = '<div class="path_station_box ng-star-inserted expanding" style="height: 30px;">'
-			
-			for(let j = 0; j < subPath.length; j ++){
-				console.log(subPath[j]);
-				if(typeof subPath[j].lane === 'undefined'){
-					trans = "도보";
-					distance = subPath[j].distance;
+	function getOutRoute(result){
+		if(result.count === 0){
+			return;
+		}else{
+			for(let i = 0; i < result.OBJ.length; i ++){
+				var payment = result.OBJ[i].payment;
+				var totalTime = result.OBJ[i].time;
+				var totalDistance = result.OBJ[i].distance;
+				var subPath = result.OBJ[i].subPath;
+				var endSTN = result.OBJ[i].endSTN
+				var startSTN = result.OBJ[i].startSTN
+				if(i % 2 == 0){
+					var new_html = '<div class="btn btn-primary btn-xl" style="width: 800px; height: 30px; opacity:0.8; margin:15px; text-align: center; line-height: 0px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;">'
 				}else{
-					console.log(subPath[j].lane[0]);
-					if(typeof subPath[j].lane[0].busNo === 'undefined'){
-						trans = subPath[j].lane[0].name;
-						distance = subPath[j].distance;
-					}else{
-						trans = subPath[j].lane[0].busNo;
-						distance = subPath[j].distance;
-					}
+					var new_html = '<div class="btn btn-primary btn-xl" style="width: 800px; height: 30px; opacity:0.6; margin:15px; text-align: center; line-height: 0px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;">'
 				}
-				new_html += '<span class="path_station ng-star-inserted"><i _ngcontent-cmf-c197="" class="path_icon" style="border-color: rgb(135, 199, 0);"></i>' + trans + " -> " + '</span>'
-				console.log(trans);
-				console.log(distance);
+				
+				new_html += startSTN + " -> " + endSTN;
+				new_html += '   (총 요금 : ' + payment + '원 / 총 시간 : ' + totalTime + '분)'
+				document.getElementById('result-route').innerHTML += new_html;
 			}
-			new_html += '</div>';
-			document.getElementById('result-route').innerHTML += new_html;
-			console.log(new_html);
 		}
 	}
+	
+	function getRoute(result){
+		console.log(result);
+		if(typeof result["result"]["path"] === 'undefined'){
+			getOutRoute(result["result"].airRequest);
+			getOutRoute(result["result"].exBusRequest);
+			getOutRoute(result["result"].outBusRequest);
+			getOutRoute(result["result"].trainRequest);
+		}else{
+			for(let i = 0; i < result["result"]["path"].length; i ++){
+				console.log(result["result"]["path"][i]);
+				var payment = result["result"]["path"][i].info.payment;
+				var totalTime = result["result"]["path"][i].info.totalTime;
+				var totalDistance = result["result"]["path"][i].info.totalDistance;
+				var subPath = result["result"]["path"][i].subPath;
+				var trans = "";
+				var distance = "";
+				if(i % 2 == 0){
+					var new_html = '<div class="btn btn-primary btn-xl" style="width: 800px; height: 30px; opacity:0.8; margin:15px; text-align: center; line-height: 0px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;">'
+				}else{
+					var new_html = '<div class="btn btn-primary btn-xl" style="width: 800px; height: 30px; opacity:0.6; margin:15px; text-align: center; line-height: 0px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;">'
+				}
+				
+				for(let j = 0; j < subPath.length; j ++){
+					console.log(subPath[j]);
+					if(typeof subPath[j].lane === 'undefined'){
+						trans = "도보";
+						distance = subPath[j].distance;
+					}else{
+						console.log(subPath[j].lane[0]);
+						if(typeof subPath[j].lane[0].busNo === 'undefined'){
+							trans = subPath[j].lane[0].name;
+							distance = subPath[j].distance;
+						}else{
+							trans = subPath[j].lane[0].busNo;
+							distance = subPath[j].distance;
+						}
+					}
+					if(j != subPath.length -1){
+						new_html += trans + '(' + distance + "m) ->"
+					}else{
+						new_html += trans + '(' + distance + "m)"
+					}
+				}
+				new_html += '   (총 요금 : ' + payment + '원 / 총 시간 : ' + totalTime + '분)'
+				document.getElementById('result-route').innerHTML += new_html;
+			}
+		}
+	}
+	
+	/* writer가 맞는지 체크*/
+	isWriter();
+	function isWriter(){
+		axios.post('/meetmeet/iswriter', null, {params:{
+			master_id: master_id
+		}
+		})
+		.then(function (response) {	// 정상 응답시에 자동 호출
+			if(response.data){
+				isWriterTrue();
+			}else{
+				check_meetparticipate();
+			};
+		})
+			.catch(function (error) {	// 응답에러 발생시 자동 호출
+			console.log(error);
+		});
+	}
+	
+	function isWriterTrue(){
+		document.getElementById("button-delete").style.display = "block";
+		document.getElementById("button-modify").style.display = "block";
+	}
+	
+	function isWriterTrueParticipateFalse(){
+		document.getElementById("button-participate").style.display = "block";
+		document.getElementById("button-participate-cancel").style.display = "none";
+	}
+	
+	function isWriterTrueParticipateTrue(){
+		document.getElementById("button-participate").style.display = "none";
+		document.getElementById("button-participate-cancel").style.display = "block";
+	}
+	
+	/* meeting 참가하기 */
+	 function meetparticipate(){
+		axios.post('/meetparticipate', null, {params:{
+			meetingId: meeting_id
+		}
+		})
+		.then(function (response) {	
+		 	if(response.data){
+				isWriterTrue();
+			}else{
+				check_meetparticipate();
+			};
+		})
+			.catch(function (error) {	
+			console.log(error);
+		});
+	}
+	
+	 /* meeting 취소하기 */
+		function meetparticipatecancel(){
+			axios.post('/cancel/meetparticipate', null, {params:{
+				meetingId: meeting_id
+			}
+			})
+			.then(function (response) {	
+				console.log(response);
+			 	if(response.data){
+			 		isWriterTrueParticipateFalse();
+				}
+			})
+				.catch(function (error) {	
+				console.log(error);
+			});
+		}
+	
+	/* meeting 참가중인지 여부*/
+	
+	function check_meetparticipate(){
+		axios.post('/check/meetparticipate', null, {params:{
+			meetingId: meeting_id
+		}
+		})
+		.then(function (response) {
+		 	if(response.data){
+		 		isWriterTrueParticipateTrue();
+			}else{
+				isWriterTrueParticipateFalse();
+			}
+		 	// setTimeout(check_meetparticipate,2000);
+		})
+			.catch(function (error) {
+			console.log(error);
+		});
+	}
+	
+	
+	
 </script>
 </html>
