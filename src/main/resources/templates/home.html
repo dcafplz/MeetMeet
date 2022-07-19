@@ -150,12 +150,12 @@
 
 
 <body>
-	<div th:if="${session.sessionTest == 'Y'}"> ???  </div>
+	<div th:if="${session.sessionTest == 'Y'}">???  </div>
 	<span th:text="${session.accountId}"></span>
-	
-	<div th:if="${session.accountId == 'ffff'}">  id 넘어왔음  </div>
-	<div th:if="${session.accountId == null}">  ????????  </div>
-	<div th:if="${session.nickName == '닉네임'}">  닉네임 넘어왔음 </div>
+
+	<div th:if="${session.accountId == 'ffff'}"> id 넘어왔음  </div>
+	<div th:if="${session.accountId == null}"> ????????  </div>
+	<div th:if="${session.nickName == '닉네임'}"> 닉네임 넘어왔음 </div>
 	<!-- Navigation-->
 	<div th:insert="nav.html"></div>
 	<!-- Header-->
@@ -193,7 +193,8 @@
 		<button id="get_moem_btn" onclick="get_moem()">모임 더보기</button>
 		<div>
 			<h5 id="remained_moem">참가 중인 모임</h5>
-			<div id="moem_list" class="text-center text-white" style="background-color: rgb(244 98 58 / 70%); border-radius: 5%;"></div>
+			<div id="moem_list" class="text-center text-white"
+				style="background-color: rgb(244 98 58/ 70%); border-radius: 5%;"></div>
 		</div>
 		<div id="item_list" class="text-center text-white"></div>
 	</div>
@@ -220,9 +221,9 @@
 			</div>
 			<form id="detailform" action="" method="get">
 				<input class="form-control" id="meetingId" type="hidden"
-								name="meetingId" />
+					name="meetingId" />
 				<button class="btn btn-primary btn-xl" id="detailButton"
-									type="submit">자세히보기</button>
+					type="submit">자세히보기</button>
 			</form>
 		</div>
 	</div>
@@ -348,18 +349,7 @@
 					console.log(err);
 				});
 			}
- 			
- 			/* function get_my_item(){
-				axios({
-					method: 'get',
-					url: '/getall'
-				}).then(function (res){
-					to_item_list(res.data);
-				}).catch(function (err){
-					console.log(err);
-				});
-			} */
- 			
+ 			 			
  			function to_item_list(lists){
  				for(let i = 0; i < lists.length; i ++){
  					item_list.push(
@@ -371,26 +361,94 @@
  				}
  				/* 무한스크롤 함수 */
  		        get_new_item(0, 12);
- 				console.log(item_list);
  			}
+ 			
+ 			function get_new_item(start, end){
+ 		       for(start; start < end; start ++){
+ 		    	   var new_id = item_list[start].meetingId	/* "btn-modal" +   */
+ 		    	   document.getElementById("item_list").innerHTML += 
+ 		    		   '<div id="' + new_id + '"class="cards"><div class="card h-100"><img class="card-img-top" src=' +
+ 		    		   				item_list[start].img +
+ 			                ' alt="..." /><div class="card-body p-4"><div class="text-center"><h5 class="fw-bolder">' +
+ 			                		item_list[start].name +
+ 			                        '</h5><h8 class="fw-bolder2">' +
+ 			                        item_list[start].content +
+ 			                    '</h8></div></div><div class="card-footer p-4 pt-0 border-top-0 bg-transparent"><div class="text-center"><button class="btn btn-outline-dark mt-auto" onclick="modalOn1(event)">View options</button></div></div></div></div>';
+                     
+                    /*  document.getElementById("btn-modal" + start).addEventListener("click", e => {
+                         modalOn();
+                     }); */
+ 		       }
+ 	        }
+ 			
+ 			get_my_meet();
+ 			function get_my_meet(){
+				axios({
+					method: 'get',
+					url: '/meetparticipateall'
+				}).then(function (res){
+					get_item_from_myMeet(res.data);
+				}).catch(function (err){
+					console.log(err);
+				});
+			}
+ 			let next_page_moem = 0;
+ 			function get_item_from_myMeet(lists){
+ 				for(let i = 0; i < lists.length; i ++){
+ 					loadItemOne(lists[i].meetingId);
+ 				}
+ 				
+ 			}
+ 			
+ 			function loadItemOne(meeting_id){
+ 				axios.post('/getone', null, {params:{
+ 					meetingId: meeting_id
+ 				}})
+ 				.then(function (response) {
+ 				 	to_my_item_list(response.data);
+ 				})
+ 					.catch(function (error) {
+ 					console.log(error);
+ 				});
+			}
+ 			
+ 			function to_my_item_list(lists){
+				my_item_list.push(
+						{	"meetingId" : lists.meetingId,
+							"name": lists.meetingName,
+		        			"img": lists.filepath,
+		        			"content": lists.meetingDetail}
+						)
+				listing_moem(next_page_moem);
+				next_page_moem += 1;
+ 				}
+ 			
+ 			/*참석중인 모임 리스팅 함수 */
+ 		      
+ 
+ 			
+ 			function listing_moem(next_page_moem){
+ 				for(let i = next_page_moem; i < my_item_list.length; i ++){
+ 					console.log(my_item_list[i]);
+					try{
+						var new_id = my_item_list[i].meetingId;
+						document.getElementById("moem_list").innerHTML += 
+							'<div id="' + new_id + '" class="moem_list_wrap"><div class="cards_image" ><img class="card_image_image" src=' +
+							my_item_list[i].img +
+							' alt="..." onclick="modalOn2(event)" /></div><div class="moem_list_wrap_text"><h5 class="fw-bolder3">' +
+							my_item_list[i].name +
+							'</h5></div></div>'
+					}catch(error){
+						console.log("err");
+						next_page_moem = i;
+						break;
+					}
+					next_page_moem = i;
+				}
+ 				document.getElementById("remained_moem").innerText = "참여중인 모임 : " + my_item_list.length;
+ 			}
+ 		      
  			     	   
-	        function get_new_item(start, end){
-		       for(start; start < end; start ++){
-		    	   var new_id = item_list[start].meetingId	/* "btn-modal" +   */
-		    	   document.getElementById("item_list").innerHTML += 
-		    		   '<div id="' + new_id + '"class="cards"><div class="card h-100"><img class="card-img-top" src=' +
-		    		   				item_list[start].img +
-			                ' alt="..." /><div class="card-body p-4"><div class="text-center"><h5 class="fw-bolder">' +
-			                		item_list[start].name +
-			                        '</h5><h8 class="fw-bolder2">' +
-			                        item_list[start].content +
-			                    '</h8></div></div><div class="card-footer p-4 pt-0 border-top-0 bg-transparent"><div class="text-center"><button class="btn btn-outline-dark mt-auto" onclick="modalOn1(event)">View options</button></div></div></div></div>';
-                    
-                   /*  document.getElementById("btn-modal" + start).addEventListener("click", e => {
-                        modalOn();
-                    }); */
-		       }
-	        }
 	        
 		      //스크롤 바닥 감지
 		      window.onscroll = function(e) {
@@ -404,36 +462,7 @@
 		      };
 	        
 		      
-	      /*참석중인 모임 리스팅 함수 */
 	      
-	      let next_page_moem = 0;
-	      get_moem();
-	      
-	       function get_moem(){
-	    	   if(next_page_moem > item_list.length){
-	    		   return;
-	    	   }
-	    	   for(i in item_list){
-	    		   if(i > 9){
-	    			   next_page_moem += Number(i);
-	    			   break;
-	    		   }
-	    		   try{
-		    		   i = Number(i) + next_page_moem;
-		    		   var new_id = item_list[i].meetingId;
-			    	   document.getElementById("moem_list").innerHTML += 
-			    		   '<div id="' + new_id + '" class="moem_list_wrap"><div class="cards_image" ><img class="card_image_image" src=' +
-			    		   				item_list[i].img +
-				                ' alt="..." onclick="modalOn2(event)" /></div><div class="moem_list_wrap_text"><h5 class="fw-bolder3">' +
-		                		item_list[i].name +
-		                        '</h5></div></div>'
-	    		   }catch(error){
-	    			   next_page_moem = item_list.length;
-	    			   break;
-	    		   }
-		       }
-	    	   document.getElementById("remained_moem").innerText = "남은 모임 : " + (item_list.length - next_page_moem);
-	       }
 	       
 	       
 	       /* 모달 함수들  */
@@ -528,6 +557,5 @@
 	    	 }
 	      	
         </script>
-        
 </body>
 </html>

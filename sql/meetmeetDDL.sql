@@ -14,15 +14,15 @@ CREATE TABLE place(
 	place_id int AUTO_INCREMENT PRIMARY KEY,
 	account_id varchar(20) NOT NULL,
 	place_name varchar(20) NOT NULL,
-	x_coordinate double NOT NULL,
-	y_coordinate double NOT NULL
+	lat double NOT NULL,
+	lng double NOT NULL
 );
 
 CREATE TABLE hot_place(
 	hot_place_id int AUTO_INCREMENT PRIMARY KEY,
 	place_name varchar(20) NOT NULL,
-	x_coordinate double  NOT NULL,
-	y_coordinate double  NOT NULL
+	lat double  NOT NULL,
+	lng double  NOT NULL
 );
 
 CREATE TABLE friend_list(

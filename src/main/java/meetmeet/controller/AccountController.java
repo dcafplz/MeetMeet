@@ -5,16 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,11 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import meetmeet.model.dao.AccountRepository;
+import meetmeet.model.dao.PlaceRepository;
 import meetmeet.model.dao.PreferenceRepository;
 import meetmeet.model.dto.AccountDTO;
+import meetmeet.model.dto.PlaceDTO;
 import meetmeet.model.dto.PreferenceDTO;
 import meetmeet.model.dto.PwSecurity;
 import meetmeet.model.entity.Account;
+import meetmeet.model.entity.Place;
 import meetmeet.model.entity.Preference;
 
 
@@ -38,12 +41,15 @@ public class AccountController {
 	
 	@Autowired
 	private PreferenceRepository pDao;
+
+	@Autowired
+	private PlaceRepository plDao;
 	
 	private ModelMapper modelMapper = new ModelMapper();
 	
 	
 	@PostMapping("account/signup")
-	public String signup(AccountDTO account, @RequestParam(required = false) List<String> preference) throws NoSuchAlgorithmException {
+	public String signup(AccountDTO account, @RequestParam(required = false) List<String> preference, PlaceDTO place) throws NoSuchAlgorithmException {
 		Random random = new Random();
 		account.setHashSalt(random.ints(48,123)
 				  .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
@@ -53,6 +59,8 @@ public class AccountController {
 		account.setPw(PwSecurity.hashing(account.getPw(), account.getHashSalt()));
 		Account accountEntity = modelMapper.map(account, Account.class);
 		dao.save(accountEntity);
+		Place placeEntity = modelMapper.map(place, Place.class);
+		plDao.save(placeEntity);
 		if (preference != null) {savePreference(account.getAccountId(), preference);}
 		return "redirect:../login.html";
 	}
@@ -101,6 +109,16 @@ public class AccountController {
 	    return "N";
 	}
 	
+<<<<<<< HEAD
+=======
+	@ResponseBody
+	@PostMapping("/getsession")
+	public String[] getSession(HttpSession session) {
+		return new String[] {session.getAttribute("accountId").toString(), session.getAttribute("nickName").toString()};
+	}
+
+	
+>>>>>>> 46e5604c2a2df3d006296eeee5d272458de7a66a
 	@GetMapping("account/logout")
 	public String logout(HttpSession session) {
 
@@ -111,31 +129,53 @@ public class AccountController {
 	    return "home.html";
 	}
 
-//	@PostMapping("account/findpw")
-//	public ModelAndView findPw(String pwQuestion, String accountId) {
-//		ModelAndView modelAndView = new ModelAndView();
-//		
-//		Optional<Account> account = dao.findById(accountId);
-//		try {
-//			if(account.get().getPwQuestion().equals(pwQuestion)) {
-//				modelAndView.setViewName("home.html");
-//				
-//				return modelAndView;
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		modelAndView.setViewName("mypage.html?command=mypw");
-//		return modelAndView;
-//	}
+	@PostMapping("account/changenickname")
+	public String changeNickName(HttpSession session, String nickName) {
+		Account account = dao.findById(session.getAttribute("accountId").toString()).get();
+		account.setNickName(nickName);
+		session.setAttribute("nickName", nickName);
+		dao.save(account);
+		return "home.html";
+	}
 	
-	@PostMapping("account/changepreference")
-	public ModelAndView changePreference(String accountId, @RequestParam(required = false) List<String> preference) throws NoSuchAlgorithmException {
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("mypage.html?command=meettype");
+	@PostMapping("account/changepw")
+	public String changePw(HttpSession session, String pw) {
+		Account account = dao.findById(session.getAttribute("accountId").toString()).get();
+		try {
+			account.setPw(PwSecurity.hashing(pw, account.getHashSalt()));
+			dao.save(account);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		logout(session);
+		return "home.html";
+	}
+	
+	@PostMapping("account/findpw")
+	public String findPw(AccountDTO account, Model model) {
 		
-		pDao.deleteByAccountId(accountId);
-		savePreference(accountId, preference);
+		Account accountEntity = dao.findById(account.getAccountId()).get();
+		try {
+			if(accountEntity.getPwQuestion().equals(account.getPwQuestion())) {
+				accountEntity.setPw(PwSecurity.hashing(account.getPw(), accountEntity.getHashSalt()));
+				dao.save(accountEntity);
+				return "redirect:../login.html";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		model.addAttribute("msg","ID나 비밀번호 찾기 질문을 확인하세요");
+		return "redirect:../findpw.html";
+	}
+	
+	@GetMapping("account/changepreference")
+	@Transactional
+	public ModelAndView changePreference(@RequestParam(required = false) List<String> preference, HttpSession session) {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("redirect:../mypage.html");
+		modelAndView.addObject("page",1);
+		pDao.deleteByAccountId(session.getAttribute("accountId").toString());
+		savePreference(session.getAttribute("accountId").toString(), preference);
 		
 		return modelAndView;
 	}
@@ -150,8 +190,8 @@ public class AccountController {
 	
 	@ResponseBody
 	@GetMapping("account/getpreference")
-	public List<String> getPreference(String accountId) {
-		List<Preference> dto = pDao.findByAccountId(accountId);
+	public List<String> getPreference(HttpSession session) {
+		List<Preference> dto = pDao.findByAccountId(session.getAttribute("accountId").toString());
 		List<String> r = new ArrayList<>();
 		if (dto != null) {
 			for(Preference p: dto) {
@@ -183,18 +223,29 @@ public class AccountController {
 	}
 	
 	
+	@GetMapping("/mypage/{page}")
+	public ModelAndView toMypage(HttpSession session, @PathVariable("page") String page) {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("redirect:../mypage.html");
+		if (session.getAttribute("accountId") == null) {
+	        modelAndView.setViewName("redirect:../home.html");
+		}
+		modelAndView.addObject("page",page);
+		return modelAndView;
+	}
+	
 	@GetMapping("/tohome")
-	public String toHome(HttpSession session) throws NoSuchAlgorithmException {
+	public String toHome(HttpSession session) {
 		return "home";
 	}
 	
 	@GetMapping("/tologin")
-	public String toLogin(HttpSession session) throws NoSuchAlgorithmException {
+	public String toLogin(HttpSession session) {
 		return "login";
 	}
 	
 	@GetMapping("/toabout")
-	public String toAbout(HttpSession session) throws NoSuchAlgorithmException {
+	public String toAbout(HttpSession session) {
 		return "about";
 	}
 	

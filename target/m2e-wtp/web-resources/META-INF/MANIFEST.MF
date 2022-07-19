@@ -1,6 +1,10 @@
 Manifest-Version: 1.0
 Build-Jdk-Spec: 11
+<<<<<<< HEAD
 Implementation-Title: MeetMeet
+=======
+Implementation-Title: step11_bootWeb
+>>>>>>> 46e5604c2a2df3d006296eeee5d272458de7a66a
 Implementation-Version: 0.0.1-SNAPSHOT
 Created-By: Maven Integration for Eclipse
 

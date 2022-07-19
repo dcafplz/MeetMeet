@@ -9,7 +9,6 @@ import meetmeet.model.dto.PreferenceDTO;
 import meetmeet.model.entity.Account;
 import meetmeet.model.entity.Preference;
 
-
 public interface PreferenceRepository extends CrudRepository<Preference, Long>{
 
 	Optional<Preference> deleteByAccountId(String accountId);
