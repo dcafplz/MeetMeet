@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+        <!-- Favicon-->
+		<link rel="icon" type="image/x-icon" href="assets/handshaking.png" />
+		<!-- title -->
+		<title>빠르고 간편한 모임 MeetMeet</title>
+<!-- Bootstrap icons-->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+	rel="stylesheet" />
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="css/styles_jw.css" rel="stylesheet" />
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- Favicon-->
+<link rel="icon" type="image/x-icon" href="assets/handshaking.png" />
+<!-- title -->
+<title>빠르고 간편한 모임 MeetMeet</title>
+</head>
+<body>
+	<!-- Navigation-->
+	<div th:insert="nav"></div>
+	<!-- Header-->
+	<!-- Section-->
+	<div style="display: block" >
+<!-- 		<form action="/tomypagepre" method="get">
+			<div class="d-grid">
+				<button class="btn btn-primary" type="button" style="opacity: 0.7"
+			onclick="/tomypagepre">선호모임 변경</button>
+			</div>
+		</form>
+		<form action="/tomypagenic" method="get">
+			<div class="d-grid">
+				<button class="btn btn-primary" type="button" style="opacity: 0.7"
+			onclick="/tomypagenic">개인정보 변경</button>
+			</div>
+		</form>
+		<form action="/tomypagepw" method="get">
+			<div class="d-grid">
+				<button class="btn btn-primary" type="button" style="opacity: 0.7"
+			onclick="/tomypagepw">비밀번호 변경</button>
+			</div>
+		</form> -->
+		<br><br><br><br>
+		<div id="changing1" class="row gx-4 gx-lg-5 justify-content-center mb-5">
+			<div class="col-lg-6">
+				<form action="account/changepreference">
+					<h3 >선호하는 모임을 변경하세요 </h3><br> <label><input name="preference"
+						type="checkbox" value="sports" onclick="cb(1)"> 스포츠</label>
+					<div id="1" style="display: none;" class="pwq valid-feedback">
+						<b>변경됨</b>
+					</div>
+					<br> <label><input name="preference" type="checkbox"
+						value="book" onclick="cb(2)"> 독서</label>
+					<div id="2" style="display: none;" class="pwq valid-feedback">
+						<b>변경됨</b>
+					</div>
+					<br> <label><input name="preference" type="checkbox"
+						value="game" onclick="cb(3)"> 게임</label>
+					<div id="3" style="display: none;" class="pwq valid-feedback">
+						<b>변경됨</b>
+					</div>
+					<br> <label><input name="preference" type="checkbox"
+						value="friendship" onclick="cb(4)"> 친목</label>
+					<div id="4" style="display: none;" class="pwq valid-feedback">
+						<b>변경됨</b>
+					</div>
+					<br> <label><input name="preference" type="checkbox"
+						value="movie" onclick="cb(5)"> 영화</label>
+					<div id="5" style="display: none;" class="pwq valid-feedback">
+						<b>변경됨</b>
+					</div>
+					<br> <label><input name="preference" type="checkbox"
+						value="pet" onclick="cb(6)"> 반려동물</label>
+					<div id="6" style="display: none;" class="pwq valid-feedback">
+						<b>변경됨</b>
+					</div>
+					<br><br> <input type="submit" value="변경하기" class="btn btn-primary btn-xl">
+				</form>
+			</div>
+			</div>
+
+			<script>
+				axios.get("account/getpreference").then(function(response) {
+					const checked = response.data;
+					var chbox = document.getElementsByName("preference");
+					for (i in chbox) {
+						var s = chbox[i].value;
+						if (checked.indexOf(s) >= 0) {
+							chbox[i].checked = true;
+						}
+						;
+					}
+					;
+				});
+
+				function cb(n) {
+					const c = document.getElementById(n);
+					console.log(c);
+					console.log(c.style.display);
+					if (c.style.display == "none") {
+						c.style.display = "inline";
+					} else {
+						c.style.display = "none";
+					}
+				}
+			</script>
+
+
+		</div>
+
+
+	<!-- Footer-->
+	<div th:insert="footer"></div>
+	<!-- Bootstrap core JS-->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

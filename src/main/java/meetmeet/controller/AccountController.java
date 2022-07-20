@@ -61,7 +61,7 @@ public class AccountController {
 		Place placeEntity = modelMapper.map(place, Place.class);
 		plDao.save(placeEntity);
 		if (preference != null) {savePreference(account.getAccountId(), preference);}
-		return "redirect:../login.html";
+		return "redirect:/tologin";
 	}
 	
 	@ResponseBody
@@ -84,17 +84,18 @@ public class AccountController {
 			if(PwSecurity.checkPw(account.get(), pw)) {
 		        session.setAttribute("accountId", account.get().getAccountId());
 		        session.setAttribute("nickName", account.get().getNickName());
-				return "home";
+		        return "redirect:/tohome";
 //		        return "redirect:../test.jsp";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "redirect:login.html";
+		return "redirect:/tologin";
 	}
 	@GetMapping("nonSign")
 	public String nonSign(HttpSession session)  {
-		return "home";
+		return "redirect:/tohome";
+
 	}
 	
 	@ResponseBody
@@ -122,7 +123,8 @@ public class AccountController {
 	        session.invalidate();   // 세션 날림
 	    }
 
-	    return "home.html";
+	    return "redirect:/tohome";
+
 	}
 
 	@PostMapping("account/changenickname")
@@ -131,7 +133,7 @@ public class AccountController {
 		account.setNickName(nickName);
 		session.setAttribute("nickName", nickName);
 		dao.save(account);
-		return "home.html";
+		return "redirect:/tohome";
 	}
 	
 	@PostMapping("account/changepw")
@@ -144,7 +146,7 @@ public class AccountController {
 			e.printStackTrace();
 		}
 		logout(session);
-		return "home.html";
+		return "redirect:/tohome";
 	}
 	
 	@PostMapping("account/findpw")
@@ -155,25 +157,22 @@ public class AccountController {
 			if(accountEntity.getPwQuestion().equals(account.getPwQuestion())) {
 				accountEntity.setPw(PwSecurity.hashing(account.getPw(), accountEntity.getHashSalt()));
 				dao.save(accountEntity);
-				return "redirect:../login.html";
+				return "redirect:/tologin";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		model.addAttribute("msg","ID나 비밀번호 찾기 질문을 확인하세요");
-		return "redirect:../findpw.html";
+		return "redirect:/tofindpw";
 	}
 	
 	@GetMapping("account/changepreference")
 	@Transactional
-	public ModelAndView changePreference(@RequestParam(required = false) List<String> preference, HttpSession session) {
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("redirect:../mypage.html");
-		modelAndView.addObject("page",1);
+	public String changePreference(@RequestParam(required = false) List<String> preference, HttpSession session) {
 		pDao.deleteByAccountId(session.getAttribute("accountId").toString());
 		savePreference(session.getAttribute("accountId").toString(), preference);
 		
-		return modelAndView;
+		return "redirect:/tohome";
 	}
 	
 	public void savePreference(String accountid, List<String> preference) {
@@ -198,15 +197,34 @@ public class AccountController {
 		return r;
 	}
 	
-	@GetMapping("/mypage/{page}")
-	public ModelAndView toMypage(HttpSession session, @PathVariable("page") String page) {
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("redirect:../mypage.html");
-		if (session.getAttribute("accountId") == null) {
-	        modelAndView.setViewName("redirect:../home.html");
+	@GetMapping("/tomypagepre")
+	public String toMyPagePre(HttpSession session) {
+		if (session.getAttribute("accountId") != null) {
+			return "mypagepre";
+		}else {
+			session.invalidate();
+			return "redirect:/tohome";
 		}
-		modelAndView.addObject("page",page);
-		return modelAndView;
+	}
+	
+	@GetMapping("/tomypagenic")
+	public String toMyPageNic(HttpSession session) {
+		if (session.getAttribute("accountId") != null) {
+			return "mypagenic";
+		}else {
+			session.invalidate();
+			return "redirect:/tohome";
+		}
+	}
+	
+	@GetMapping("/tomypagepw")
+	public String toMyPagePw(HttpSession session) {
+		if (session.getAttribute("accountId") != null) {
+			return "mypagepw";
+		}else {
+			session.invalidate();
+			return "redirect:/tohome";
+		}
 	}
 	
 	@GetMapping("/tohome")
@@ -223,6 +241,14 @@ public class AccountController {
 	public String toAbout(HttpSession session) {
 		return "about";
 	}
-
 	
+	@GetMapping("/tosignup")
+	public String toSignUp(HttpSession session) {
+		return "signup";
+	}
+
+	@GetMapping("/tofindpw")
+	public String toFindPw(HttpSession session) {
+		return "findpw";
+	}
 }

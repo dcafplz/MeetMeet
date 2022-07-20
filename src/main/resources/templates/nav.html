@@ -1,8 +1,8 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light">
 	<div class="container px-4 px-lg-5">
 		<p class="navbar-brand" style="margin: auto; font-size: 23px;"
-			onclick="location.href='/tohome'">밋밋</p>
+			onclick="location.href='/tohome'">MeetMeet</p>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
 			data-bs-target="#navbarSupportedContent"
 			aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -20,12 +20,12 @@
 						Page</a>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<li><a class="dropdown-item"
-							href="/mypage/1">선호모임 설정</a></li>
-						<li><hr class="dropdown-divider" /></li>
+							href="/tomypagepre">선호모임 설정</a></li>
 						<li><a class="dropdown-item"
-							href="/mypage/2">개인정보 변경</a></li>
-						<li><a class="dropdown-item" href="/mypage/3">패스워드
+							href="/tomypagenic">개인정보 변경</a></li>
+						<li><a class="dropdown-item" href="/tomypagepw">패스워드
 								변경</a></li>
+						<li><hr class="dropdown-divider" /></li>
 						<li><a class="dropdown-item" href="../../mymeeting.jsp">내 모임 보기</a></li>
 					</ul></li>
 				<li class="nav-item"><a class="nav-link"
@@ -45,7 +45,7 @@
 					onclick="location.href='/tologin'">로그인</button>
 				/
 				<button class="btn " type="submit" name = "loginout"
-					onclick="location.href='signup.html'">회원가입</button>
+					onclick="location.href='/tosignup'">회원가입</button>
 			</div>
 			<div th:if="${session.accountId != null}">
 				<button class="btn " type="submit" name = "logout"
