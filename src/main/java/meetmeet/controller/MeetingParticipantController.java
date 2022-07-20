@@ -17,9 +17,13 @@ import meetmeet.model.dto.MeetingParticipantDTO;
 import meetmeet.model.entity.Meeting;
 import meetmeet.model.entity.MeetingParticipant;
 import meetmeet.service.MeetingParticipantService;
+import meetmeet.service.MeetingService;
 
 @RestController
 public class MeetingParticipantController {
+	
+	@Autowired
+	private MeetingService meetingService;
 	
 	@Autowired
 	private MeetingParticipantService meetingParticipantService;
@@ -46,9 +50,15 @@ public class MeetingParticipantController {
 	
 	@PostMapping("/cancel/meetparticipate")
 	public boolean cancelMeetParticipate(MeetingParticipantDTO mp, HttpServletRequest req) throws Exception {
-		return meetingParticipantService.
-				meetParticipationDelete(mp.getMeetingId(),
-						(String) req.getSession().getAttribute("accountId"));
+
+		if(!meetingService.meetView(mp.getMeetingId()).getMaster_id().equals((String) req.getSession().getAttribute("accountId"))){
+			return meetingParticipantService.
+					meetParticipationDelete(mp.getMeetingId(),
+							(String) req.getSession().getAttribute("accountId"));
+		}else{
+			return false;
+		}
+		
 	}
 	
 	@GetMapping("/meetparticipateall")

@@ -38,26 +38,40 @@ public class MeetingController {
 
 	@PostMapping("/create-meet")
 	public ModelAndView meetCreatePage(Model model, HttpSession session, HttpServletRequest req) throws Exception {
+		
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("createmeet.html");
+		
+		if(req.getSession().getAttribute("accountId") != null) {
+			modelAndView.setViewName("createmeet.html");
+		}else {
+			modelAndView.setViewName("redirect:/tohome");
+		}
 		return modelAndView;
 	}
 	
 	@PostMapping("/meetmeet/create-meet")
 	public ModelAndView meetCreate(MeetingDTO meeting, Model model, MultipartFile file, HttpServletRequest req) throws Exception {
-		String accountId = (String) req.getSession().getAttribute("accountId");
+		
 		ModelAndView modelAndView = new ModelAndView();
 		
-		meeting.setMaster_id(accountId);
-		Long id = meetingService.meetCreate(meeting, file);
-		
-		MeetingParticipantDTO mp = new MeetingParticipantDTO();
-		mp.setMeetingId(id);
-		mp.setParticipantId(accountId);
-		meetingParticipantService.meetParticipate(mp);
-		
-		modelAndView.setViewName("redirect:../meetmeet/detail?meetingId=" + id);
-		modelAndView.addObject("meeting", meetingService.meetView(id));
+		if(req.getSession().getAttribute("accountId") != null) {
+			
+			String accountId = (String) req.getSession().getAttribute("accountId");
+			
+			meeting.setMaster_id(accountId);
+			Long id = meetingService.meetCreate(meeting, file);
+			
+			MeetingParticipantDTO mp = new MeetingParticipantDTO();
+			mp.setMeetingId(id);
+			mp.setParticipantId(accountId);
+			meetingParticipantService.meetParticipate(mp);
+			
+			modelAndView.setViewName("redirect:../meetmeet/detail?meetingId=" + id);
+			modelAndView.addObject("meeting", meetingService.meetView(id));
+			
+		}else {
+			modelAndView.setViewName("redirect:/tohome");
+		}
 
 		return modelAndView;
 	}
@@ -127,7 +141,7 @@ public class MeetingController {
 	}
 	
 	@PostMapping("/getone")
-	public MeetingDTO getAll(Long meetingId) throws Exception {	
+	public MeetingDTO getOne(Long meetingId) throws Exception {	
 		return meetingService.meetView(meetingId);
 	}
 	
