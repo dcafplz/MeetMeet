@@ -10,7 +10,7 @@ public interface FriendListService {
 
 	List<List<String>> findFriendListById1(String id1);
 	
-	void delete(Integer id);
+	public String delete(String id1, String id2);
 	
-	void post(String id1, String id2);
+	public String post(String id1, String id2);
 }

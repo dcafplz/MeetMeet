@@ -26,15 +26,15 @@ CREATE TABLE hot_place(
 );
 
 CREATE TABLE friend_list(
+	id int primary key,
 	id1 varchar(20) NOT NULL,
-	id2 varchar(20) NOT null,
-	primary key (id1, id2)
+	id2 varchar(20) NOT null
 );
 
 CREATE TABLE friend_request(
+	id int primary key,
 	request_id varchar(20) NOT NULL,
-	requested_id varchar(20) NOT null,
-	primary key (request_id, requested_id)
+	requested_id varchar(20) NOT null
 );
 
 CREATE TABLE preference(

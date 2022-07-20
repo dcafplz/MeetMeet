@@ -11,7 +11,7 @@ import meetmeet.model.entity.Account;
 
 public interface AccountRepository extends CrudRepository<Account, String>{
 
-	public List<Account> findByNickNameContaining(String searching);
+	public List<Account> findByNickNameContainingAndAccountIdNot(String searching,String id);
 
 	
 	

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,13 +28,28 @@ public class FriendRequestController {
 	public List<List<String>> findFriendRequestByRequestId(String requestId) {
 		List<List<String>> result = null;
 		result = friendRequestService.findFriendRequestByRequestId(requestId);
+		System.out.println(result);
+		System.out.println("요청확인용");
 		return result;
 	}
 
 	@GetMapping("findFriendRequestByRequestedId")
 	public List<List<String>> findFriendRequestByRequsetedId(String requestedId) {
 		List<List<String>> result = null;
+		System.out.println(requestedId);
 		result = friendRequestService.findFriendRequestByRequestedId(requestedId);
+		return result;
+	}
+	@DeleteMapping("accept")
+	public String accept(String id, String id1, String id2) {
+		String result = null;
+		result = friendRequestService.accept(id,id1,id2);
+		return result;
+	}
+	@DeleteMapping("delete")
+	public String delete(String id) {
+		String result = null;
+		result = friendRequestService.delete(id);
 		return result;
 	}
 

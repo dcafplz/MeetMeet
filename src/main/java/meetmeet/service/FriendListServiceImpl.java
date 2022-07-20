@@ -12,10 +12,14 @@ import org.springframework.stereotype.Service;
 
 import meetmeet.model.dao.AccountRepository;
 import meetmeet.model.dao.FriendListRepository;
+import meetmeet.model.dao.FriendRequestRepository;
 import meetmeet.model.dto.AccountDTO;
 import meetmeet.model.dto.FriendListDTO;
+import meetmeet.model.dto.FriendRequestDTO;
 import meetmeet.model.entity.Account;
 import meetmeet.model.entity.FriendList;
+import meetmeet.model.entity.FriendRequest;
+
 import org.modelmapper.ModelMapper;
 
 @Service
@@ -24,6 +28,8 @@ public class FriendListServiceImpl implements FriendListService {
 	private FriendListRepository friendListRepository;
 	@Autowired
 	private AccountRepository accountRepository;
+	@Autowired
+	private FriendRequestRepository friendRequestRepository;
 
 	private static ModelMapper modelMapper = new ModelMapper();
 
@@ -49,13 +55,30 @@ public class FriendListServiceImpl implements FriendListService {
 		return result;
 	}
 
-	public void delete(Integer id) {
-//		friendListRepository.deleteById1AccountIdAndId2AccountId(id1, id2);
-		System.out.println("삭제시작");
-		friendListRepository.deleteById(id);		
+	public String delete(String id1, String id2) {
+		try {
+			System.out.println("삭제시작");
+			Optional<FriendList> result = friendListRepository.findMyFunction(id1, id2);
+			Optional<FriendList> result2 = friendListRepository.findMyFunction(id2, id1);
+			Integer list1 = null;
+			Integer list2 = null;
+			if (result.isPresent()) {
+				list1 = result.get().getId();
+			}
+			if (result2.isPresent()) {
+				list2 = result2.get().getId();
+			}
+			friendListRepository.deleteById(list1);
+			friendListRepository.deleteById(list2);
+	
+			return "삭제성공";
+		}catch(Exception e) {
+			e.printStackTrace();
+			return "삭제실패";
+		}
 	}
 
-	public void post(String id1, String id2) {
+	public String post(String id1, String id2) {
 		
 //		result.builder().id1(id1).
 		Optional<Account> result1 = accountRepository.findById(id1);
@@ -70,10 +93,25 @@ public class FriendListServiceImpl implements FriendListService {
 			result4 = modelMapper.map(result2.get(),AccountDTO.class);
 		}
 		System.out.println("진행중2");
-		FriendListDTO result = FriendListDTO.builder().id1(result3).id2(result4).build();
-		friendListRepository.save(modelMapper.map(result,FriendList.class));
-		System.out.println("성공");
-
+//		FriendListDTO result = FriendListDTO.builder().id1(result3).id2(result4).build();
+		Optional<FriendList> result5 = friendListRepository.findMyFunction(id1, id2);
+		System.out.println("SDFSDFSDFSDFSDFSD");
+		System.out.println(result5);
+		if (result5.isPresent()) {
+			//이미친구
+			return "친구상태";
+		}else {
+			//친구아님
+			FriendRequestDTO result = FriendRequestDTO.builder().requestId(result3).requestedId(result4).build();
+			try {
+				friendRequestRepository.save(modelMapper.map(result,FriendRequest.class));
+				System.out.println("성공");		
+			}catch(Exception e) {
+				e.printStackTrace();
+				System.out.println("캐치문확인용");
+				return "친구신청이미보냄";
+			}
+		}return "친구요청성공";
 	}
 
 }

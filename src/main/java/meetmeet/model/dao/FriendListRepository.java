@@ -1,6 +1,7 @@
 package meetmeet.model.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -15,6 +16,13 @@ public interface FriendListRepository extends CrudRepository<FriendList, Integer
 	public abstract List<List<String>> findId2ById1AccountId(String id1);
 
 	public abstract void deleteById1AccountIdAndId2AccountId(String id1, String id2);
+
+	@Query("SELECT fl FROM FriendList fl WHERE fl.id1.accountId=:id1 AND fl.id2.accountId=:id2")
+	public abstract Optional<FriendList> findMyFunction(String id1, String id2);
+
+//	@Query("DELETE FROM FriendList fl WHERE fl.id1.accountId=:id1, fl.id2.accountId:id2")
+//	public abstract void deleteMyFunction(String id1, String id2);
+
 
 	
 

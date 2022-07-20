@@ -44,18 +44,18 @@ var Username = "?"; //이거도 세션에서받아오기
 
 			<a href="/tofriendlist">친구 목록</a><br> <a
 				href="/tofriendsearch">친구 추가</a><br>
-				<a href="/tofriendrequest">친구 요청목록</a><br>
+			<a href="/tofriendrequest">친구 요청목록</a><br>
 
 		</div>
 
-		<!-- <div id="changing1"
-			style="border: 1px solid black; width: 60%; height: 1200px; display: none; flex-wrap: wrap;">
+		<div id="changing1"
+			style="border: 1px solid black; width: 60%; height: 1200px; display: flex; flex-wrap: wrap;">
 
-		</div> -->
+		</div>
 
 
 		<div id="changing2"
-			style="border: 1px solid black; width: 60%; height: 700px; display: block;">
+			style="border: 1px solid black; width: 60%; height: 700px; display: none;">
 			<div>
 				<input id="findUser" type="text"
 					placeholder="해당 유저의 아이디나 이름을 입력해주세요" size=100>
@@ -145,6 +145,8 @@ var Username = "?"; //이거도 세션에서받아오기
 		const xhttp = new XMLHttpRequest();
 		xhttp.onload = function() {
 			let res_data = this.responseText;
+			console.log("gadsfsdfsdfasdfsdafasdfsadfasdfasdfasdfsadfasd");
+			console.log(res_data);
 			let data = JSON.parse(res_data);
 			var div = document.getElementById("changing1");
 			console.log(div);
@@ -153,16 +155,19 @@ var Username = "?"; //이거도 세션에서받아오기
 				div.innerHTML += `<div class="friendsprofile" id=${data[i][0]} style="border: 1px solid blue; width: 240px; height: 300px;">
 				<img src="images/profile/${data[i][1]}_profile.png" alt="" style="width:235px; height:235px;
 				max-width: 235px; max-height: 235px;"><br>
-				친구목록id : ${data[i][0]}<br>
-				닉네임 : ${data[i][2]}<br>
-				아이디 : ${data[i][1]}</div>`;
+				요청한 id : ${data[i][0]}<br>
+				요청한 닉네임 : ${data[i][1]}
+				<button onclick="javascript:acceptRequest('${data[i][2]}','${data[i][0]}','${User}');">수락</button>
+				<button onclick="javascript:deleteRequest('${data[i][2]}');">삭제</button>
+				<br>
+				</div>`;
 			
 			}
 			
 			
 			
 			
-			const boxes = document.querySelectorAll(".friendsprofile");
+			/* const boxes = document.querySelectorAll(".friendsprofile");
 			console.log(boxes);
 			console.log("박스정의");
 			
@@ -208,11 +213,13 @@ var Username = "?"; //이거도 세션에서받아오기
 		    	  var selectedBox = event.currentTarget;
 		    	  selectedBox.removeEventListener('contextmenu', handleCreateContextMenu, false);
 		      }
-		      document.addEventListener('click', handleClearContextMenu, false);
+		      document.addEventListener('click', handleClearContextMenu, false); */
 
 			
 		}
-		xhttp.open("get", `friendlist/findFriendListById1?id1=${User}`, true);
+		console.log(User);
+		console.log("정상확ㅇㄴㅇㄴㅇㄹㄹㄴㅇㄹ");
+		xhttp.open("get", `friendrequest/findFriendRequestByRequestedId?requestedId=${User}`, true);
 		xhttp.setRequestHeader("Content-type",
 				"application/x-www-form-urlencoded;charset=UTF-8");
 		xhttp.send();
@@ -259,12 +266,12 @@ var Username = "?"; //이거도 세션에서받아오기
 						max-width: 235px; max-height: 235px;"><br>
 						닉네임 : ${data[i][1]}<br>
 						아이디 : ${data[i][0]}
-						<button onclick="javascript:addFriend('${data[i][0]}');" value="친구신청">친구신청</button>
+						<button onclick="javascript:addFriend('${data[i][0]}');" value="친구신청"></button>
 						</div>`;
 					
 					}
 				}
-				xhttp.open("get", `searchUser?searching=${findUser}&id=${User}`, true);
+				xhttp.open("get", `searchUser?searching=${findUser}`, true);
 				xhttp.setRequestHeader("Content-type",
 						"application/x-www-form-urlencoded;charset=UTF-8");
 				xhttp.send();
@@ -272,17 +279,58 @@ var Username = "?"; //이거도 세션에서받아오기
 			function addFriend(v) {
 				console.log("친구추가실행");
 				console.log(v);
-				const findUser = v;
 				const xhttp = new XMLHttpRequest();
 				xhttp.onload = function() {
 					let res_data = this.responseText;
-					alert(res_data);
+					document.getElementById("showResult").innerHTML = res_data;
+					alert("친구신청완료");
 				}
-				xhttp.open("post", `friendlist/post?id1=${User}&id2=${findUser}`, true);
+				xhttp.open("post", `friendlist/post?id1=${User},id2=${findUser}`, true);
 				xhttp.setRequestHeader("Content-type",
 						"application/x-www-form-urlencoded;charset=UTF-8");
 				xhttp.send();
 			}
+			
+			
+			
+			function acceptRequest(v1,v2,v3){
+				console.log(v1);	
+				console.log(v2);	
+				console.log(v3);	
+				const request1 = v1;
+				const request2 = v2;
+				const request3 = v3;
+				const xhttp = new XMLHttpRequest();
+				xhttp.onload = function() {
+					let res_data = this.responseText;
+					alert(res_data);
+					showFriends();
+				}
+				xhttp.open("delete", `friendrequest/accept?id=${request1}&id1=${request2}&id2=${request3}`, true);
+				xhttp.setRequestHeader("Content-type",
+						"application/x-www-form-urlencoded;charset=UTF-8");
+				xhttp.send();
+			}
+			function deleteRequest(v){
+				console.log(v);	
+				const request = v;
+				xhttp.onload = function() {
+					let res_data = this.responseText;
+					alert(res_data);
+					showFriends();
+				}
+				xhttp.open("delete", `friendrequest/delete?id={request}`, true);
+				xhttp.setRequestHeader("Content-type",
+						"application/x-www-form-urlencoded;charset=UTF-8");
+				xhttp.send();
+			}
+			
+			
+			
+			
+			
+			
+			
 		</script>
 <script type="text/javascript">
 	axios

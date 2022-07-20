@@ -44,6 +44,7 @@ var Username = "?"; //이거도 세션에서받아오기
 
 			<a href="/tofriendlist">친구 목록</a><br> <a
 				href="/tofriendsearch">친구 추가</a><br>
+				<a href="/tofriendrequest">친구 요청목록</a><br>
 
 		</div>
 
@@ -263,7 +264,7 @@ var Username = "?"; //이거도 세션에서받아오기
 					
 					}
 				}
-				xhttp.open("get", `searchUser?searching=${findUser}`, true);
+				xhttp.open("get", `searchUser?searching=${findUser}&id=${User}`, true);
 				xhttp.setRequestHeader("Content-type",
 						"application/x-www-form-urlencoded;charset=UTF-8");
 				xhttp.send();
@@ -271,13 +272,13 @@ var Username = "?"; //이거도 세션에서받아오기
 			function addFriend(v) {
 				console.log("친구추가실행");
 				console.log(v);
+				const findUser = v;
 				const xhttp = new XMLHttpRequest();
 				xhttp.onload = function() {
 					let res_data = this.responseText;
-					document.getElementById("showResult").innerHTML = res_data;
-					alert("친구신청완료");
+					alert(res_data);
 				}
-				xhttp.open("post", `friendlist/post?id1=${User},id2=${findUser}`, true);
+				xhttp.open("post", `friendlist/post?id1=${User}&id2=${findUser}`, true);
 				xhttp.setRequestHeader("Content-type",
 						"application/x-www-form-urlencoded;charset=UTF-8");
 				xhttp.send();

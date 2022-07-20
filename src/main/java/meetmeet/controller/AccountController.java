@@ -192,10 +192,13 @@ public class AccountController {
 	}
 	@ResponseBody
 	@GetMapping("searchUser")
-	public List<List<String>> searchUser(String searching){
+	public List<List<String>> searchUser(HttpSession session,String searching, String id){
 		System.out.println(searching);
+		
+		id = session.getAttribute("accountId").toString();
+		System.out.println(id);
 		List<Account> result = new ArrayList<Account>();
-		result= dao.findByNickNameContaining(searching);
+		result= dao.findByNickNameContainingAndAccountIdNot(searching, id);
 		List<List<String>> result2 = new ArrayList<List<String>>();
 		
 		for (Account i : result) {
@@ -265,7 +268,11 @@ public class AccountController {
 	public String toFriendsSearch(HttpSession session) throws NoSuchAlgorithmException {
 		return "friendsearch"; //에러페이지러변경!!
 	}
-
+	@GetMapping("/tofriendrequest")
+	public String toFriendsRequest(HttpSession session) throws NoSuchAlgorithmException {
+		return "friendrequest"; //에러페이지러변경!!
+	}
+	
 	@ResponseBody
 	@PostMapping("/getsession")
 	public String[] getSession(HttpSession session) {

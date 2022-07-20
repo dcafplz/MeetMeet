@@ -43,16 +43,24 @@ public class FriendListController {
 	}
 	
 	@DeleteMapping("delete")
-	public void delete(Integer id) {
-		System.out.println(id);
-		friendListService.delete(id);
+	public String delete(String id1,String id2) {
+		String result = null;
+		result="삭제 중 오류가 발생했습니다";
+		result = friendListService.delete(id1,id2);
+		return result;
 	}
 	
 	@PostMapping("post")
-	public void post(String id1, String id2) {
+	public String post(String id1, String id2) {
 		System.out.println(id1);
 		System.out.println(id2);
-		friendListService.post(id1,id2);
+		String result = friendListService.post(id1,id2);
+		if (result.equals("친구상태")) {
+			return "친구상태입니다";
+		}else if(result.equals("친구신청이미보냄")) {
+			return "친구신청을 이미 보냈습니다";
+		}return "친구요청 성공";
+
 	}
 
 }

@@ -44,6 +44,7 @@ var Username = "?"; //이거도 세션에서받아오기
 
 			<a href="/tofriendlist">친구 목록</a><br> <a
 				href="/tofriendsearch">친구 추가</a><br>
+				<a href="/tofriendrequest">친구 요청목록</a><br>
 
 		</div>
 
@@ -149,7 +150,7 @@ var Username = "?"; //이거도 세션에서받아오기
 			console.log(div);
 			div.innerHTML = "";
 			for (i in data){
-				div.innerHTML += `<div class="friendsprofile" id=${data[i][0]} style="border: 1px solid blue; width: 240px; height: 300px;">
+				div.innerHTML += `<div class="friendsprofile" id=${data[i][1]} style="border: 1px solid blue; width: 240px; height: 300px;">
 				<img src="images/profile/${data[i][1]}_profile.png" alt="" style="width:235px; height:235px;
 				max-width: 235px; max-height: 235px;"><br>
 				친구목록id : ${data[i][0]}<br>
@@ -222,16 +223,13 @@ var Username = "?"; //이거도 세션에서받아오기
 	function deleteFriend(){
 		console.log("성공");
 		console.log(hiddenPath);
-		console.log(typeof(hiddenPath));
-		var hiddenPath2 = parseInt(hiddenPath);
-		console.log(hiddenPath2);
-		console.log(typeof(hiddenPath2));
+		console.log(User);
 		const xhttp = new XMLHttpRequest();
 		xhttp.onload = function() {
 			console.log("삭제완료");
 			showFriends();
 		}		
-		xhttp.open("delete", `friendlist/delete?id=${hiddenPath2}`, true);
+		xhttp.open("delete", `friendlist/delete?id1=${hiddenPath}&id2=${User}`, true);
 		xhttp.setRequestHeader("Content-type",
 				"application/x-www-form-urlencoded;charset=UTF-8");
 		xhttp.send();
