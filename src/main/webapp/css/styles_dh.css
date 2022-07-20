@@ -37,13 +37,13 @@
 	border-radius: 10px;
 	border: 1px solid rgba(255, 255, 255, 0.18);
 	position: fixed;
-	top: 50%;
+	top: 50.5%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
 
 #modal .modal-window {
-	background: rgba(244,98,58,0.7);
+	background: rgba(251, 249, 249, 0);
 	box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 	backdrop-filter: blur(13.5px);
 	-webkit-backdrop-filter: blur(13.5px);

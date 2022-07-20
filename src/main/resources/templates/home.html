@@ -193,8 +193,7 @@
 		<button id="get_moem_btn" onclick="get_moem()">모임 더보기</button>
 		<div>
 			<h5 id="remained_moem">참가 중인 모임</h5>
-			<div id="moem_list" class="text-center text-white"
-				style="background-color: rgb(244 98 58/ 70%); border-radius: 5%;"></div>
+			<div id="moem_list" class="text-center text-white"></div>
 		</div>
 		<div id="item_list" class="text-center text-white"></div>
 	</div>
@@ -202,29 +201,58 @@
 	<!-- 모달 부분 -->
 	<div id="modal" class="modal-overlay">
 		<div class="modal-window">
-			<div class="title">
-				<h2>모달</h2>
-			</div>
 			<div class="close-area">X</div>
-			<div class="content">
-				<div class="card-body p-4">
-					<div class="text-center">
-						<img class="card-img-top" src="" alt="..." />
-					</div>
+			<div class="row gx-4 gx-lg-5 justify-content-center"
+				style="display: flex; flex-direction: column; align-content: center;">
+				<div class="text-center">
+					<img class="card-img-top" src="" alt="..." />
 				</div>
-				<div class="card-body p-4">
-					<div class="text-center">
-						<h5 class="fw-bolder"></h5>
-						<h8 class="fw-bolder2"></h8>
+				<table border="1" style="width: 660px; align-content: center;">
+					<th>
+						<div class="" th:text="모임이름"></div>
+					</th>
+					<th>
+						<div th:text="모임장소"></div>
+					</th>
+					<th>
+						<div th:text="모임시작"></div>
+					</th>
+					<th>
+						<div th:text="모임끝"></div>
+					</th>
+					<tr>
+						<td>
+							<div class="fw-bolder"></div>
+						</td>
+						<td>
+							<div class="fw-bolder2"></div>
+						</td>
+					</tr>
+				</table>
+			 	<div th:if="${session.accountId != null}">
+			 		<input id="p-button" type="hidden" value="">
+					<button id="button-participate" class="btn btn-primary btn-xl"
+						style="display: none" onclick="meetparticipate()">참여하기</button>
+					<button id="button-participate-cancel" class="btn btn-primary btn-xl"
+						style="display: none" onclick="meetparticipatecancel()">취소하기</button>
+				</div>
+				<form id="detailform" action="" method="get" style="align: center;">
+					<input class="form-control" id="meetingId" type="hidden"
+						name="meetingId" />
+					<button class="btn btn-primary btn-xl" id="detailButton"
+						type="submit">자세히보기</button>
+				</form>
+			</div>
+			<div class="container px-4 px-lg-5"
+				style="display: flex; flex-direction: column;">
+				<div class="row gx-4 gx-lg-5 justify-content-center mb-5"
+					style="display: flex; flex-grow: 1; flex-direction: row;">
+					<div class="col-lg-6" style="flex-grow: 1;">
+						<div id="map"
+							style="width: 588px; height: 500px; margin-top: 40px"></div>
 					</div>
 				</div>
 			</div>
-			<form id="detailform" action="" method="get">
-				<input class="form-control" id="meetingId" type="hidden"
-					name="meetingId" />
-				<button class="btn btn-primary btn-xl" id="detailButton"
-					type="submit">자세히보기</button>
-			</form>
 		</div>
 	</div>
 	<!-- Section-->
@@ -470,12 +498,14 @@
 	       const modal = document.getElementById("modal");
 	       
 	       function modalOn1(e) {
+	    	   check_meetparticipate(e.target.parentElement.parentElement.parentElement.parentElement.id);
     		   console.log(e.target.parentElement.parentElement.parentElement.parentElement);
 	           modal.style.display = "flex";
 	           modal_content(e.target.parentElement.parentElement.parentElement.parentElement.id);
 	       };
 	       
 	       function modalOn2(e) {
+	    	   check_meetparticipate(e.target.parentElement.parentElement.id);
 	    	   console.log(e.target.parentElement.parentElement.id);
 	           modal.style.display = "flex";
 	           modal_content(e.target.parentElement.parentElement.id);
@@ -510,6 +540,7 @@
 	       });
 	       
 	       function modal_content(parent_id){
+	    	   document.getElementById("p-button").value = parent_id;
 	    	   var parent_tag = document.getElementById(parent_id);
 	    	   console.log(item_list[parent_id]);
 	    	   var modal_tag = document.getElementById("modal");
@@ -520,6 +551,7 @@
 			    	   modal_tag.getElementsByClassName("card-img-top")[0].src = item_list[i].img;
 			    	   modal_tag.getElementsByClassName("fw-bolder")[0].innerText = item_list[i].name;
 			    	   modal_tag.getElementsByClassName("fw-bolder2")[0].innerText = item_list[i].content;
+			    	   
 	    		   }
 	    	   }
 /* 	    	   modal_tag.getElementsByClassName("card-img-top")[0].src = parent_tag.getElementsByClassName("card-img-top")[0].src;
@@ -555,6 +587,80 @@
 	    	     }
 	    	   }
 	    	 }
+	       
+	       
+	       function isWriterTrueParticipateFalse(){
+		   		document.getElementById("button-participate").style.display = "block";
+		   		document.getElementById("button-participate-cancel").style.display = "none";
+		   	}
+		   	
+		   	function isWriterTrueParticipateTrue(){
+		   		document.getElementById("button-participate").style.display = "none";
+		   		document.getElementById("button-participate-cancel").style.display = "block";
+		   	}
+	       
+	       
+	       /* 미팅 참가 여부 확인 */
+	       
+	       function check_meetparticipate(id){
+	   		 axios.post('/check/meetparticipate', null, {params:{
+	   			meetingId: id
+	   		}
+	   		})
+	   		.then(function (response) {
+	   		 	if(response.data){
+	   		 		isWriterTrueParticipateTrue();
+	   			}else{
+	   				isWriterTrueParticipateFalse();
+	   			}
+	   		 	// setTimeout(check_meetparticipate,2000);
+	   		})
+	   			.catch(function (error) {
+	   			console.log(error);
+	   		});
+	   	}
+	       
+	       /* meeting 참가하기 */
+	  	 function meetparticipate(){
+	    	   console.log(document.getElementById("p-button").value);
+	  		 axios.post('/meetparticipate', null, {params:{
+	  			meetingId: document.getElementById("p-button").value
+	  		}
+	  		})
+	  		.then(function (response) {	
+	  		 	if(!response.data){
+	  				isWriterTrueParticipateTrue();
+	  				my_item_list = [];
+	  				next_page_moem = 0;
+	  				document.getElementById("moem_list").innerHTML = "";
+  			 		get_my_meet();
+	  			}
+	  		})
+	  			.catch(function (error) {	
+	  			console.log(error);
+	  		}); 
+	  	}
+	  	
+	  	 /* meeting 취소하기 */
+	  		function meetparticipatecancel(){
+	  			 axios.post('/cancel/meetparticipate', null, {params:{
+	  				meetingId: document.getElementById("p-button").value
+	  			}
+	  			})
+	  			.then(function (response) {	
+	  				console.log(response);
+	  			 	if(response.data){
+	  			 		isWriterTrueParticipateFalse();
+	  			 		my_item_list = [];
+	  			 		next_page_moem = 0;
+	  			 		document.getElementById("moem_list").innerHTML = "";
+	  			 		get_my_meet();
+	  				}
+	  			})
+	  				.catch(function (error) {	
+	  				console.log(error);
+	  			});
+	  		}
 	      	
         </script>
 </body>

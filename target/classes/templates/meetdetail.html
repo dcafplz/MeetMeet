@@ -73,11 +73,13 @@
 
 				</div>
 			</div>
-			<a id="button-participate" class="btn btn-primary btn-xl"  style="display: none" onclick="meetparticipate()">참여하기</a>
-			<a id="button-participate-cancel" class="btn btn-primary btn-xl" style="display: none" onclick="meetparticipatecancel()">취소하기</a>
-			<a id="button-delete" class="btn btn-primary btn-xl" style="display: none" th:href="@{/meetmeet/delete(meetingId=${meeting.meetingId})}">모임삭제</a>
-			<br>
-			<a id="button-modify" class="btn btn-primary btn-xl" style="display: none; opacity:0.8" th:href="@{/meetmeet/modify/{meetingId}(meetingId=${meeting.meetingId})}">모임수정</a>
+			<div th:if="${session.accountId != null}">
+				<a id="button-participate" class="btn btn-primary btn-xl"  style="display: none" onclick="meetparticipate()">참여하기</a>
+				<a id="button-participate-cancel" class="btn btn-primary btn-xl" style="display: none" onclick="meetparticipatecancel()">취소하기</a>
+				<a id="button-delete" class="btn btn-primary btn-xl" style="display: none" th:href="@{/meetmeet/delete(meetingId=${meeting.meetingId})}">모임삭제</a>
+				<br>
+				<a id="button-modify" class="btn btn-primary btn-xl" style="display: none; opacity:0.8" th:href="@{/meetmeet/modify/{meetingId}(meetingId=${meeting.meetingId})}">모임수정</a>
+			</div>
 		</div>
 	</section>
 </body>
@@ -147,12 +149,6 @@
 
 	map.setCursor('pointer');
 
-	searchCoordinateToAddress({
-		y : lat,
-		_lat : lat,
-		x : lng,
-		_lng : lng
-	})
 	function searchCoordinateToAddress(latlng) {
 
 		infoWindow.close();
@@ -197,9 +193,7 @@
 							document.getElementById("departure").value = htmlAddresses[0]
 									.replace("[지번 주소] ", "");
 							document.getElementById("lat_de").value = latlng._lat;
-							document.getElementById("lat_de").innerText = latlng._lat;
 							document.getElementById("lng_de").value = latlng._lng;
-							document.getElementById("lng_de").innerText = latlng._lng;
 							
 							dx =  document.getElementById("lng").value;
 							dy =  document.getElementById("lat").value;
@@ -260,9 +254,7 @@
 							}
 
 							document.getElementById("lat_de").value = item.y;
-							document.getElementById("lat_de").innerText = item.y;
 							document.getElementById("lng_de").value = item.x;
-							document.getElementById("lng_de").innerText = item.x;
 							
 							dx =  document.getElementById("lng").value;
 							dy =  document.getElementById("lat").value;
@@ -420,6 +412,7 @@
 	}
 	
 	function getOutRoute(result){
+		document.getElementById('result-route').innerHTML = "";
 		if(result.count === 0){
 			return;
 		}else{
@@ -445,6 +438,7 @@
 	
 	function getRoute(result){
 		console.log(result);
+		document.getElementById('result-route').innerHTML = "";
 		if(typeof result["result"]["path"] === 'undefined'){
 			getOutRoute(result["result"].airRequest);
 			getOutRoute(result["result"].exBusRequest);
@@ -580,6 +574,40 @@
 			console.log(error);
 		});
 	}
+	
+	/* 현재 유저의 위치 가져오기 */
+	
+	/*<![CDATA[*/
+	 let session_accountId = /*[[ ${session.accountId} ]]*/;
+	 /*]]*/
+	
+	if(session_accountId != null){
+		get_direct_user();
+	}
+	
+	function get_direct_user(){
+		axios.post('/place/getone', null, {params:{
+			id: session_accountId
+		}
+		})
+		.then(function (response) {
+			mark_direct_user(response.data);
+		})
+			.catch(function (error) {
+			console.log(error);
+		});
+	}
+	
+	function mark_direct_user(res){		
+		searchCoordinateToAddress({
+			y : res.lng,
+			_lat : lat,
+			x : res.lat,
+			_lng : lng
+		})
+		
+	}
+	
 	
 	
 	

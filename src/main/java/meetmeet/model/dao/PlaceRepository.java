@@ -7,4 +7,6 @@ import meetmeet.model.entity.Place;
 
 public interface PlaceRepository extends CrudRepository<Place, Long>{
 	
+	Place findPlaceByAccountId(String accountId);
+	
 }
