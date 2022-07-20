@@ -6,9 +6,10 @@
 	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <meta name="description" content="" />
 <meta name="author" content="" />
-<title>밋밋</title>
 <!-- Favicon-->
 <link rel="icon" type="image/x-icon" href="assets/handshaking.png" />
+<!-- title -->
+<title>빠르고 간편한 모임 MeetMeet</title>
 <!-- Bootstrap icons-->
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
@@ -150,26 +151,22 @@
 
 
 <body>
-	<div th:if="${session.sessionTest == 'Y'}">???  </div>
 	<span th:text="${session.accountId}"></span>
-
-	<div th:if="${session.accountId == 'ffff'}"> id 넘어왔음  </div>
 	<div th:if="${session.accountId == null}"> ????????  </div>
-	<div th:if="${session.nickName == '닉네임'}"> 닉네임 넘어왔음 </div>
 	<!-- Navigation-->
-	<div th:insert="nav.html"></div>
+	<div th:insert="nav"></div>
 	<!-- Header-->
 	<header class="bg-dark py-5">
-		<div style="border: 1px solid red;">
-			<div id="slider-wrap" style="border: 1px solid blue;">
+		<div style="">
+			<div id="slider-wrap" style="">
 
 				<ul id="slider">
-					<li><img alt="사진못찾음" src="images/(13).png"
+					<li><img alt="사진못찾음" src="images/ad1.jpg"
 						style="max-width: 1200px; max-height: 265px;"></li>
 
-					<li><img alt="사진못찾음" src="images/(14).png"
+					<li><img alt="사진못찾음" src="images/ad2.jpg"
 						style="max-width: 1200px; max-height: 265px;"></li>
-					<li><img alt="사진못찾음" src="images/(15).png"
+					<li><img alt="사진못찾음" src="images/ad3.jpg"
 						style="max-width: 1200px; max-height: 265px;"></li>
 				</ul>
 				<div class="slider-btns" id="next">
@@ -264,12 +261,6 @@
 			</div>
 		</div>
 		<!-- Footer-->
-		<footer class="py-5 bg-dark">
-			<div class="container">
-				<p class="m-0 text-center text-white">Copyright &copy; Your
-					Website 2022</p>
-			</div>
-		</footer>
 		<!-- Bootstrap core JS-->
 		<script
 			src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -663,5 +654,6 @@
 	  		}
 	      	
         </script>
+		<div th:insert="footer"></div>
 </body>
 </html>

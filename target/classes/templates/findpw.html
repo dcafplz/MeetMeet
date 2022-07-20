@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -10,8 +9,13 @@
         <link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css" rel="stylesheet" />
 <link href="css/styles_jw.css" rel="stylesheet" />
+<!-- Favicon-->
+<link rel="icon" type="image/x-icon" href="assets/handshaking.png" />
+<!-- title -->
+<title>빠르고 간편한 모임 MeetMeet</title>
 </head>
 <body>
+	<br><br><br><br>
 	<div class="row gx-4 gx-lg-5 justify-content-center mb-5">
 		<div class="col-lg-6">
 			<form id="finwpwform" action="account/findpw" method="post">
@@ -56,12 +60,12 @@
 		</div>
 		
 		<br>
-		<a href="login.html">로그인 화면으로 돌아가기</a>
+		<a href="tologin">로그인 화면으로 돌아가기</a>
 		
 		<br>
 		<span th:text="${msg}"></span>
 	</div>
-	
+<div th:insert="footer"></div>
 			<script type="text/javascript">
 			let nums = new Array(4);
 			nums.fill(0);
@@ -122,5 +126,6 @@
 				;
 			};
 		</script>
+		
 </body>
 </html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+        <!-- Favicon-->
+		<link rel="icon" type="image/x-icon" href="assets/handshaking.png" />
+		<!-- title -->
+		<title>빠르고 간편한 모임 MeetMeet</title>
+<!-- Bootstrap icons-->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
+	rel="stylesheet" />
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="css/styles_jw.css" rel="stylesheet" />
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- Favicon-->
+<link rel="icon" type="image/x-icon" href="assets/handshaking.png" />
+<!-- title -->
+<title>빠르고 간편한 모임 MeetMeet</title>
+</head>
+<body>
+	<!-- Navigation-->
+	<div th:insert="nav"></div>
+	<!-- Header-->
+	<!-- Section-->
+	<br><br><br><br>
+	<div style="display: block">
+<!-- 		<form action="/tomypagepre" method="get">
+			<div class="d-grid">
+				<button class="btn btn-primary" type="button" style="opacity: 0.7"
+			onclick="/tomypagepre">선호모임 변경</button>
+			</div>
+		</form>
+		<form action="/tomypagenic" method="get">
+			<div class="d-grid">
+				<button class="btn btn-primary" type="button" style="opacity: 0.7"
+			onclick="/tomypagenic">개인정보 변경</button>
+			</div>
+		</form>
+		<form action="/tomypagepw" method="get">
+			<div class="d-grid">
+				<button class="btn btn-primary" type="button" style="opacity: 0.7"
+			onclick="/tomypagepw">비밀번호 변경</button>
+			</div>
+		</form> -->
+
+
+		<div id="changing3" class="row gx-4 gx-lg-5 justify-content-center mb-5">
+			<div class="col-lg-6">
+			<form id="signupform" action="account/changepw" method="post">
+				<div class="form-floating mb-3">
+					<input class="form-control" name="pw" id="pw" type="password"
+						required minlength="4" maxlength="15" onchange="pwval()" /> <label
+						for="pw">Password</label>
+					<div class="pw invalid-feedback">pw의 길이는 4자이상 15자 이하여야 합니다.</div>
+					<div class="pw valid-feedback" style="display: none">사용 가능한
+						pw입니다.</div>
+				</div>
+				<div class="form-floating mb-3">
+					<input class="form-control" id="pw2" type="password" required
+						minlength="4" maxlength="15" onchange="pw2val()" /> <label
+						for="pw2">Password confirm</label>
+					<div class="pw2 invalid-feedback">비밀번호 확인이 일치하지 않습니다.</div>
+					<div class="pw2 valid-feedback" style="display: none">비밀번호
+						확인이 일치합니다.</div>
+				</div>
+				<div class="d-grid">
+					<button class="btn btn-primary btn-xl" id="changePwButton"
+						type="submit" disabled="ture">변경하기</button>
+				</div>
+			</form>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			let nums = new Array(2);
+			nums.fill(0);
+
+			function pwval() {
+
+				var e = document.getElementById("pw");
+				var ei = document.getElementsByClassName('pw invalid-feedback');
+				var ev = document.getElementsByClassName('pw valid-feedback');
+
+				if (e.checkValidity()) {
+					ev[0].style.display = "block";
+					ei[0].style.display = "none";
+					nums[0] = 1;
+				} else {
+					ev[0].style.display = "none";
+					ei[0].style.display = "block";
+					nums[0] = 0;
+				}
+				;
+				val();
+			};
+
+			function pw2val() {
+
+				var e1 = document.getElementById("pw");
+				var e2 = document.getElementById("pw2");
+				var ei = document
+						.getElementsByClassName('pw2 invalid-feedback');
+				var ev = document.getElementsByClassName('pw2 valid-feedback');
+
+				if (e1.value == e2.value) {
+					ev[0].style.display = "block";
+					ei[0].style.display = "none";
+					nums[1] = 1;
+				} else {
+					ev[0].style.display = "none";
+					ei[0].style.display = "block";
+					nums[1] = 0;
+				}
+				;
+				val();
+			};
+
+			function val() {
+				var k = 1;
+				for (i = 0; i < 2; i++) {
+					if (nums[i] == 0) {
+						k = 0;
+						break;
+					}
+				}
+				if (k == 0) {
+					document.getElementById("changePwButton").disabled = true;
+				} else {
+					document.getElementById("changePwButton").disabled = false;
+				}
+				;
+			};
+		</script>
+
+	</div>
+
+
+	<!-- Footer-->
+	<div th:insert="footer"></div>
+	<!-- Bootstrap core JS-->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
