@@ -1,5 +1,8 @@
 package meetmeet.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -20,6 +23,7 @@ import meetmeet.model.dto.MeetingDTO;
 import meetmeet.model.dto.MeetingParticipantDTO;
 import meetmeet.model.entity.Account;
 import meetmeet.model.entity.Meeting;
+import meetmeet.model.entity.MeetingParticipant;
 import meetmeet.service.MeetingParticipantService;
 import meetmeet.service.MeetingService;
 
@@ -134,6 +138,34 @@ public class MeetingController {
 		}else {
 			return false;
 		}
+	}
+	
+	@GetMapping("/getmymeet")
+	public ModelAndView getMyMeet(HttpServletRequest req) throws Exception {
+		
+		ModelAndView modelAndView = new ModelAndView();
+		
+		if(req.getSession().getAttribute("accountId") != null) {
+			
+			String accountId = (String) req.getSession().getAttribute("accountId");
+			List<MeetingParticipant> mps = meetingParticipantService.searchByParticipant(accountId);
+			List<MeetingDTO> meetings = new ArrayList<>();
+			
+			for(MeetingParticipant mp:mps) {
+				meetings.add(meetingService.meetView(mp.getMeetingId()));
+			}
+			
+			modelAndView.addObject("meetings", meetings);
+			modelAndView.setViewName("mymeeting");
+			System.out.println(meetings);
+			
+//			return req.getSession().getAttribute("accountId").equals(meeting.getMaster_id());
+			
+		}else {
+			modelAndView.setViewName("redirect:/tohome");
+		}
+		
+		return modelAndView;
 	}
 
 }
