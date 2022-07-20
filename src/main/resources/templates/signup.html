@@ -133,6 +133,9 @@
 		src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
 	<!-- Core theme JS-->
 	<script type="text/javascript">
+		let nums = new Array(6);
+		nums.fill(0);
+	
 		function searchAddressToCoordinate(arr) {
 			naver.maps.Service.geocode({
 				address : arr
@@ -150,21 +153,19 @@
 				if (items.length == 0) {
 					ev[0].style.display = "none";
 					ei[0].style.display = "block";
+					nums[5] = 0;
 
 				} else {
 					document.getElementById("lat").value = items[0].point.x;
 					document.getElementById("lng").value = items[0].point.y;
 					ev[0].style.display = "block";
 					ei[0].style.display = "none";
-
-				}
-				;
+				};
+				val();
 			});
-			val();
 		};
 
-		let nums = new Array(6);
-		nums.fill(0);
+
 
 		function idval() {
 
@@ -242,7 +243,7 @@
 
 		function val() {
 			var k = 1;
-			for (i = 0; i < 5; i++) {
+			for (i = 0; i < 6; i++) {
 				if (nums[i] == 0) {
 					k = 0;
 					break;
