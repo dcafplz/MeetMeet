@@ -109,17 +109,7 @@ public class AccountController {
 
 	    return "N";
 	}
-	
-<<<<<<< HEAD
-=======
-	@ResponseBody
-	@PostMapping("/getsession")
-	public String[] getSession(HttpSession session) {
-		return new String[] {session.getAttribute("accountId").toString(), session.getAttribute("nickName").toString()};
-	}
 
-	
->>>>>>> 46e5604c2a2df3d006296eeee5d272458de7a66a
 	@GetMapping("account/logout")
 	public String logout(HttpSession session) {
 
@@ -128,10 +118,7 @@ public class AccountController {
 	    }
 
 	    return "redirect:/tohome";
-<<<<<<< HEAD
 
-=======
->>>>>>> 2ff16fb048595190da8d5733963638f06229e561
 	}
 
 	@PostMapping("account/changenickname")
@@ -269,8 +256,6 @@ public class AccountController {
 	public String toAbout(HttpSession session) {
 		return "about";
 	}
-<<<<<<< HEAD
-=======
 	
 	@GetMapping("/tofriends")
 	public String toFriends(HttpSession session, String command) throws NoSuchAlgorithmException {
@@ -292,7 +277,6 @@ public class AccountController {
 	public String[] getSession(HttpSession session) {
 		return new String[] {session.getAttribute("accountId").toString(), session.getAttribute("nickName").toString()};
 	}
->>>>>>> 2ff16fb048595190da8d5733963638f06229e561
 	
 	@GetMapping("/tosignup")
 	public String toSignUp(HttpSession session) {
