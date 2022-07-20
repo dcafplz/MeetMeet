@@ -64,15 +64,11 @@ CrudRepository의 기본기능을 사용하였습니다.
 &nbsp;
 
 (2) MeetingService
+
+- MeetingService에서는 4가지 기능을 구현하였습니다.
+1. Long meetCreate meetCreate(MeetingDTO meeting, MultipartFile file)
 ``` java
-@Service 
-public class MeetingService {
-	
-	@Autowired
-	private MeetingRepository meetingRepository;
-	
-	private ModelMapper modelMapper = new ModelMapper(); // 추후 빈에 등록 필요
-	
+
 	public Long meetCreate(MeetingDTO meeting, MultipartFile file) throws Exception{       
 
         String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
@@ -93,32 +89,22 @@ public class MeetingService {
         Long id = meetingRepository.save(modelMapper.map(meeting, Meeting.class)).getMeetingId();
         return id;
     }
-	
-    public MeetingDTO meetView(Long id){
-        return modelMapper.map(meetingRepository.findById(id).get(), MeetingDTO.class);
-    }
-    
-    public void meetDelete(Long id){
-    	meetingRepository.deleteById(id);
-    }
-    
+```
+    (1) MultipartFile를 통해 모임을 만들때 필요한 사진 file을 전달 받았습니다.
+    (2) 이미지 이름이 중복되지 않게 UUID library를 이용하여 random 식별자를 이용해 file명을 rename한 뒤, 저장될 경로와 함께 DTO에 저장하였습니다.
+    (3) 이후, db에 저장 후 만들어진 meetingId를 반환해줍니다.
+ &nbsp;
+2. Iterable<Meeting> meetList()
+  ``` java    
     public Iterable<Meeting> meetList() {
     	Iterable<Meeting> p = meetingRepository.findAll();
     	p.forEach(e -> modelMapper.map(e, MeetingDTO.class));
     	return p;
     }
-
-}
 ```
-- MeetingService에서는 4가지 기능을 구현하였습니다.
-1. Long meetCreate meetCreate(MeetingDTO meeting, MultipartFile file)
-    (1) MultipartFile를 통해 모임을 만들때 필요한 사진 file을 전달 받았습니다.
-    (2) 이미지 이름이 중복되지 않게 UUID library를 이용하여 random 식별자를 이용해 file명을 rename한 뒤, 저장될 경로와 함께 DTO에 저장하였습니다.
-    (3) 이후, db에 저장 후 만들어진 meetingId를 반환해줍니다.
-2. Iterable<Meeting> meetList()
-  	(1) repository의 findAll()을 이용해 모든 search 값을 Iterable<Meeting>에 저장해주었습니다.
-  	(2) forEach 함수를 이용해 각각의 객체마다 modelMapper를 통해 DTO class로 변환한 뒤, return해주었습니다.
-
+    (1) repository의 findAll()을 이용해 모든 search 값을 Iterable<Meeting>에 저장해주었습니다.
+    (2) forEach 함수를 이용해 각각의 객체마다 modelMapper를 통해 DTO class로 변환한 뒤, return해주었습니다.
+  &nbsp;
 3. MeetingDTO meetView(Long id)
 4. void meetDelete(Long id)
     
@@ -126,30 +112,9 @@ public class MeetingService {
 &nbsp;
 &nbsp;
 (3) MeetingController
+- MeetingController에서는 8가지 기능을 구현하였습니다.
+1. ModelAndView meetCreate(MeetingDTO meeting, Model model, MultipartFile file, HttpServletRequest req)
 ``` java
-@RestController
-public class MeetingController {
-
-	@Autowired
-	private MeetingService meetingService;
-	
-	@Autowired
-	private MeetingParticipantService meetingParticipantService;
-
-	@PostMapping("/create-meet")
-	public ModelAndView meetCreatePage(Model model, HttpSession session, HttpServletRequest req) throws Exception {
-		
-		ModelAndView modelAndView = new ModelAndView();
-		
-		if(req.getSession().getAttribute("accountId") != null) {
-			modelAndView.setViewName("createmeet.html");
-		}else {
-			modelAndView.setViewName("redirect:/tohome");
-		}
-		return modelAndView;
-	}
-	
-	@PostMapping("/meetmeet/create-meet")
 	public ModelAndView meetCreate(MeetingDTO meeting, Model model, MultipartFile file, HttpServletRequest req) throws Exception {
 		
 		ModelAndView modelAndView = new ModelAndView();
@@ -175,25 +140,14 @@ public class MeetingController {
 
 		return modelAndView;
 	}
-
-	@GetMapping("/meetmeet/detail")
-	public ModelAndView meetView(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file) throws Exception {
-		
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("meetdetail.html");
-		modelAndView.addObject("meeting", meetingService.meetView(meetingId));
-
-		return modelAndView;
-	}
-	
-	@GetMapping("/meetmeet/modify/{meetingId}")
-    public ModelAndView meetModify(@PathVariable("meetingId") Long meetingId, Model model){
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("meetmodify.html");
-		modelAndView.addObject("meeting", meetingService.meetView(meetingId));
-        return modelAndView;
-    }
-
+```
+    (1) req.getSession()을 통해, 로그인한 회원의 시도가 아니라면 home으로 redirect 되게 처리하였습니다.
+    (2) 로그인한 회원이라면, MeetingDTO에 작성자(MasterId)를 추가해주어 service에 file과 함께 전달하여 새로 생긴 meeting id값을 반환 받습니다.
+    (3) meeting을 만든 회원도 해당 Meeting에 참가하도록, 새로운 MeetingParticipantDTO 객체를 만들어서 meet_participate db에 저장해주었습니다.
+    (4) 이후, 신규로 만든 meeting 정보와 해당 meeting의 상세 페이지로 redirect 해주었습니다.
+&nbsp;
+2. ModelAndView meetUpdate(@PathVariable("meetingId") Long meetingId, MeetingDTO meeting, Model model, MultipartFile file)
+``` java
     @PostMapping("/meetmeet/update/{meetingId}")
     public ModelAndView meetUpdate(@PathVariable("meetingId") Long meetingId, MeetingDTO meeting, Model model, MultipartFile file) throws Exception{
 
@@ -216,7 +170,10 @@ public class MeetingController {
         return modelAndView;
         
     }
-
+```
+&nbsp;
+3. ModelAndView meetDelete(Long meetingId, HttpServletRequest req)
+``` java
 	@GetMapping("/meetmeet/delete")
 	public ModelAndView meetDelete(Long meetingId, HttpServletRequest req) {
 		ModelAndView modelAndView = new ModelAndView();
@@ -229,21 +186,10 @@ public class MeetingController {
 		
 		return modelAndView;
 	}
-	
-	@GetMapping("/meetmeet/getall")
-	public Iterable<Meeting> getAll(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file) throws Exception {
-
-		Iterable<Meeting> i = meetingService.meetList();
-		System.out.println(i);
-
-		return i;
-	}
-	
-	@PostMapping("/meetmeet/getone")
-	public MeetingDTO getOne(Long meetingId) throws Exception {	
-		return meetingService.meetView(meetingId);
-	}
-	
+```
+&nbsp;
+4. boolean isWriter(MeetingDTO meeting, HttpServletRequest req)
+``` java
 	@PostMapping("/meetmeet/iswriter")
 	public boolean isWriter(MeetingDTO meeting, HttpServletRequest req) throws Exception {
 		if(req.getSession().getAttribute("accountId") != null) {
@@ -252,7 +198,10 @@ public class MeetingController {
 			return false;
 		}
 	}
-	
+```
+&nbsp;
+5. ModelAndView getMyMeet(HttpServletRequest req)
+``` java
 	@GetMapping("/meetmeet/getmymeet")
 	public ModelAndView getMyMeet(HttpServletRequest req) throws Exception {
 		
@@ -278,23 +227,38 @@ public class MeetingController {
 		
 		return modelAndView;
 	}
-
-}
 ```
-- MeetingController에서는 9가지 기능을 구현하였습니다.
-1. ModelAndView meetCreate(MeetingDTO meeting, Model model, MultipartFile file, HttpServletRequest req)
-    (1) req.getSession()을 통해, 로그인한 회원의 시도가 아니라면 home으로 redirect 되게 처리하였습니다.
-    (2) 로그인한 회원이라면, MeetingDTO에 작성자(MasterId)를 추가해주어 service에 file과 함께 전달하여 새로 생긴 meeting id값을 반환 받습니다.
-    (3) meeting을 만든 회원도 해당 Meeting에 참가하도록, 새로운 MeetingParticipantDTO 객체를 만들어서 meet_participate db에 저장해주었습니다.
-    (4) 이후, 신규로 만든 meeting 정보와 해당 meeting의 상세 페이지로 redirect 해주었습니다.
+6. ModelAndView meetView(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file)
+``` java
+	@GetMapping("/meetmeet/detail")
+	public ModelAndView meetView(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file) throws Exception {
+		
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("meetdetail.html");
+		modelAndView.addObject("meeting", meetingService.meetView(meetingId));
 
-3. ModelAndView meetUpdate(@PathVariable("meetingId") Long meetingId, MeetingDTO meeting, Model model, MultipartFile file)
-4. ModelAndView meetDelete(Long meetingId, HttpServletRequest req)
-5. boolean isWriter(MeetingDTO meeting, HttpServletRequest req)
-6. ModelAndView getMyMeet(HttpServletRequest req)
-7. ModelAndView meetView(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file)
-8. Iterable<Meeting> getAll(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file)
-9. MeetingDTO getOne(Long meetingId)
+		return modelAndView;
+	}
+```
+7. Iterable<Meeting> getAll(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file)
+``` java
+	@GetMapping("/meetmeet/getall")
+	public Iterable<Meeting> getAll(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file) throws Exception {
+
+		Iterable<Meeting> i = meetingService.meetList();
+		System.out.println(i);
+
+		return i;
+	}
+	
+```
+8. MeetingDTO getOne(Long meetingId)
+``` java
+	@PostMapping("/meetmeet/getone")
+	public MeetingDTO getOne(Long meetingId) throws Exception {	
+		return meetingService.meetView(meetingId);
+	}
+```
 
 
 
