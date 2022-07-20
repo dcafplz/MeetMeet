@@ -68,13 +68,17 @@ CREATE TABLE meeting_participant(
 ALTER TABLE place ADD FOREIGN KEY (account_id) REFERENCES account  (account_id) on delete cascade;
 ALTER TABLE friend_list ADD FOREIGN KEY (id1) REFERENCES account  (account_id) on delete cascade;
 ALTER TABLE friend_list ADD FOREIGN KEY (id2) REFERENCES account  (account_id) on delete cascade;
-alter table friend_list add constraint ck_friendList check (id1 != id2);
+ALTER TABLE friend_list ADD CONSTRAINT ck_friendList CHECK (id1 != id2);
 ALTER TABLE friend_request ADD FOREIGN KEY (request_id) REFERENCES account  (account_id) on delete cascade;
 ALTER TABLE friend_request ADD FOREIGN KEY (requested_id) REFERENCES account  (account_id) on delete cascade;
 ALTER TABLE preference ADD FOREIGN KEY (account_id) REFERENCES account  (account_id) on delete cascade;
 ALTER TABLE meeting ADD FOREIGN KEY (master_id) REFERENCES account  (account_id) on delete cascade;
 ALTER TABLE meeting_participant ADD FOREIGN KEY (participant_id) REFERENCES account  (account_id) on delete cascade;
 ALTER TABLE meeting_participant ADD FOREIGN KEY (meeting_id) REFERENCES meeting  (meeting_id) on delete cascade;
+
+ALTER TABLE friend_list ADD UNIQUE(id1, id2);
+ALTER TABLE friend_request ADD UNIQUE(request_id, requested_id);
+
 
 drop table if exists meeting_participant; 
 drop table if exists meeting; 

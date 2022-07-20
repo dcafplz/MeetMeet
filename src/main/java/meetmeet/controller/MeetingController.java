@@ -1,5 +1,8 @@
 package meetmeet.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -17,8 +20,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import meetmeet.model.dto.AccountDTO;
 import meetmeet.model.dto.MeetingDTO;
+import meetmeet.model.dto.MeetingParticipantDTO;
 import meetmeet.model.entity.Account;
 import meetmeet.model.entity.Meeting;
+import meetmeet.model.entity.MeetingParticipant;
+import meetmeet.service.MeetingParticipantService;
 import meetmeet.service.MeetingService;
 
 @RestController
@@ -26,6 +32,9 @@ public class MeetingController {
 
 	@Autowired
 	private MeetingService meetingService;
+	
+	@Autowired
+	private MeetingParticipantService meetingParticipantService;
 
 	@PostMapping("/create-meet")
 	public ModelAndView meetCreatePage(Model model, HttpSession session, HttpServletRequest req) throws Exception {
@@ -36,9 +45,17 @@ public class MeetingController {
 	
 	@PostMapping("/meetmeet/create-meet")
 	public ModelAndView meetCreate(MeetingDTO meeting, Model model, MultipartFile file, HttpServletRequest req) throws Exception {
-		meeting.setMaster_id((String) req.getSession().getAttribute("accountId"));
+		String accountId = (String) req.getSession().getAttribute("accountId");
 		ModelAndView modelAndView = new ModelAndView();
+		
+		meeting.setMaster_id(accountId);
 		Long id = meetingService.meetCreate(meeting, file);
+		
+		MeetingParticipantDTO mp = new MeetingParticipantDTO();
+		mp.setMeetingId(id);
+		mp.setParticipantId(accountId);
+		meetingParticipantService.meetParticipate(mp);
+		
 		modelAndView.setViewName("redirect:../meetmeet/detail?meetingId=" + id);
 		modelAndView.addObject("meeting", meetingService.meetView(id));
 
@@ -48,7 +65,7 @@ public class MeetingController {
 
 	@GetMapping("/meetmeet/detail")
 	public ModelAndView meetView(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file) throws Exception {
-		System.out.println(meetingId);
+		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("meetdetail.html");
 		modelAndView.addObject("meeting", meetingService.meetView(meetingId));
@@ -88,10 +105,15 @@ public class MeetingController {
     }
 
 	@GetMapping("/meetmeet/delete")
-	public ModelAndView meetDelete(Long meetingId) {
+	public ModelAndView meetDelete(Long meetingId, HttpServletRequest req) {
 		ModelAndView modelAndView = new ModelAndView();
 		meetingService.meetDelete(meetingId);
 		modelAndView.setViewName("redirect:/tohome");
+		
+		meetingParticipantService.
+		meetParticipationDelete(meetingId,
+				(String) req.getSession().getAttribute("accountId"));
+		
 		return modelAndView;
 	}
 	
@@ -116,6 +138,34 @@ public class MeetingController {
 		}else {
 			return false;
 		}
+	}
+	
+	@GetMapping("/getmymeet")
+	public ModelAndView getMyMeet(HttpServletRequest req) throws Exception {
+		
+		ModelAndView modelAndView = new ModelAndView();
+		
+		if(req.getSession().getAttribute("accountId") != null) {
+			
+			String accountId = (String) req.getSession().getAttribute("accountId");
+			List<MeetingParticipant> mps = meetingParticipantService.searchByParticipant(accountId);
+			List<MeetingDTO> meetings = new ArrayList<>();
+			
+			for(MeetingParticipant mp:mps) {
+				meetings.add(meetingService.meetView(mp.getMeetingId()));
+			}
+			
+			modelAndView.addObject("meetings", meetings);
+			modelAndView.setViewName("mymeeting");
+			System.out.println(meetings);
+			
+//			return req.getSession().getAttribute("accountId").equals(meeting.getMaster_id());
+			
+		}else {
+			modelAndView.setViewName("redirect:/tohome");
+		}
+		
+		return modelAndView;
 	}
 
 }

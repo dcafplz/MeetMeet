@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link
+	href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700"
+	rel="stylesheet" />
+<link
+	href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic"
+	rel="stylesheet" type="text/css" />
+<!-- SimpleLightbox plugin CSS-->
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css"
+	rel="stylesheet" />
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="../css/styles_jw.css" rel="stylesheet" />
+<title>빠르고 간편한 모임 MeetMeet</title>
+</head>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<body>
+	<!-- Navigation-->
+	<div th:insert="nav"></div>
+	<table class="table" style="margin-left:auto; 
+    margin-right:auto;top:17%; width:60%;">
+			<tr>
+				<th><h4 style="color:#f4623a;">모임이름</h4></th>
+				<th><h4 style="color:#f4623a;">모임일정</h4></th>
+				<th><h4 style="color:#f4623a;">모임장소</h4></th>
+				<th><h4 style="color:#f4623a;">모임취소</h4></th>
+			</tr>
+			<tr th:each="meet : ${meetings}">
+                <th th:text="${meet.meetingName}">1</th>
+                <th th:text="${meet.meetingStartDate}"></th>
+                <th th:text="${meet.meetingPlace}"></th>
+                <th>
+                   <button th:text="취소" th:myId="${meet.meetingId}" th:onclick="meetparticipatecancel(this.getAttribute('myId'))"
+                    class="btn btn-primary btn-xl" style="width: 100px; height: 30px;  text-align: center; line-height: 0px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;" ></button>
+                </th>
+	        </tr>
+	</table>
+	<script th:inline="javascript">
+
+			function meetparticipatecancel(id){
+				console.log(id);
+				axios.post('/cancel/meetparticipate', null, {params:{
+					meetingId: id
+				}
+				})
+				.then(function (response) {	
+					console.log(response);
+				 	if(response.data){
+				 		location.reload();
+					}
+				})
+					.catch(function (error) {	
+					console.log(error);
+				});
+			}
+	</script>
+</body>
+</html>
