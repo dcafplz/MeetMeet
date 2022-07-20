@@ -22,16 +22,17 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@IdClass(FriendListId.class)
 public class FriendList implements Serializable {
 
 	@Id
+	private int id;
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id1")
 	@JsonIgnore
 	private Account id1;
 
-	@Id
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id2")
 	@JsonIgnore
