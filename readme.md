@@ -9,8 +9,8 @@
 
 ### DB
 
-DB설계도
-삽입예정
+DB설계도    
+-삽입예정-
 
 외래키의 ON DELETE CASECADE속성, UNIQUE속성을 활용해 무결성 유지
 ```sql
@@ -19,7 +19,6 @@ account  (account_id) on delete cascade;
 
 # 멀티 컬럼 유니크
 ALTER TABLE friend_list ADD UNIQUE(id1, id2);
-}
 ```
 
 ### Back-End
