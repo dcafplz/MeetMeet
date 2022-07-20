@@ -670,24 +670,12 @@
 									};
 								};
 							};
-							if(result == false){
-								idx_list.push(item_list.indexOf(item_list[i]));
-							}
-						}
-						for(i in item_list){
-							result = true;
-							for(j in idx_list){
-								if(i == j){
-									result = false;
-									break;
-								};
-							};
 							if(result == true){
 								item_list_temp.push(item_list[i]);
 							}
 						}
+						
 						item_list = item_list_temp;
-						console.log(item_list);
 						document.getElementById("item_list").innerHTML = "";
 						get_new_item(0, 12);
 					});
