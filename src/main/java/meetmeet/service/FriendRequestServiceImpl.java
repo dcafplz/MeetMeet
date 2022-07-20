@@ -64,10 +64,11 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 			if (result2.isPresent()) {
 				result4 = modelMapper.map(result2.get(),AccountDTO.class);
 			}
-
+			System.out.println("진행상황확인용");
 			FriendListDTO result = FriendListDTO.builder().id1(result3).id2(result4).build();
-			FriendListDTO resultt = FriendListDTO.builder().id2(result3).id1(result4).build();
 			friendListRepository.save(modelMapper.map(result, FriendList.class));
+			System.out.println("성공");
+			FriendListDTO resultt = FriendListDTO.builder().id2(result3).id1(result4).build();
 			friendListRepository.save(modelMapper.map(resultt, FriendList.class));
 			System.out.println("성공");
 			return "수락요청";

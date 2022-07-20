@@ -52,6 +52,7 @@ public class FriendListController {
 	
 	@PostMapping("post")
 	public String post(String id1, String id2) {
+		System.out.println("친구요청하기실행----------------------------");
 		System.out.println(id1);
 		System.out.println(id2);
 		String result = friendListService.post(id1,id2);

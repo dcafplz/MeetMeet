@@ -102,7 +102,9 @@ public class FriendListServiceImpl implements FriendListService {
 			return "친구상태";
 		}else {
 			//친구아님
+			System.out.println("&&&&&&&&&&&&&&&&&&777");
 			FriendRequestDTO result = FriendRequestDTO.builder().requestId(result3).requestedId(result4).build();
+			System.out.println("&&&&&&&&&&&&&&&&&&777");
 			try {
 				friendRequestRepository.save(modelMapper.map(result,FriendRequest.class));
 				System.out.println("성공");		

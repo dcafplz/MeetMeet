@@ -1,6 +1,6 @@
 CREATE DATABASE 데이터베이스이름;
 
-use playdata;
+use webproject;
 
 CREATE TABLE account(
 	account_id varchar(20) PRIMARY KEY,
