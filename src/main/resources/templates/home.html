@@ -186,8 +186,14 @@
 
 
 	<div class="container px-4 px-lg-5 my-5">
+		<ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4" style="padding-bottom: 10px">
+			<li class="nav-item dropdown"><a class="nav-link dropdown-toggle"href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Filter</a>
+				 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<li><a class="dropdown-item" onclick="getPreference()">preference</a></li>
+				</ul>
+			 </li>
+		</ul>
 		<div>
-			<button onclick="getPreference()">preference</button>
 			<h5 id="remained_moem">참가 중인 모임</h5>
 			<div id="moem_list" class="text-center text-white"></div>
 		</div>
