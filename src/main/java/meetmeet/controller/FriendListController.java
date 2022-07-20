@@ -38,6 +38,7 @@ public class FriendListController {
 	public List<List<String>> findFriendListById1(String id1) {
 		List<List<String>> result = null;
 		result = friendListService.findFriendListById1(id1);
+		System.out.println(result);
 		return result;
 	}
 	

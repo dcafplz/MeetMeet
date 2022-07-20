@@ -257,19 +257,13 @@ public class AccountController {
 		return "about";
 	}
 	
-	@GetMapping("/tofriends")
-	public String toFriends(HttpSession session, String command) throws NoSuchAlgorithmException {
-		System.out.println(command);
-		if (command.equals("friendlist")) {
-			System.out.println("friendlist확인용");
-			return "forward:friends.html?command=friendlist";
-		}else if (command.equals("addfriend")) {
-			System.out.println("addfriend확인용");
-			return "forward:friends.html?command=addfriend";
-		}else {
-			System.out.println("에러페이지로연결해주기!!");
-		}
-		return "friends"; //에러페이지러변경!!
+	@GetMapping("/tofriendlist")
+	public String toFriendList(HttpSession session) throws NoSuchAlgorithmException {
+		return "friendlist"; //에러페이지러변경!!
+	}
+	@GetMapping("/tofriendsearch")
+	public String toFriendsSearch(HttpSession session) throws NoSuchAlgorithmException {
+		return "friendsearch"; //에러페이지러변경!!
 	}
 
 	@ResponseBody

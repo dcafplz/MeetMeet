@@ -42,13 +42,13 @@ var Username = "?"; //이거도 세션에서받아오기
 	<div style="border: 1px solid red; display: flex;">
 		<div style="border: 1px solid black; width: 20%; height: 300px;">
 
-			<a href="tofriends?command=friendlist">친구 목록</a><br> <a
-				href="tofriends?command=addfriend">친구 추가</a><br>
+			<a href="/tofriendlist">친구 목록</a><br> <a
+				href="/tofriendsearch">친구 추가</a><br>
 
 		</div>
 
 		<div id="changing1"
-			style="border: 1px solid black; width: 60%; height: 1200px; display: none; flex-wrap: wrap;">
+			style="border: 1px solid black; width: 60%; height: 1200px; display: flex; flex-wrap: wrap;">
 
 		</div>
 
@@ -90,24 +90,7 @@ var Username = "?"; //이거도 세션에서받아오기
 	<!-- Core theme JS-->
 	<script src="js/scripts.js"></script>
 
-	<script>
-		sectionDiv();
-		function sectionDiv() {
-			let query = window.location.search;
-			let param = new URLSearchParams(query);
-			let command = param.get('command');
-			document.getElementById("changing1").style.display = "none";
-			document.getElementById("changing2").style.display = "none";
-
-			if (command == "friendlist") {
-				document.getElementById("changing1").style.display = "flex";
-			} else if (command == "addfriend") {
-				document.getElementById("changing2").style.display = "block";
-			} else {
-				console.log("오류발생!!!");
-			}
-		}
-	</script>
+	
 	<script>
 		includeHTML();
 		function includeHTML() {

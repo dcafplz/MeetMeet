@@ -42,7 +42,9 @@ public class FriendListServiceImpl implements FriendListService {
 
 	public List<List<String>> findFriendListById1(String id1) {
 		List<List<String>> result = null;
+		System.out.println("확인용");
 		result = friendListRepository.findId2ById1AccountId(id1);
+		System.out.println("확인용2");
 		System.out.println(result);
 		return result;
 	}
