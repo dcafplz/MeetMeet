@@ -529,7 +529,11 @@
 	       });
 	       
 	       function modal_content(parent_id){
-	    	   document.getElementById("p-button").value = parent_id;
+	    	   console.log(parent_id);
+	    	   console.log(document.getElementById("p-button"));
+	    	   if(document.getElementById("p-button") != null){
+	    	   		document.getElementById("p-button").value = parent_id;
+	    	   }
 	    	   var parent_tag = document.getElementById(parent_id);
 	    	   console.log(item_list[parent_id]);
 	    	   var modal_tag = document.getElementById("modal");
