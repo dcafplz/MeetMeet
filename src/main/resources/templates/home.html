@@ -187,6 +187,7 @@
 
 	<div class="container px-4 px-lg-5 my-5">
 		<div>
+			<button onclick="getPreference()">preference</button>
 			<h5 id="remained_moem">참가 중인 모임</h5>
 			<div id="moem_list" class="text-center text-white"></div>
 		</div>
@@ -373,7 +374,8 @@
  							{	"meetingId" : lists[i].meetingId,
  								"name": lists[i].meetingName,
 			        			"img": lists[i].filepath,
-			        			"content": lists[i].meetingDetail}
+			        			"content": lists[i].meetingDetail,
+			        			"category": lists[i].category}
  							)
  				}
  				/* 무한스크롤 함수 */
@@ -390,7 +392,9 @@
  			                		item_list[start].name +
  			                        '</h5><h8 class="fw-bolder2">' +
  			                        item_list[start].content +
- 			                    '</h8></div></div><div class="card-footer p-4 pt-0 border-top-0 bg-transparent"><div class="text-center"><button class="btn btn-outline-dark mt-auto" onclick="modalOn1(event)">View options</button></div></div></div></div>';
+ 			                    '</h8><h8 class="fw-bolder2">' +
+			                        item_list[start].category +
+	 			                    '</h8></div></div><div class="card-footer p-4 pt-0 border-top-0 bg-transparent"><div class="text-center"><button class="btn btn-outline-dark mt-auto" onclick="modalOn1(event)">View options</button></div></div></div></div>';
                      
                     /*  document.getElementById("btn-modal" + start).addEventListener("click", e => {
                          modalOn();
@@ -446,7 +450,6 @@
  			
  			function listing_moem(next_page_moem){
  				for(let i = next_page_moem; i < my_item_list.length; i ++){
- 					console.log(my_item_list[i]);
 					try{
 						var new_id = my_item_list[i].meetingId;
 						document.getElementById("moem_list").innerHTML += 
@@ -488,14 +491,12 @@
 	       
 	       function modalOn1(e) {
 	    	   check_meetparticipate(e.target.parentElement.parentElement.parentElement.parentElement.id);
-    		   console.log(e.target.parentElement.parentElement.parentElement.parentElement);
 	           modal.style.display = "flex";
 	           modal_content(e.target.parentElement.parentElement.parentElement.parentElement.id);
 	       };
 	       
 	       function modalOn2(e) {
 	    	   check_meetparticipate(e.target.parentElement.parentElement.id);
-	    	   console.log(e.target.parentElement.parentElement.id);
 	           modal.style.display = "flex";
 	           modal_content(e.target.parentElement.parentElement.id);
 	       };
@@ -535,7 +536,6 @@
 	    	   		document.getElementById("p-button").value = parent_id;
 	    	   }
 	    	   var parent_tag = document.getElementById(parent_id);
-	    	   console.log(item_list[parent_id]);
 	    	   var modal_tag = document.getElementById("modal");
 	    	   document.getElementById("detailform").action = "/meetmeet/detail?meetingId=" + parent_id;
 	    	   document.getElementById("meetingId").value = parent_id;
@@ -615,7 +615,6 @@
 	       
 	       /* meeting 참가하기 */
 	  	 function meetparticipate(){
-	    	   console.log(document.getElementById("p-button").value);
 	  		 axios.post('/meetparticipate', null, {params:{
 	  			meetingId: document.getElementById("p-button").value
 	  		}
@@ -654,6 +653,45 @@
 	  				console.log(error);
 	  			});
 	  		}
+	  	 
+	  	 	/* 선호모임 filtering*/
+	  	 	function getPreference(){
+		  	 	axios.get("account/getpreference").then(function(response) {
+		  	 			item_list_temp = [];
+						var user_category = response.data;
+						idx_list = [];
+						for(i in item_list){
+							item_now = (item_list[i].category).split(',');
+					 		result = false;
+						 	for(j in item_now){
+								for(x in user_category){
+									if(item_now[j] === user_category[x]){
+										result = true;
+									};
+								};
+							};
+							if(result == false){
+								idx_list.push(item_list.indexOf(item_list[i]));
+							}
+						}
+						for(i in item_list){
+							result = true;
+							for(j in idx_list){
+								if(i == j){
+									result = false;
+									break;
+								};
+							};
+							if(result == true){
+								item_list_temp.push(item_list[i]);
+							}
+						}
+						item_list = item_list_temp;
+						console.log(item_list);
+						document.getElementById("item_list").innerHTML = "";
+						get_new_item(0, 12);
+					});
+	  	 	}
 	      	
         </script>
 		<div th:insert="footer"></div>
