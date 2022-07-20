@@ -313,13 +313,15 @@ var Username = "?"; //이거도 세션에서받아오기
 			}
 			function deleteRequest(v){
 				console.log(v);	
+				console.log("친구요청삭제");	
 				const request = v;
+				const xhttp = new XMLHttpRequest();
 				xhttp.onload = function() {
 					let res_data = this.responseText;
 					alert(res_data);
 					showFriends();
 				}
-				xhttp.open("delete", `friendrequest/delete?id={request}`, true);
+				xhttp.open("delete", `friendrequest/delete?id=${request}`, true);
 				xhttp.setRequestHeader("Content-type",
 						"application/x-www-form-urlencoded;charset=UTF-8");
 				xhttp.send();

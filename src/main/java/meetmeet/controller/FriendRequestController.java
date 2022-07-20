@@ -48,6 +48,7 @@ public class FriendRequestController {
 	}
 	@DeleteMapping("delete")
 	public String delete(String id) {
+		System.out.println("친구요청삭제--------------------------------");
 		String result = null;
 		result = friendRequestService.delete(id);
 		return result;

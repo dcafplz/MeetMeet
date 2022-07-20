@@ -26,13 +26,13 @@ CREATE TABLE hot_place(
 );
 
 CREATE TABLE friend_list(
-	id int primary key,
+	id int primary key AUTO_INCREMENT,
 	id1 varchar(20) NOT NULL,
 	id2 varchar(20) NOT null
 );
 
 CREATE TABLE friend_request(
-	id int primary key,
+	id int primary key AUTO_INCREMENT,
 	request_id varchar(20) NOT NULL,
 	requested_id varchar(20) NOT null
 );
