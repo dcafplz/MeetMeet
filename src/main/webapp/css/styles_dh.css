@@ -138,14 +138,18 @@ img {
 	max-width: 100px;
 	max-height: 100px;
 	vertical-align: middle;
+	overflow: hidden;
 }
 
 .moem_list_wrap_text {
 	padding: 5px 10px;
 	text-align: center;
 	position: absolute;
-	top: 40%;
+	top: 30%;
 	left: 10%;
+	font-weight: 4000;
+	color: orange;
+	
 }
 
 .fw-bolder3 {
