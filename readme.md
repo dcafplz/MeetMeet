@@ -170,10 +170,10 @@ public class PwSecurity {
 
 
 
-#### - Meeting 만들기
+# 🤝🏻 Meeting 만들기 기능
 ##### (1) 구현 화면
 
-<img src="https://user-images.githubusercontent.com/87963586/180119155-626632b9-0e74-428c-9213-68b185f76be2.gif" width="600" height="400">
+<img src="https://user-images.githubusercontent.com/87963586/180119155-626632b9-0e74-428c-9213-68b185f76be2.gif" width="800" height="600">
 
 &nbsp;
 ##### (2) Front-End
@@ -388,11 +388,11 @@ naver.maps.onJSContentLoaded = initGeocoder;
 
 ---
 &nbsp;
-#### - Meeting 상세페이지
+# 🔍 Meeting 상세페이지
 
 ##### (1) 구현 화면
 
-<img src="https://user-images.githubusercontent.com/87963586/180118954-d40208d0-97dc-4267-885a-4b0367685541.gif" width="600" height="400">
+<img src="https://user-images.githubusercontent.com/87963586/180118954-d40208d0-97dc-4267-885a-4b0367685541.gif" width="800" height="600">
 
 
 &nbsp;

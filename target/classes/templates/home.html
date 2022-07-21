@@ -449,9 +449,9 @@
 					try{
 						var new_id = my_item_list[i].meetingId;
 						document.getElementById("moem_list").innerHTML += 
-							'<div id="' + new_id + '" class="moem_list_wrap"><div class="cards_image" ><img class="card_image_image" src=' +
+							'<div id="' + new_id + '" class="moem_list_wrap" style="border-radius: 50%; background-image: linear-gradient(#fff, #fff), linear-gradient(45deg, #FFC700 18%, #FF6710 40% ,#D100C3 100%); background-origin: border-box; background-clip: content-box, border-box; padding: 5px;"><div class="cards_image" ><img class="card_image_image" src=' +
 							my_item_list[i].img +
-							' alt="..." onclick="modalOn2(event)" /></div><div class="moem_list_wrap_text"><h5 class="fw-bolder3">' +
+							' alt="..." onclick="modalOn2(event)" /></div><div class="moem_list_wrap_text"><h5 class="fw-bolder3" style="font-size:25px;width:100px; height: 28px; margin:15px; text-align: center; line-height: 30px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;">' +
 							my_item_list[i].name +
 							'</h5></div></div>'
 					}catch(error){

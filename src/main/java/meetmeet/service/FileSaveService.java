@@ -15,18 +15,7 @@ public class FileSaveService {
 		String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
 		File saveFile = new File(projectPath, fileName);
 		if (file.getSize() == 0) {
-			File defaultFile = new File(projectPath + "/default_profile.jpg");
-			Files.copy(defaultFile.toPath(), saveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-		} else {
-			file.transferTo(saveFile);
-		}
-	}
-	
-	public void saveFileMeeting(MultipartFile file, String fileName, String defaultFileName) throws IOException{
-		String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
-		File saveFile = new File(projectPath, fileName);
-		if (file.getSize() == 0) {
-			File defaultFile = new File(projectPath + "/default_meeting.png");
+			File defaultFile = new File(projectPath + defaultFileName);
 			Files.copy(defaultFile.toPath(), saveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		} else {
 			file.transferTo(saveFile);
