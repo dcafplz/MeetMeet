@@ -26,9 +26,8 @@ public class PreferenceService {
 		}
 	}
 
-	public void deleteByAccountId(String string) {
-		// TODO Auto-generated method stub
-		
+	public void deleteByAccountId(String accountId) {
+		preferenceRepository.deleteByAccountId(accountId);
 	}
 
 	public List<Preference> findByAccountId(String accountId) {
