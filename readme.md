@@ -200,6 +200,7 @@ public String[] getSession(HttpSession session) {
 # 🏠Home화면 기능
 ##### (1) 구현 화면
 
+&nbsp;
 ##### (2) Front-End
 1. Infinite Scroll 기능
 ```javascript
@@ -227,7 +228,7 @@ function get_new_item(start, end){
   }
 }
 ```
-저희는 meeting list를 무한 스크롤 방식으로 구현했습니다. 초기에는 12개까지의 meeting만 확인 가능하고, 스크롤과 window 높이가 document 높이보다 클 경우, 추가로 8개씩 listing 하는 방식으로 구현하였습니다.
+저희는 모임 list를 무한 스크롤 방식으로 구현했습니다. 초기에는 12개까지의 만 확인 가능하고, 스크롤과 window 높이가 document 높이보다 클 경우, 추가로 8개씩 listing 하는 방식으로 구현하였습니다.
 
 &nbsp;
 2. modal 기능
@@ -289,7 +290,7 @@ function modal_content(parent_id){
 
 }
 ```
-메인페이지에서 간략하게 meeting 정보를 더 확인할 수 있도록 모달기능을 활용하였습니다. meeting의 더보기를 클릭시 event를 modalOn 함수에 전달하여, event가 발생한 tag의 id값을 modal_content에 전달하였습니다. 이후, 기존에 비동기로 가져온 item_list에서 해당 meeting 정보를 꺼내어 모달에 추가해주는 방식으로 구현하였습니다.
+메인페이지에서 간략하게 모임 정보를 더 확인할 수 있도록 모달기능을 활용하였습니다. 모임의 더보기를 클릭시 event를 modalOn 함수에 전달하여, event가 발생한 tag의 id값을 modal_content에 전달하였습니다. 이후, 기존에 비동기로 가져온 item_list에서 해당  정보를 꺼내어 모달에 추가해주는 방식으로 구현하였습니다.
 모달창 바깥쪽은 modal-overlay 영역으로 구성하여, 모달 바깥을 클릭하거나 ESC를 눌러도 모달창이 닫히도록 구현하였습니다.
 
 &nbsp;
@@ -423,7 +424,7 @@ function val() {
   }
 };
 ```
-input의 모든 필드가 유효하다면 제출버튼을 활성화시켜서 회원이 meeting을 생성할 수 있도록 처리하였습니다.
+input의 모든 필드가 유효하다면 제출버튼을 활성화시켜서 회원이 모임을 생성할 수 있도록 구현하였습니다.
 
 &nbsp;
 2. 이미지 input
@@ -565,7 +566,7 @@ naver.maps.onJSContentLoaded = initGeocoder;
 
 ---
 &nbsp;
-# 🔍 Meeting 상세페이지
+# 🔍  상세페이지
 
 ##### (1) 구현 화면
 
@@ -579,7 +580,7 @@ naver.maps.onJSContentLoaded = initGeocoder;
 ```html
 <div class="modal-contents" style="width:588px; height: 100px; text-align: center;" th:text="${meeting.meetingDetail} "></div>
 ```
-Server에서 받아온 meeting data는 thymeleaf를 이용하여 출력하였습니다.
+Server에서 받아온 모임 data는 thymeleaf를 이용하여 출력하였습니다.
 &nbsp;
 2. 모임 수정/삭제/참여/취소 session 처리
 ```html
