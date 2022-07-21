@@ -26,13 +26,11 @@ public class MeetingService {
 	
 	public Long meetCreate(MeetingDTO meeting, MultipartFile file) throws Exception{       
 
-        String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
-        
         UUID uuid = UUID.randomUUID();  // random으로 식별자 이름 생
 
         String fileName = "meeting" + uuid + "_" + file.getOriginalFilename(); // 기존 file 이름 +
         
-        fileSaveService.saveFileMeeting(file, "/"+ fileName, "/default_meeting.png");
+        fileSaveService.saveFile(file, "/"+ fileName, "/default_meeting.png");
         
         meeting.setFilename(fileName);
         meeting.setFilepath("/files/" + fileName);
