@@ -348,7 +348,7 @@ public Iterable<Meeting> meetList() {
     }
 ```
 
-# 🤝🏻 Meeting 만들기 기능
+# 🤝🏻 모임 만들기 기능
 ##### (1) 구현 화면
 
 <img src="https://user-images.githubusercontent.com/87963586/180119155-626632b9-0e74-428c-9213-68b185f76be2.gif" width="800" height="600">
@@ -566,7 +566,7 @@ naver.maps.onJSContentLoaded = initGeocoder;
 
 ---
 &nbsp;
-# 🔍  상세페이지
+# 🔍모임 상세페이지
 
 ##### (1) 구현 화면
 
@@ -593,7 +593,6 @@ Server에서 받아온 모임 data는 thymeleaf를 이용하여 출력하였습�
 </div>
 ```
 마찬가지로 thymeleaf 문법을 이용하여, session에 account id가 존재하는지 확인하여 해당 button들을 보여주도록 구현하였습니다.
-또한,
 ```javascript
 /* writer가 맞는지 체크*/
 	isWriter();
