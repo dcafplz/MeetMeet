@@ -151,8 +151,6 @@
 
 
 <body>
-	<span th:text="${session.accountId}"></span>
-	<div th:if="${session.accountId == null}"> ????????  </div>
 	<!-- Navigation-->
 	<div th:insert="nav"></div>
 	<!-- Header-->
@@ -195,8 +193,9 @@
 		</ul>
 		<div>
 			<h5 id="remained_moem">참가 중인 모임</h5>
-			<div id="moem_list" class="text-center text-white" ></div>
+			<div id="moem_list" class="text-center text-white" style="display: flex;"></div>
 		</div>
+		<hr>
 		<div id="item_list" class="text-center text-white"></div>
 	</div>
 

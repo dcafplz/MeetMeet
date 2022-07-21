@@ -57,10 +57,56 @@
 				<button class="btn " type="submit" name = "loginout"
 					onclick="location.href='/tosignup'">회원가입</button>
 			</div>
-			<div th:if="${session.accountId != null}">
+			<div th:if="${session.accountId != null}" style="display: flex; flex-direction: row;  align: center; margin-left:auto; 
+    margin-right:auto;">
+				<!-- Header-->
+				<!-- 내 프로필 -->
+				<div style="border: 1.8px solid #DBDBDB; width: 100px; height: 50px; display: flex; align-items: center; flex-direction: column;">
+					<div style="border: 3px solid transparent;
+						border-radius: 50%;
+						background-image: linear-gradient(#fff, #fff), 
+						linear-gradient(45deg, #FFC700 18%, #FF6710 40% ,#D100C3 100%);
+						background-origin: border-box;
+						background-clip: content-box, border-box;
+						padding: 5px;">
+						<div id="myProfile" style="border: 1px solid  white; width: 5px; height: 5px; border-radius: 50%; overflow: hidden;padding: 5px; font-size: 1px;">
+						</div>
+					</div>
+					<div id="myProfileName" style="margin: 0px; font-size: 1px;">
+						<span style="font-size: 0px;"></span>
+					</div>
+				</div>
 				<button class="btn " type="submit" name = "logout"
 					onclick="location.href='/account/logout'">로그아웃</button>
 			</div>
 		</div>
 	</div>
 </nav>
+<script>
+	/* 자바스크립트용 전역변수 선언 */
+	var User = "?";				// 세션에서 받은 id 저장할 변수
+	var Username = "?";			// 세션에서 받은 nickname 저장할 변수
+	var targetFriendId = "?"; 	// 친구목록에서 현재 선택된 친구id를 저장할 변수
+	
+	/* 서버단 세션에서  id,nickname 받아오기*/
+	axios
+	.post("getsession")
+	.then(
+		function(response) {
+			User = response.data[0];
+			Username = response.data[1];
+			
+			showMe();
+			showFriends();
+	});
+		
+	/* 초기화된 전역변수 이용해 내 프로필 사진,닉네임, id 출력하기 */
+	function showMe(){
+		var profilebox = document.getElementById("myProfile");
+		profilebox.innerHTML = `<img src="/files/${User}_profile" onerror="this.src='/files/noProfile'"
+		style="width:50px; height:50px; max-width:50px; max-height:50px; object-fit:cover;
+			position: relative; top: 50%; left: 50%; transform: translate(-50%, -50%);">`;
+		var namebox = document.getElementById("myProfileName");
+		namebox.innerHTML = `<b style="font-size:2px;">${Username}</b>( ${User} )`;
+	} 
+</script>
