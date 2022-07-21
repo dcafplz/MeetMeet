@@ -174,8 +174,7 @@ function idval() {
 #### - Meeting 만들기
 ##### (1) 구현 화면
 
-<img src="https://user-images.githubusercontent.com/87963586/180118119-556860b4-9e06-4cae-ad20-7cff4f9c02f7.gif" width="200" height="800">
-
+<img src="https://user-images.githubusercontent.com/87963586/180119155-626632b9-0e74-428c-9213-68b185f76be2.gif" width="600" height="400">
 
 &nbsp;
 ##### (2) Front-End
@@ -394,7 +393,7 @@ naver.maps.onJSContentLoaded = initGeocoder;
 
 ##### (1) 구현 화면
 
-<img src="https://user-images.githubusercontent.com/87963586/180118954-d40208d0-97dc-4267-885a-4b0367685541.gif width="200" height="800">
+<img src="https://user-images.githubusercontent.com/87963586/180118954-d40208d0-97dc-4267-885a-4b0367685541.gif" width="600" height="400">
 
 
 &nbsp;
