@@ -1,19 +1,15 @@
-## 서비스 소개
+# 서비스 소개
 관심사, 위치기반 모임 서비스 Meet-Meet🎉
 
-## 서비스 기능
-회원의 관심사를🥳 저장하여 관심사와 일치하는 모임만 볼 수 있다.
+# 서비스 기능
+회원의 관심사를🥳 저장하여 관심사와 일치하는 모임만 볼 수 있다.    
 회원이 저장한 위치에서 모임 장소로 이동하는  🚌대중교통 길찾기 기능을 제공한다.
 
-## 구현 예시 및 코드
-
-### DB
-
-DB설계도    
+# DB 💾
+## DB 설계  
 ![DB Erd](https://user-images.githubusercontent.com/105038597/180125178-a5506f9a-99eb-47f2-b0a2-5799e9b746bc.JPG)    
-
-Account table에 모두 외래키로 연결    
-외래키의 ON DELETE CASECADE속성, UNIQUE속성을 활용해 무결성 유지
+계정정보를 담는 Account, 모임 정보를 담는 meeting을 중심으로 다수의 테이블을 생성    
+Account table에 모두 외래키로 연결 / ON DELETE CASECADE속성, UNIQUE속성을 활용해 무결성 유지
 ```sql
 ALTER TABLE friend_list ADD FOREIGN KEY (id1) REFERENCES
 account  (account_id) on delete cascade;
@@ -21,62 +17,11 @@ account  (account_id) on delete cascade;
 # 멀티 컬럼 유니크
 ALTER TABLE friend_list ADD UNIQUE(id1, id2);
 ```
+# 회원 가입 기능👏
 
-### Back-End
-
-hash 함수 및 랜덤 생성된 hash_salt를 통해 암호화하여 pw 저장 
-```java
-@PostMapping("account/signup")
-public String signup(AccountDTO account) throws NoSuchAlgorithmException {
-	
-	//Random 객체 생성
-	Random random = new Random();
-
-	//hash_salt 값을 랜덤으로 생성해 즉시 계정정보에 저장
-	account.setHashSalt(random.ints(48,123)
-  			.filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-			.limit(3)
-			.collect(StringBuilder::new,StringBuilder::appendCodePoint, StringBuilder::append)
-			.toString());
-            
-	//salt값과 사용자 입력 pw값을 즉시 암호화해 pw에 set
-	account.setPw(PwSecurity.hashing(account.getPw(), account.getHashSalt()));
-    
-    	//mapping
-    	Account accountEntity = modelMapper.map(account, Account.class);
-    
-    	//insert, redirect
-	dao.save(accountEntity);
-	return "redirect:/tologin";
-}
-```
-```java
-public class PwSecurity {
-	
-	//사용자가 입력한 id, pw db에 저장된 hash_salt값으로 계정정보 확인
-	public static boolean checkPw(Account account, String pw) throws Exception {
-		
-		return account.getPw().contentEquals(hashing(pw, account.getHashSalt()));
-
-	}
-	
-	//사용자가 입력한 pw와 랜덤 생성된 hash_salt로 pw암호화
-	public static String hashing(String pw, String salt) throws NoSuchAlgorithmException {
-		
-		MessageDigest md = MessageDigest.getInstance("SHA-256");
-		byte[] digest = md.digest((pw+salt).getBytes(StandardCharsets.UTF_8));
-		String sha256 = DatatypeConverter.printHexBinary(digest).toLowerCase();
-		
-		return sha256;
-        
-		}
-
-	}
-	
-}
-```
 ### Front-End
-DB 오류를 최소화 하고, 사용자가 즉각적으로 입력해야하는 값들을 체크할 수 있게 required 및 disabled를 활용
+DB 오류를 최소화 하고, 사용자가 즉각적으로 입력해야하는 값들을 체크할 수 있게 required, disabled 활용   
+onchange 이벤트와 js 함수를 이용해 사용자 입력을 검증 
 
 html code
 ```html
@@ -169,13 +114,66 @@ function idval() {
 
 };
 ```
+### Back-End
+hash 함수 및 랜덤 생성된 hash_salt를 통해 암호화하여 pw 저장 :lock:
+```java
+@PostMapping("account/signup")
+public String signup(AccountDTO account) throws NoSuchAlgorithmException {
+	
+	//Random 객체 생성
+	Random random = new Random();
+
+	//hash_salt 값을 랜덤으로 생성해 즉시 계정정보에 저장
+	account.setHashSalt(random.ints(48,123)
+  			.filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+			.limit(3)
+			.collect(StringBuilder::new,StringBuilder::appendCodePoint, StringBuilder::append)
+			.toString());
+            
+	//salt값과 사용자 입력 pw값을 즉시 암호화해 pw에 set
+	account.setPw(PwSecurity.hashing(account.getPw(), account.getHashSalt()));
+    
+    	//mapping
+    	Account accountEntity = modelMapper.map(account, Account.class);
+    
+    	//insert, redirect
+	dao.save(accountEntity);
+	return "redirect:/tologin";
+}
+```
+```java
+public class PwSecurity {
+	
+	//사용자가 입력한 id, pw db에 저장된 hash_salt값으로 계정정보 확인
+	public static boolean checkPw(Account account, String pw) throws Exception {
+		
+		return account.getPw().contentEquals(hashing(pw, account.getHashSalt()));
+
+	}
+	
+	//사용자가 입력한 pw와 랜덤 생성된 hash_salt로 pw암호화
+	public static String hashing(String pw, String salt) throws NoSuchAlgorithmException {
+		
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		byte[] digest = md.digest((pw+salt).getBytes(StandardCharsets.UTF_8));
+		String sha256 = DatatypeConverter.printHexBinary(digest).toLowerCase();
+		
+		return sha256;
+        
+		}
+
+	}
+	
+}
+```
 
 
 
-#### - Meeting 만들기
+
+# 🤝🏻 Meeting 만들기 기능
 ##### (1) 구현 화면
 
-<img src="https://user-images.githubusercontent.com/87963586/180119155-626632b9-0e74-428c-9213-68b185f76be2.gif" width="600" height="400">
+<img src="https://user-images.githubusercontent.com/87963586/180119155-626632b9-0e74-428c-9213-68b185f76be2.gif" width="800" height="600">
 
 &nbsp;
 ##### (2) Front-End
@@ -390,11 +388,11 @@ naver.maps.onJSContentLoaded = initGeocoder;
 
 ---
 &nbsp;
-#### - Meeting 상세페이지
+# 🔍 Meeting 상세페이지
 
 ##### (1) 구현 화면
 
-<img src="https://user-images.githubusercontent.com/87963586/180118954-d40208d0-97dc-4267-885a-4b0367685541.gif" width="600" height="400">
+<img src="https://user-images.githubusercontent.com/87963586/180118954-d40208d0-97dc-4267-885a-4b0367685541.gif" width="800" height="600">
 
 
 &nbsp;
