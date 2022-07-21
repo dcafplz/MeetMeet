@@ -1,5 +1,5 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
 <nav class="navbar navbar-expand-lg navbar-light">
 	<div class="container px-4 px-lg-5">
 		<p class="navbar-brand" style="margin: auto; font-size: 23px;"
@@ -58,39 +58,29 @@
 				<button class="btn " type="submit" name = "loginout"
 					onclick="location.href='/tosignup'">회원가입</button>
 			</div>
-			<div th:if="${session.accountId != null}" style="display: flex; flex-direction: row;  align: center; margin-left:auto; 
-    margin-right:auto;">
+			<div th:if="${session.accountId != null}" style="display: flex; flex-direction: row;  align: center; margin-left:auto; margin-right:auto;">
 				<!-- Header-->
 				<!-- 내 프로필 -->
-<<<<<<< HEAD
 				<div style="border: none; width: 80px; height: 50px; display: flex; align-items: center; flex-direction: column;">
 					<div style="border: 1px solid transparent;
-=======
-				<div style="border: 1.8px solid #DBDBDB; width: 100px; height: 50px; display: flex; align-items: center; flex-direction: column;">
-					<div style="border: 0.1px solid transparent;
->>>>>>> 4190618f22173196819acb8b479bb1339dc5343e
 						border-radius: 50%;
 						background-image: linear-gradient(#fff, #fff), 
 						linear-gradient(45deg, #FFC700 18%, #FF6710 40% ,#D100C3 100%);
 						background-origin: border-box;
 						background-clip: content-box, border-box;
-<<<<<<< HEAD
 						padding: 0.5px;">
-
 						<div id="myMiniProfile" style="border: 0.5px solid  white; width: 50px; height: 50px; border-radius: 50%; overflow: hidden;padding: 5px; font-size: 1px;">
 						</div>
 					</div>	
 				
-					<!-- <div id="myMiniProfileName" style="margin: 0px; font-size: 1px;">
-=======
-						padding: 0.1px;">
+					<div id="myMiniProfileName" style="margin: 0px; font-size: 1px;">
 						<div id="myProfile1" style="border: 1px solid  white; width: 29px; height: 29px; border-radius: 50%; overflow: hidden;padding: 5px; font-size: 1px;">
 						</div>
 					</div>
 					<div id="myProfileName1" style="margin: 0px; font-size: 1px;">
->>>>>>> 4190618f22173196819acb8b479bb1339dc5343e
+
 						<span style="font-size: 0px;"></span>
-					</div> -->
+					</div>
 				</div>
 				<button class="btn " type="submit" name = "logout"
 					onclick="location.href='/account/logout'">로그아웃</button>
@@ -112,7 +102,6 @@
 			User1 = response.data[0];
 			Username1 = response.data[1];
 			
-<<<<<<< HEAD
 			showMeNav();
 			
 	});
@@ -126,18 +115,7 @@
 			position: relative; top: 50%; left: 50%; transform: translate(-50%, -50%);">`;
 		var namebox = document.getElementById("myMiniProfileName");
 		namebox.innerHTML = `<b style="font-size:2px;">${Username}</b>`;
-=======
-			showMe1();
 	});
 		
-	/* 초기화된 전역변수 이용해 내 프로필 사진,닉네임, id 출력하기 */
-	function showMe1(){
-		var profilebox = document.getElementById("myProfile1");
-		profilebox.innerHTML = `<img src="/files/${User1}_profile" onerror="this.src='/files/noProfile'"
-		style="width:50px; height:50px; max-width:50px; max-height:50px; object-fit:cover;
-			position: relative; top: 50%; left: 50%; transform: translate(-50%, -50%);">`;
-		var namebox = document.getElementById("myProfileName1");
-		namebox.innerHTML = `<b style="font-size:2px;">${Username1}</b>( ${User1} )`;
->>>>>>> 4190618f22173196819acb8b479bb1339dc5343e
-	} 
+
 </script>
