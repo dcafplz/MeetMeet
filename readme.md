@@ -8,48 +8,167 @@
 ## 구현 예시 및 코드
 
 ### DB
+
+DB설계도    
+-삽입예정-
+
+외래키의 ON DELETE CASECADE속성, UNIQUE속성을 활용해 무결성 유지
 ```sql
-ALTER TABLE place ADD FOREIGN KEY (account_id) REFERENCES account  (account_id) on delete cascade;
-ALTER TABLE friend_list ADD FOREIGN KEY (id1) REFERENCES account  (account_id) on delete cascade;
-ALTER TABLE friend_list ADD FOREIGN KEY (id2) REFERENCES account  (account_id) on delete cascade;
-alter table friend_list add constraint ck_friendList check (id1 != id2);
-ALTER TABLE friend_request ADD FOREIGN KEY (request_id) REFERENCES account  (account_id) on delete cascade;
-ALTER TABLE friend_request ADD FOREIGN KEY (requested_id) REFERENCES account  (account_id) on delete cascade;
-ALTER TABLE preference ADD FOREIGN KEY (account_id) REFERENCES account  (account_id) on delete cascade;
-ALTER TABLE meeting ADD FOREIGN KEY (master_id) REFERENCES account  (account_id) on delete cascade;
-ALTER TABLE meeting_participant ADD FOREIGN KEY (participant_id) REFERENCES account  (account_id) on delete cascade;
-ALTER TABLE meeting_participant ADD FOREIGN KEY (meeting_id) REFERENCES meeting  (meeting_id) on delete cascade;
+ALTER TABLE friend_list ADD FOREIGN KEY (id1) REFERENCES
+account  (account_id) on delete cascade;
 
-alter table friend_list add unique(id1, id2);
-alter table friend_request add unique(request_id, requested_id);
-
-	
-	
-}
+# 멀티 컬럼 유니크
+ALTER TABLE friend_list ADD UNIQUE(id1, id2);
 ```
 
 ### Back-End
+
+hash 함수 및 랜덤 생성된 hash_salt를 통해 암호화하여 pw 저장 
 ```java
-package meetmeet.model.dao;
-
-
-
-import java.util.List;
-
-import org.springframework.data.repository.CrudRepository;
-
-import meetmeet.model.entity.Account;
-
-
-public interface AccountRepository extends CrudRepository<Account, String>{
-
-	public List<Account> findByNickNameContaining(String searching);
-
+@PostMapping("account/signup")
+public String signup(AccountDTO account) throws NoSuchAlgorithmException {
 	
+	//Random 객체 생성
+	Random random = new Random();
+
+	//hash_salt 값을 랜덤으로 생성해 즉시 계정정보에 저장
+	account.setHashSalt(random.ints(48,123)
+  			.filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+			.limit(3)
+			.collect(StringBuilder::new,StringBuilder::appendCodePoint, StringBuilder::append)
+			.toString());
+            
+	//salt값과 사용자 입력 pw값을 즉시 암호화해 pw에 set
+	account.setPw(PwSecurity.hashing(account.getPw(), account.getHashSalt()));
+    
+    	//mapping
+    	Account accountEntity = modelMapper.map(account, Account.class);
+    
+    	//insert, redirect
+	dao.save(accountEntity);
+	return "redirect:/tologin";
+}
+```
+```java
+public class PwSecurity {
+	
+	//사용자가 입력한 id, pw db에 저장된 hash_salt값으로 계정정보 확인
+	public static boolean checkPw(Account account, String pw) throws Exception {
+		
+		return account.getPw().contentEquals(hashing(pw, account.getHashSalt()));
+
+	}
+	
+	//사용자가 입력한 pw와 랜덤 생성된 hash_salt로 pw암호화
+	public static String hashing(String pw, String salt) throws NoSuchAlgorithmException {
+		
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		byte[] digest = md.digest((pw+salt).getBytes(StandardCharsets.UTF_8));
+		String sha256 = DatatypeConverter.printHexBinary(digest).toLowerCase();
+		
+		return sha256;
+        
+		}
+
+	}
 	
 }
-
 ```
+### Front-End
+DB 오류를 최소화 하고, 사용자가 즉각적으로 입력해야하는 값들을 체크할 수 있게 required 및 disabled를 활용
+
+html code
+```html
+<!-- required의 minlength, maxlength, pattern속성 활용 입력받을 id값 규정, 값이 변할때 마다 idval()호출해 값 검증 -->
+<input class="form-control" name="accountId" id="id" 
+       type="text" required minlength="4" maxlength="15" 
+       pattern="^[a-zA-Z0-9]+$"onchange="idval()" /> 
+<label for="id">ID</label>
+
+<!-- 규정된 id값과 다르게 입력할때 나오는 메시지 -->
+<div class="id invalid-feedback">
+  ID의 길이는 영문과 숫자만 사용가능하며 4자이상 15자 이하여야 합니다.
+</div>
+
+<!-- 비동기로 계정정보를 가져와 입력된 id가 이미 존재하면 반환되는 메시지 -->
+<div class="idd invalid-feedback" 
+     style="display: none">중복된 ID 입니다.</div>
+
+<!-- 모든 조건을 만족했을 때 나오는 메시지 -->
+<div class="id valid-feedback" 
+     style="display: none">사용 가능한 ID입니다.</div>
+
+<!-- disabled를 활용 검증된 값을 입력하지 않으면 가입 시도가 불가능 -->
+<button class="btn btn-primary btn-xl" id="singupButton"
+        type="submit" disabled="ture">sign up</button>
+```
+javascript code
+```javascript
+/* input태그 개수만큼 생성된 배열 */
+let nums = new Array(6);
+nums.fill(0);
+
+/* id값 검증 함수  */
+function idval() {
+
+  var e = document.getElementById("id");
+  var ei = document.getElementsByClassName('id invalid-feedback');
+  var ei2 = document.getElementsByClassName('idd invalid-feedback');
+  var ev = document.getElementsByClassName('id valid-feedback');
+          
+/* 비동기를 통한 중복아이디 체크 및 Validity 체크*/
+  axios.get("account/check", {
+    params : {
+      accountId : e.value
+    }
+  }).then(function(response) {
+    
+    /*id값의 Validity를 체크해 메시지 표시 여부 설정 */ 
+    if (e.checkValidity()) {
+      ev[0].style.display = "block";
+      ei[0].style.display = "none";
+      
+      /* 중복되는 id 여부를 체크해 메시지 표시 여부 설정 */ 
+      if (response.data == "Y") {
+        ev[0].style.display = "none";
+        ei2[0].style.display = "block";
+        nums[0] = 0;
+      } else {
+        ei2[0].style.display = "none";
+       	/* 모든 조건 만족, 1입력 */
+        nums[0] = 1;
+      }
+    } else {
+      ev[0].style.display = "none";
+      ei[0].style.display = "block";
+      nums[0] = 0;
+    }
+    ;
+    /* val 호출 */
+    val();
+  });
+
+  /* 회원가입의 모든 값들이 정상값이 입력되어있는지 체크*/
+  function val() {
+    var k = 1;
+    for (i = 0; i < 6; i++) {
+      if (nums[i] == 0) {
+        k = 0;
+        break;
+      }
+    }
+    if (k == 0) {
+      document.getElementById("singupButton").disabled = true;
+    } else {
+      /* 모든 input이 정상값이 입력되어 회원가입 버튼 활성화 */
+      document.getElementById("singupButton").disabled = false;
+    }
+    ;
+  };          
+
+};
+```
+
 
 ---- 최영준 ----
 #### - Meeting CRUD

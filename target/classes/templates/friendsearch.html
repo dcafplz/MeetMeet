@@ -7,7 +7,7 @@
 <meta name="author" content="" />
 <title>밋밋</title>
 <!-- Favicon-->
-<link rel="icon" type="image/x-icon" href="assets/handshaking.png" />
+<link rel="icon" type="image/x-icon" href="assets/handshaking" />
 <!-- Bootstrap icons-->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
 <!-- Core theme CSS (includes Bootstrap)-->
@@ -82,10 +82,12 @@
 					<button onclick="javascript:findFriend();">찾기</button>
 				</div>
 			</div>
+			
+			
 			<div id="showResult" style="border: 1.8px solid #DBDBDB;border-radius:15px; width: 100%; height: 1200px; display: flex; flex-wrap: wrap; justify-content:flex-start ;"></div>
 			
 			<!-- 페이지 -->
-			<div class="pagination" style="text-align: center; ">
+			<div class="pagination" style="text-align: center; height:500px;">
 				<ul class="paginationNumber" id="pages" style="margin-left: auto; margin-right: auto;">
 				1
 				</ul>
@@ -96,9 +98,9 @@
 	
 	
 
-	<!-- Footer-->
-	<div th:insert="footer.html"></div> 
-	
+	<!-- <!-- Footer-->
+	<!-- <div th:insert="footer.html"></div>  -->
+
 	
 	
 	<!-- Bootstrap core JS-->
@@ -127,7 +129,7 @@ axios
 
 function showMe(){
 	var profilebox = document.getElementById("myProfile");
-	profilebox.innerHTML = `<img src="../images/profile/${User}_profile.png" alt="" style="width:300px; height:300px; max-width:300px; max-height:300px; object-fit:cover;
+	profilebox.innerHTML = `<img src="/files/${User}_profile" alt="" style="width:300px; height:300px; max-width:300px; max-height:300px; object-fit:cover;
 		position: relative; top: 50%; left: 50%; transform: translate(-50%, -50%);">`;
 	var namebox = document.getElementById("myProfileName");
 	namebox.innerHTML = `<b style="font-size:27px;">${Username}</b>( ${User} )`;
@@ -162,8 +164,10 @@ function findFriend() {
 				break;
 			}
 			div.innerHTML += `<div class="searchingprofile" id=${data[i][0]} style="border: 1.8px solid #DBDBDB;border-radius:15px; width: 240px; height: 300px; margin:5px; overflow:hidden;">
-								<img src="images/profile/${data[i][0]}_profile.png" alt="?" style="width:235px; height:235px;
-								max-width: 235px; max-height: 235px;"><br>
+								<div style="width:100%; height:68%;overflow:hidden; margin-top:20px;border: 1.8px solid #DBDBDB;">					
+								<img src="/files/${data[i][0]}_profile" alt="?" style="width:235px; height:235px;
+								max-width: 235px; max-height: 235px;">
+								</div><br>
 								닉네임 : ${data[i][1]}<br>
 								아이디 : ${data[i][0]}
 								<button class=myButton onclick="javascript:addFriend('${data[i][0]}');" value="친구신청">친구신청</button>
@@ -193,12 +197,27 @@ function movePage(v){
 	console.log(v);
 	div.innerHTML = "";
 	for (var start=perPage*(v-1); start<perPage*v; start++ ){
-		div.innerHTML += `<div class="searchingprofile" id=${tempData[start][0]} style="border: 1px solid blue; width: 240px; height: 300px; margin:5px;">
-							<img src="images/profile/${tempData[start][0]}_profile.png" alt="?" style="width:235px; height:235px;
-							max-width: 235px; max-height: 235px;"><br>
+		div.innerHTML += `<div class="searchingprofile" id=${tempData[start][0]} style="border: 1.8px solid #DBDBDB;border-radius:15px; width: 240px; height: 300px; margin:5px; overflow:hidden;">
+							<div style="width:100%; height:68%;overflow:hidden; margin-top:20px;border: 1.8px solid #DBDBDB;">										
+							<img src="/files/${tempData[start][0]}_profile" alt="?" style="width:235px; height:235px;
+							max-width: 235px; max-height: 235px;">
+							</div><br>
 							닉네임 : ${tempData[start][1]}<br>
 							아이디 : ${tempData[start][0]}
-							<button onclick="javascript:addFriend('${tempData[start][0]}');" value="친구신청">친구신청</button>
+							<button class=myButton onclick="javascript:addFriend('${tempData[start][0]}');" value="친구신청">친구신청</button>
+							<style>
+							.myButton{
+								font-size:15px;
+								float:right;
+								margin-right:5px;
+								border:none;
+								background-color:white;
+								color:#1DA0F6;
+								font-weight:bold;
+							}
+							.myButton:hover {
+							    transform: scale(1.2);
+							}
 							</div>`;
 	}
 }

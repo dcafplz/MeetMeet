@@ -1,11 +1,16 @@
 package meetmeet.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
@@ -14,12 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.multipart.MultipartFile;
 
 import meetmeet.model.dao.AccountRepository;
 import meetmeet.model.dao.PlaceRepository;
@@ -49,7 +52,7 @@ public class AccountController {
 	
 	
 	@PostMapping("account/signup")
-	public String signup(AccountDTO account, @RequestParam(required = false) List<String> preference, PlaceDTO place) throws NoSuchAlgorithmException {
+	public String signup(AccountDTO account, @RequestParam(required = false) List<String> preference, PlaceDTO place, @RequestParam(value = "file", required = false) MultipartFile file) throws NoSuchAlgorithmException, IllegalStateException, IOException {
 		Random random = new Random();
 		account.setHashSalt(random.ints(48,123)
 				  .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
@@ -62,6 +65,21 @@ public class AccountController {
 		Place placeEntity = modelMapper.map(place, Place.class);
 		plDao.save(placeEntity);
 		if (preference != null) {savePreference(account.getAccountId(), preference);}
+
+		
+		// File 생성. 해당 경로에 name으로 담기는 file
+		String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
+        // File 저장. 위 throws Exception 안하면 exception 대비하라고 경고떠서 추가했음
+		File saveFile = new File(projectPath, account.getAccountId() + "_profile");
+		if (file.getSize() == 0)
+		{
+			System.out.println("기본프로필");
+	        File defaultFile = new File(projectPath+"/default_profile.jpg");        
+	        Files.copy(defaultFile.toPath(), saveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		}else {
+			file.transferTo(saveFile);
+		}
+        
 		return "redirect:/tologin";
 	}
 	

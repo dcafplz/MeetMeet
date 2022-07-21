@@ -2,8 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <meta name="description" content="" />
 <meta name="author" content="" />
 <!-- Favicon-->
@@ -11,20 +10,12 @@
 <!-- title -->
 <title>빠르고 간편한 모임 MeetMeet</title>
 <!-- Bootstrap Icons-->
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
-	rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
 <!-- Google fonts-->
-<link
-	href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700"
-	rel="stylesheet" />
-<link
-	href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic"
-	rel="stylesheet" type="text/css" />
+<link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,700" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic" rel="stylesheet" type="text/css" />
 <!-- SimpleLightbox plugin CSS-->
-<link
-	href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css"
-	rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css" rel="stylesheet" />
 <!-- Core theme CSS (includes Bootstrap)-->
 <link href="css/styles_jw.css" rel="stylesheet" />
 </head>
@@ -49,30 +40,24 @@
 				<form id="loginform" action="login" method="post">
 					<!-- ID input-->
 					<div class="form-floating mb-3">
-						<input class="form-control" name="accountId" id="id" type="text"
-							required /> <label for="id">ID</label>
+						<input class="form-control" name="accountId" id="id" type="text" required /> <label for="id">ID</label>
 					</div>
 					<!-- PW input-->
 					<div class="form-floating mb-3">
-						<input class="form-control" name="pw" id="pw" type="password"
-							required /> <label for="pw">Password</label>
+						<input class="form-control" name="pw" id="pw" type="password" required /> <label for="pw">Password</label>
 					</div>
 					<div class="d-grid">
-						<button class="btn btn-primary btn-xl" id="loginButton"
-							type="submit">login</button>
+						<button class="btn btn-primary btn-xl" id="loginButton" type="submit">login</button>
 					</div>
 				</form>
 				<br>
 				<div class="d-grid">
-					<button class="btn btn-primary btn-xl" id="signupButton"
-						type="button" style="opacity: 0.8"
-						onclick="location.href='signup.html'">sign up</button>
+					<button class="btn btn-primary btn-xl" id="signupButton" type="button" style="opacity: 0.8" onclick="location.href='tosignup'">sign up</button>
 				</div>
 				<br>
 				<form action="nonSign" method="get">
 					<div class="d-grid">
-						<button type="submit" class="btn btn-primary btn-xl"
-							id="seekButton" style="opacity: 0.6">비회원으로 둘러보기</button>
+						<button type="submit" class="btn btn-primary btn-xl" id="seekButton" style="opacity: 0.6">비회원으로 둘러보기</button>
 					</div>
 				</form>
 				<br> <a href="tofindpw">비밀번호를 잊으셨나요??</a>
@@ -85,11 +70,9 @@
 <div th:insert="footer"></div>
 </body>
 <!-- Bootstrap core JS-->
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- SimpleLightbox plugin JS-->
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
 <!-- Core theme JS-->
 <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 

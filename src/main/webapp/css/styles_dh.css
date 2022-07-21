@@ -43,7 +43,7 @@
 }
 
 #modal .modal-window {
-	background: rgba(251, 249, 249, 0);
+	background: rgba(251, 249, 249, 0.9);
 	box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 	backdrop-filter: blur(13.5px);
 	-webkit-backdrop-filter: blur(13.5px);
@@ -84,11 +84,11 @@
 }
 
 img {
-	width: 220px;
-	height: 100px;
+	width: 330px;
+	height: 130px;
 	object-fit: cover;
-	max-width: 220px;
-	max-height: 100px;
+	max-width: 330px;
+	max-height: 130px;
 }
 
 #item_list {
@@ -97,13 +97,13 @@ img {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	width: 1000px;
+	width: 1320px;
 	margin: 10px;
 	justify-content: center;
 }
 
 .cards {
-	width: 220px;
+	width: 330px;
 	height: 350px;
 	padding: 30px;
 	flex-grow: 0;
@@ -114,7 +114,7 @@ img {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	width: 1000px;
+	width: 1320px;
 	margin: 5px;
 	justify-content: center;
 	position: relative;
@@ -130,7 +130,7 @@ img {
 .card_image_image {
 	padding: 10px;
 	flex-grow: 0;
-	width: 200px;
+	width: 330px;
 	height: 200px;
 	border-radius: 90%;
 	overflow: hidden;

@@ -119,14 +119,15 @@ public class MeetingController {
     }
 
 	@GetMapping("/meetmeet/delete")
-	public ModelAndView meetDelete(Long meetingId, HttpServletRequest req) {
+	public ModelAndView meetDelete(Long meetingId, HttpServletRequest req) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
-		meetingService.meetDelete(meetingId);
 		modelAndView.setViewName("redirect:/tohome");
-		
-		meetingParticipantService.
-		meetParticipationDelete(meetingId,
-				(String) req.getSession().getAttribute("accountId"));
+		if(req.getSession().getAttribute("accountId").equals(getOne(meetingId).getMaster_id())) {
+			meetingService.meetDelete(meetingId);
+			meetingParticipantService.
+			meetParticipationDelete(meetingId,
+					(String) req.getSession().getAttribute("accountId"));
+		}
 		
 		return modelAndView;
 	}
