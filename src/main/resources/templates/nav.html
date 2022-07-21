@@ -58,11 +58,12 @@
 				<!-- 내 프로필 -->
 				<div
 					style="border: 1.8px solid #DBDBDB; width: 100px; height: 50px; display: flex; align-items: center; flex-direction: column;">
-					<div style="border: 0.1px solid transparent; border-radius: 50%; background-image: linear-gradient(#fff, #fff), linear-gradient(45deg, #FFC700 18%, #FF6710 40% ,#D100C3 100%);
-						background-origin: border-box; background-clip:content-box, border-box; padding: 5px;">
-						<div id="myProfile1"
-							style="border: 1px solid white; width: 5px; height: 5px; border-radius: 50%; overflow: hidden; padding: 5px; font-size: 1px;">
-							padding: 0.1px;">
+					<div style="border: 0.1px solid transparent;
+						border-radius: 50%;
+						background-image: linear-gradient(#fff, #fff), 
+						linear-gradient(45deg, #FFC700 18%, #FF6710 40% ,#D100C3 100%);
+						background-origin: border-box;
+						background-clip: content-box, border-box;">
 							<div id="myProfile1"
 								style="border: 1px solid white; width: 29px; height: 29px; border-radius: 50%; overflow: hidden; padding: 5px; font-size: 1px;">
 							</div>
@@ -74,7 +75,6 @@
 					<button class="btn " type="submit" name="logout"
 						onclick="location.href='/account/logout'">로그아웃</button>
 				</div>
-				5
 			</div>
 		</div>
 </nav>
@@ -82,19 +82,18 @@
 	/* 자바스크립트용 전역변수 선언 */
 	var User1 = "?";				// 세션에서 받은 id 저장할 변수
 	var Username1 = "?";			// 세션에서 받은 nickname 저장할 변수
-	var 1argetFriendId1 = "?"; 	// 친구목록에서 현재 선택된 친구id를 저장2 변수
+	var targetFriendId1 = "?"; 	// 친구목록에서 현재 선택된 친구id를 저장할 변수
 	
-	/* 서버단1세션에서  id,nick1ame 받아오기*/
+	/* 서버단 세션에서  id,nickname 받아오기*/
 	axios
 	.post("getsession")
 	.then(
 		function(response) {
 			User1 = response.data[0];
 			Username1 = response.data[1];
+			
 			showMe1();
 	});
-		
-
 		
 	/* 초기화된 전역변수 이용해 내 프로필 사진,닉네임, id 출력하기 */
 	function showMe1(){

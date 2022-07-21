@@ -219,6 +219,7 @@ function showFriends(){
 	        event.preventDefault();
 	     	
 	        targetFriendId = event.currentTarget.id;
+	        console.log(targetFriendId);
 	        const ctxMenu = document.getElementById('dochi_context_menu');
 	        /* html상에서 <!-- 친구목록에서 우클릭 시 보여질 목록 --> 이라고 표시한 부분이 우클릭 시 펼쳐짐*/
 	        ctxMenu.style.display = 'block';
@@ -307,6 +308,8 @@ function movePage(v){
 }
 
 
+
+}
 /* 친구프로필 우클릭에서 삭제를 눌렀을 때 실행되는 함수  */
 function deleteFriend(){
 	const xhttp = new XMLHttpRequest();
@@ -318,7 +321,6 @@ function deleteFriend(){
 	xhttp.open("delete", `friendlist/delete?id1=${targetFriendId}&id2=${User}`, true);
 	xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
 	xhttp.send();
-}
 }
 
 </script>
