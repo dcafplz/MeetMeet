@@ -37,14 +37,12 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 	public List<List<String>> findFriendRequestByRequestId(String requestId) {
 		List<List<String>> result = null;
 		result = friendRequestRepository.findFriendRequestByRequestId(requestId);
-		System.out.println(result);
 		return result;
 	}
 
 	public List<List<String>> findFriendRequestByRequestedId(String requestedId) {
 		List<List<String>> result = null;
 		result = friendRequestRepository.findFriendRequestByRequestedId(requestedId);
-		System.out.println(result);
 		return result;
 	}
 
@@ -53,27 +51,37 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 			Integer a = null;
 			a = Integer.parseInt(id);
 			friendRequestRepository.deleteById(a);
+			/*
+			 * friendRequestRepository.deleteByRequestedIdAccountIdAndRequestIdAccountId(id1
+			 * ,id2); No EntityManager with actual transaction available for current thread
+			 * - cannot reliably process 'remove' call; nested exception is
+			 * javax.persistence.TransactionRequiredException: No EntityManager with actual
+			 * transaction available for current thread - cannot reliably process 'remove'
+			 * call
+			 */
+			List<FriendRequest> aaa = friendRequestRepository.findByRequestIdAccountIdAndRequestedIdAccountId(id2, id1);
+			if (aaa.size()!=0) {
+				friendRequestRepository.deleteById(aaa.get(0).getId());
+			}
 			
+
 			Optional<Account> result1 = accountRepository.findById(id1);
 			Optional<Account> result2 = accountRepository.findById(id2);
 			AccountDTO result3 = null;
 			AccountDTO result4 = null;
 			if (result1.isPresent()) {
-				result3 = modelMapper.map(result1.get(),AccountDTO.class);
+				result3 = modelMapper.map(result1.get(), AccountDTO.class);
 			}
 			if (result2.isPresent()) {
-				result4 = modelMapper.map(result2.get(),AccountDTO.class);
+				result4 = modelMapper.map(result2.get(), AccountDTO.class);
 			}
-			System.out.println("진행상황확인용");
 			FriendListDTO result = FriendListDTO.builder().id1(result3).id2(result4).build();
 			friendListRepository.save(modelMapper.map(result, FriendList.class));
-			System.out.println("성공");
 			FriendListDTO resultt = FriendListDTO.builder().id2(result3).id1(result4).build();
 			friendListRepository.save(modelMapper.map(resultt, FriendList.class));
-			System.out.println("성공");
 			return "수락요청";
-			
-		}catch(Exception e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 			return "수락하는 과정 중 오류가 발생했습니다";
 		}

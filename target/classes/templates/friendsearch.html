@@ -2,306 +2,222 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <meta name="description" content="" />
 <meta name="author" content="" />
 <title>밋밋</title>
 <!-- Favicon-->
 <link rel="icon" type="image/x-icon" href="assets/handshaking.png" />
 <!-- Bootstrap icons-->
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
-	rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
 <!-- Core theme CSS (includes Bootstrap)-->
 <link href="css/styles_dh.css" rel="stylesheet" />
+<!-- 세션에서 로그인 중인 id 정보를 가져오기 위해 axios 사용 -->
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script>
-var hiddenPath = null;
-var User = "?";/* 세션에서 내 아이디 받아오기 */
-var Username = "?"; //이거도 세션에서받아오기
-</script>
-
-
 </head>
+
 <body>
 	<!-- Navigation-->
 	<div th:insert="nav.html"></div>
-<!-- 	<div w3-include-html="nav.html"></div> -->
+	
+	
+	
 	<!-- Header-->
-	<div
-		style="border: 1px solid black; height: 300px; padding-left: 50px; padding-bottom: 20px; display: flex; align-items: flex-end;">
-		<div id="myProfile" style="border: 3px solid green; width: 250px; height: 250px;">
-			
+	<!-- 내 프로필 -->
+	<div style="border: 1.8px solid #DBDBDB; height: 300px; padding-left: 50px; padding-bottom: 20px; display: flex; align-items: flex-end;">
+		<div style="border: 3px solid transparent;
+			border-radius: 50%;
+			background-image: linear-gradient(#fff, #fff), 
+			linear-gradient(45deg, #FFC700 18%, #FF6710 40% ,#D100C3 100%);
+			background-origin: border-box;
+			background-clip: content-box, border-box;
+			padding: 5px;">
+			<div id="myProfile" style="border: 5px solid  white; width: 250px; height: 250px; border-radius: 50%; overflow: hidden;padding: 5px;">
+			</div>
 		</div>
 		<div id="myProfileName" style="margin: 10px;">
 			<span style="font-size: 25px;"></span>
 		</div>
 	</div>
-	<!-- Section-->
-	<div style="border: 1px solid red; display: flex;">
-		<div style="border: 1px solid black; width: 20%; height: 300px;">
-
-			<a href="/tofriendlist">친구 목록</a><br> <a
-				href="/tofriendsearch">친구 추가</a><br>
-				<a href="/tofriendrequest">친구 요청목록</a><br>
-
+	
+	
+	
+	<!-- Main Contents -->
+	<div style="border: none; display: flex;background-color:#FAFAFA;">
+		<!-- Side bar-->
+		<div style="border: 1.8px solid #DBDBDB;text-align: center; width: 10%; height: 300px; margin-left:70px; margin-top:50px; margin-right:70px; border-radius:15px;background-color:#FFFFFF;">
+			<br><div>메뉴</div>
+			<hr width =100%  size=7/>
+			<a href="/tofriendlist" class="mycss1">친구 목록</a>
+			<br><br>
+			<a href="/tofriendsearch" class="mycss1">친구 추가</a>
+			<br><br>
+			<a href="/tofriendrequest" class="mycss1">친구 요청목록</a>
+			<br>
+			<style>
+				.mycss1:link {
+				  color : gray;
+				  text-decoration-line: none;
+				}
+				.mycss1:visited {
+				  color : black;
+				}
+				.mycss1:hover {
+				  color : black;
+				  text-decoration: underline;
+				}
+				.mycss1:active {
+				  color : green
+				}
+			</style>
 		</div>
 
-		<!-- <div id="changing1"
-			style="border: 1px solid black; width: 60%; height: 1200px; display: none; flex-wrap: wrap;">
-
-		</div> -->
-
-
-		<div id="changing2"
-			style="border: 1px solid black; width: 60%; height: 700px; display: block;">
+		<!-- Center Contents -->
+		<div id="changing2" style="border: none; width: 60%; height: 1300px; display: block;">
 			<div>
-				<input id="findUser" type="text"
-					placeholder="해당 유저의 아이디나 이름을 입력해주세요" size=100>
-				<button onclick="javascript:findFriend();">찾기</button>
+				<div style="text-align:center; margin-top:20px;margin-bottom:20px;margin-left:60px;margin-right:60px; padding-top:20px;padding-bottom:20px;
+							border:none; border-radius: 20px; background-color:#EFEFEF">
+					<input id="findUser" type="text" placeholder="해당 유저의 닉네임을 입력해주세요" size=100
+							style="background-color:#EFEFEF; border:none;">
+					<button onclick="javascript:findFriend();">찾기</button>
+				</div>
 			</div>
-			<div id="showResult" style="border: 1px solid black; width: 100%; height: 1200px; display: flex; flex-wrap: wrap;">검색한내용표시박스</div>
-		</div>
+			<div id="showResult" style="border: 1.8px solid #DBDBDB;border-radius:15px; width: 100%; height: 1200px; display: flex; flex-wrap: wrap; justify-content:flex-start ;"></div>
+			
+			<!-- 페이지 -->
+			<div class="pagination" style="text-align: center; ">
+				<ul class="paginationNumber" id="pages" style="margin-left: auto; margin-right: auto;">
+				1
+				</ul>
+			</div>
 		
-
-
-	</div>
-
-	
-	<div id='dochi_context_menu' class="custom-context-menu" style="display: none; border:1px solid red; background-color:white;">
-      <ul>
-        <li><a href="javascript:deleteFriend();">친구 삭제하기</a></li>
-        <li><a href="home.html">친구 차단하기</a></li>
-      </ul>
-    </div>
-   
-	
-	
-	<!-- Footer-->
-	<footer class="py-5 bg-dark">
-		<div class="container">
-			<p class="m-0 text-center text-white">Copyright &copy; Your
-				Website 2022</p>
 		</div>
-	</footer>
+	</div>
+	
+	
+
+	<!-- Footer-->
+	<div th:insert="footer.html"></div> 
+	
+	
+	
 	<!-- Bootstrap core JS-->
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 	<!-- Core theme JS-->
 	<script src="js/scripts.js"></script>
 
-	
-	<script>
-		includeHTML();
-		function includeHTML() {
-			var z, i, elmnt, file, xhttp;
-			/* Loop through a collection of all HTML elements: */
-			z = document.getElementsByTagName("*");
-			for (i = 0; i < z.length; i++) {
-				elmnt = z[i];
-				/*search for elements with a certain atrribute:*/
-				file = elmnt.getAttribute("w3-include-html");
-				if (file) {
-					/* Make an HTTP request using the attribute value as the file name: */
-					xhttp = new XMLHttpRequest();
-					xhttp.onreadystatechange = function() {
-						if (this.readyState == 4) {
-							if (this.status == 200) {
-								elmnt.innerHTML = this.responseText;
-							}
-							if (this.status == 404) {
-								elmnt.innerHTML = "Page not found.";
-							}
-							/* Remove the attribute, and call this function once more: */
-							elmnt.removeAttribute("w3-include-html");
-							includeHTML();
-						}
-					}
-					xhttp.open("GET", file, true);
-					xhttp.send();
-					/* Exit the function: */
-					return;
-				}
-			}
-		}
-	</script>
-	<script>
-	function showMe(){
-		console.log("내프로필띄우기");
-		var profilebox = document.getElementById("myProfile");
-		console.log(profilebox);
-		console.log(User);
-		console.log(Username);
-		profilebox.innerHTML = `<img src="../images/profile/${User}_profile.png" alt="" style="width:235px; height:235px; max-width: 235px; max-height: 235px;object-fit: cover;">`;
-		var namebox = document.getElementById("myProfileName");
-		namebox.innerHTML = `${Username}`;
-	} 
-	
-	const boxes = null;
-	function showFriends(){
-		console.log("비동기실행확인");
-		console.log("사용중유저 : " + User);
-		const xhttp = new XMLHttpRequest();
-		xhttp.onload = function() {
-			let res_data = this.responseText;
-			let data = JSON.parse(res_data);
-			var div = document.getElementById("changing1");
-			console.log(div);
-			div.innerHTML = "";
-			for (i in data){
-				div.innerHTML += `<div class="friendsprofile" id=${data[i][0]} style="border: 1px solid blue; width: 240px; height: 300px;">
-				<img src="images/profile/${data[i][1]}_profile.png" alt="" style="width:235px; height:235px;
-				max-width: 235px; max-height: 235px;"><br>
-				친구목록id : ${data[i][0]}<br>
-				닉네임 : ${data[i][2]}<br>
-				아이디 : ${data[i][1]}</div>`;
-			
-			}
-			
-			
-			
-			
-			const boxes = document.querySelectorAll(".friendsprofile");
-			console.log(boxes);
-			console.log("박스정의");
-			
-			 
-			function handleCreateContextMenu(event){
-		        // 기본 Context Menu가 나오지 않게 차단
-		        event.preventDefault();
-		        hiddenPath = event.currentTarget.id;
-				console.log(hiddenPath);
-		        const ctxMenu = document.getElementById('dochi_context_menu');
-		        
-		        // 노출 설정
-		        ctxMenu.style.display = 'block';
-		        ctxMenu.style.position = 'absolute';
-		        // 위치 설정
-		        ctxMenu.style.top = event.pageY+'px';
-		        ctxMenu.style.left = event.pageX+'px';
-		      }
-		      
-		      // Context Menu 제거
-		      function handleClearContextMenu(event){
-		        const ctxMenu = document.getElementById('dochi_context_menu');
-		        
-		        // 노출 초기화
-		        ctxMenu.style.display = 'none';   
-		        ctxMenu.style.top = null;
-		        ctxMenu.style.left = null;
-		      }
-		      
-		      // 이벤트 바인딩 id=${i}th_friend
-		      boxes.forEach( (box) => {
-		        box.addEventListener('mouseover', onmouse, false)
-		      });
-		      boxes.forEach( (box) => {
-		        box.addEventListener('mouseout', outmouse, false)
-		      });
-		      
-		      function onmouse(){
-				  var selectedBox = event.currentTarget;
-		    	  selectedBox.addEventListener('contextmenu', handleCreateContextMenu, false);
-		      }
-		      function outmouse(){
-		    	  var selectedBox = event.currentTarget;
-		    	  selectedBox.removeEventListener('contextmenu', handleCreateContextMenu, false);
-		      }
-		      document.addEventListener('click', handleClearContextMenu, false);
 
-			
-		}
-		xhttp.open("get", `friendlist/findFriendListById1?id1=${User}`, true);
-		xhttp.setRequestHeader("Content-type",
-				"application/x-www-form-urlencoded;charset=UTF-8");
-		xhttp.send();
-	}
-	
-	
-	/* 우클릭에서 눌렀을 때 경로  */
-	function deleteFriend(){
-		console.log("성공");
-		console.log(hiddenPath);
-		console.log(typeof(hiddenPath));
-		var hiddenPath2 = parseInt(hiddenPath);
-		console.log(hiddenPath2);
-		console.log(typeof(hiddenPath2));
-		const xhttp = new XMLHttpRequest();
-		xhttp.onload = function() {
-			console.log("삭제완료");
-			showFriends();
-		}		
-		xhttp.open("delete", `friendlist/delete?id=${hiddenPath2}`, true);
-		xhttp.setRequestHeader("Content-type",
-				"application/x-www-form-urlencoded;charset=UTF-8");
-		xhttp.send();
-	}
-	
-	
-	
-</script>
 
 <script>
-			function findFriend() {
-				console.log("유저검색실행확인");
-				const findUser = document.getElementById("findUser").value;
-				console.log("검색할내용 : " + findUser);
-				const xhttp = new XMLHttpRequest();
-				xhttp.onload = function() {
-					let res_data = this.responseText;
-					let data = JSON.parse(res_data);
-					var div = document.getElementById("showResult");
-					div.innerHTML = "";
-					for (i in data){
-						div.innerHTML += `<div class="searchingprofile" id=${data[i][0]} style="border: 1px solid blue; width: 240px; height: 300px;">
-						<img src="images/profile/${data[i][0]}_profile.png" alt="" style="width:235px; height:235px;
-						max-width: 235px; max-height: 235px;"><br>
-						닉네임 : ${data[i][1]}<br>
-						아이디 : ${data[i][0]}
-						<button onclick="javascript:addFriend('${data[i][0]}');" value="친구신청">친구신청</button>
-						</div>`;
-					
-					}
-				}
-				xhttp.open("get", `searchUser?searching=${findUser}&id=${User}`, true);
-				xhttp.setRequestHeader("Content-type",
-						"application/x-www-form-urlencoded;charset=UTF-8");
-				xhttp.send();
+/* 자바스크립트용 전역변수 선언 */
+var User = "?";				// 세션에서 받은 id 저장할 변수
+var Username = "?";			// 세션에서 받은 nickname 저장할 변수
+var targetFriendId = "?"; 	// 친구목록에서 현재 선택된 친구id를 저장할 변수
+
+/* 서버단 세션에서  id,nickname 받아오기*/
+axios
+.post("getsession")
+.then(
+	function(response) {
+		User = response.data[0];
+		Username = response.data[1];
+		
+		showMe();
+});
+
+function showMe(){
+	var profilebox = document.getElementById("myProfile");
+	profilebox.innerHTML = `<img src="../images/profile/${User}_profile.png" alt="" style="width:300px; height:300px; max-width:300px; max-height:300px; object-fit:cover;
+		position: relative; top: 50%; left: 50%; transform: translate(-50%, -50%);">`;
+	var namebox = document.getElementById("myProfileName");
+	namebox.innerHTML = `<b style="font-size:27px;">${Username}</b>( ${User} )`;
+} 
+
+var friendsNum = 0;
+var perPage = 12;
+var pageNum = 0;
+var tempData = 0;
+var div = 0;
+function findFriend() {
+	const findUser = document.getElementById("findUser").value;
+	const xhttp = new XMLHttpRequest();
+	xhttp.onload = function() {
+		let res_data = this.responseText;
+		let data = JSON.parse(res_data);
+		
+		tempData = data;
+		friendsNum = data.length;
+		pageNum = Math.ceil(friendsNum/12);
+		var pageUl = document.getElementById("pages");
+		pageUl.innerHTML = "";
+		pageUl.innerHTML = "<a href='javascript:movePage(1);'>1</a>";
+		for (var idx=2; idx<=pageNum; idx++){
+			pageUl.innerHTML += `/<a href='javascript:movePage(${idx});'>${idx}</a>`;
+		}
+		
+		div = document.getElementById("showResult");
+		div.innerHTML = "";
+		for (i in data){
+			if (i >= perPage){
+				break;
 			}
-			function addFriend(v) {
-				console.log("친구추가실행");
-				console.log(v);
-				const findUser = v;
-				const xhttp = new XMLHttpRequest();
-				xhttp.onload = function() {
-					let res_data = this.responseText;
-					alert(res_data);
-				}
-				xhttp.open("post", `friendlist/post?id1=${User}&id2=${findUser}`, true);
-				xhttp.setRequestHeader("Content-type",
-						"application/x-www-form-urlencoded;charset=UTF-8");
-				xhttp.send();
-			}
-		</script>
-<script type="text/javascript">
-	axios
-		.post("getsession")
-		.then(
-			function(response) {
-				console.log("!@#!#!@#!@#!@");
-				console.log(User);
-				console.log(Username);
-				console.log(response);
-				User = response.data[0];
-				Username = response.data[1];
-				console.log(User);
-				console.log(Username);
-				console.log("!@#!#!@#!@#!@");
-				showMe();
-				showFriends();
-			});
+			div.innerHTML += `<div class="searchingprofile" id=${data[i][0]} style="border: 1.8px solid #DBDBDB;border-radius:15px; width: 240px; height: 300px; margin:5px; overflow:hidden;">
+								<img src="images/profile/${data[i][0]}_profile.png" alt="?" style="width:235px; height:235px;
+								max-width: 235px; max-height: 235px;"><br>
+								닉네임 : ${data[i][1]}<br>
+								아이디 : ${data[i][0]}
+								<button class=myButton onclick="javascript:addFriend('${data[i][0]}');" value="친구신청">친구신청</button>
+								<style>
+								.myButton{
+									font-size:15px;
+									float:right;
+									margin-right:5px;
+									border:none;
+									background-color:white;
+									color:#1DA0F6;
+									font-weight:bold;
+								}
+								.myButton:hover {
+								    transform: scale(1.2);
+								}
+								</div>`;
+		}
+		
+	}
+	xhttp.open("get", `searchUser?searching=${findUser}&id=${User}`, true);
+	xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhttp.send();
+}
+
+function movePage(v){
+	console.log(v);
+	div.innerHTML = "";
+	for (var start=perPage*(v-1); start<perPage*v; start++ ){
+		div.innerHTML += `<div class="searchingprofile" id=${tempData[start][0]} style="border: 1px solid blue; width: 240px; height: 300px; margin:5px;">
+							<img src="images/profile/${tempData[start][0]}_profile.png" alt="?" style="width:235px; height:235px;
+							max-width: 235px; max-height: 235px;"><br>
+							닉네임 : ${tempData[start][1]}<br>
+							아이디 : ${tempData[start][0]}
+							<button onclick="javascript:addFriend('${tempData[start][0]}');" value="친구신청">친구신청</button>
+							</div>`;
+	}
+}
+
+
+
+function addFriend(v) {
+	const findUser = v;
+	const xhttp = new XMLHttpRequest();
+	xhttp.onload = function() {
+		let res_data = this.responseText;
+		alert(res_data);
+	}
+	xhttp.open("post", `friendlist/post?id1=${User}&id2=${findUser}`, true);
+	xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhttp.send();
+}
 </script>
+
 
 </body>
 </html>

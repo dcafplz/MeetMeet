@@ -42,6 +42,7 @@ public class FriendRequestController {
 	}
 	@DeleteMapping("accept")
 	public String accept(String id, String id1, String id2) {
+		System.out.println("친구요청수락--------------------------------");
 		String result = null;
 		result = friendRequestService.accept(id,id1,id2);
 		return result;
