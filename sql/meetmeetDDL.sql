@@ -49,7 +49,7 @@ CREATE TABLE meeting(
     filename varchar(255) NOT NULL,
     filepath varchar(255) NOT NULL,
 	max_participant int NOT NULL,
-	meeting_detail varchar(50) NOT NULL,
+	meeting_detail varchar(255) NOT NULL,
 	master_id varchar(20),
 	meeting_name varchar(20) NOT NULL,
 	meeting_place varchar(20) NOT NULL,

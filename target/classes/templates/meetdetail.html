@@ -20,41 +20,35 @@
 	<div th:insert="nav.html"></div>
 	<section class="page-section" id="contact">
 		<div class="row gx-4 gx-lg-5 justify-content-center" style="display: flex; flex-direction: column; align-content: center;">
-			<table border="1" style="width: 660px; align-content: center;">
-				<th>
-                    <div class="" th:text="모임이름"></div>
-                </th>
-				<th>
-                    <div th:text="모임장소"></div>
-                </th>
-                <th>
-                    <div th:text="모임시작"></div>
-                </th>
-               	<th>
-                    <div th:text="모임끝"></div>
-                </th>
-                <tr>
-                	<td>
-                    	<div class="" th:text="${meeting.meetingName}"></div>
-	                </td>
-					<td>
-	                    <div th:text="${meeting.meetingPlace}"></div>
-	                </td>
-	                <td>
-	                    <div th:text="${meeting.meetingStartDate}"></div>
-	                </td>
-	               	<td>
-	                    <div th:text="${meeting.meetingEndDate}"></div>
-	                </td>
-				</tr>
-			</table>
+			<div style="width: 800px; align: center; margin-left:auto; 
+    margin-right:auto; padding-bottom: 80px">
+					<div style="width:800px; display: flex; flex-direction: row; justify-content: space-around; padding-bottom: 30px" >
+						<div style="width:180px; text-align: center; font-size:20px; font-style: italic; font-weight: bold;">👨‍👨‍👦‍👦모임명</div>
+						<div style="width:180px; text-align: center; font-size:20px; font-style: italic; font-weight: bold;">❔장소</div>
+						<div style="width:180px; text-align: center; font-size:20px; font-style: italic; font-weight: bold;">📆만남</div>
+						<div style="width:180px; text-align: center; font-size:20px; font-style: italic; font-weight: bold;">📆이별</div>
+					</div>
+					<div style="width:800px; display: flex; flex-direction: row; justify-content: space-around;" >
+						<div class="modal-name" style="width:180px; text-align: center;" th:text="${meeting.meetingName}"></div>
+			
+						<div class="modal-place" style="width:180px; height: 20px; text-align: center;" th:text="${meeting.meetingPlace}"></div>
+					
+						<div class="modal-date"  style="width:180px; text-align: center;" th:text="${meeting.meetingStartDate}"></div>
+				
+						<div class="modal-contents" style="width:180px; height: 20px; text-align: center; white-space: nowrap;overflow:hidden; text-overflow:ellipsis;" th:text="${meeting.meetingEndDate}"></div>
+					</div>
+				</div>
 		</div>
 		<div class="container px-4 px-lg-5"
 			style="display: flex; flex-direction: column;">
 			<div class="row gx-4 gx-lg-5 justify-content-center mb-5"
 				style="display: flex; flex-grow: 1; flex-direction: row;">
 				<div class="col-lg-6" style="flex-grow: 1;">
-					<div id="map" style="width: 588px; height: 500px; margin-top: 40px"></div>
+					<div id="map" style="width: 588px; height: 500px; margin-top: 40px;"></div>
+					<div style="padding-bottom: 50px">
+						<div style="width:588px; text-align: center; font-size:20px; font-style: italic; font-weight: bold; padding-top: 50px; padding-bottom: 30px">📦목적</div>
+						<div class="modal-contents" style="width:588px; height: 100px; text-align: center;" th:text="${meeting.meetingDetail} "></div>
+					</div>
 					<div class="form-floating mb-3">
 						<input class="form-control" id="address" disabled="disabled"
 							placeholder="검색할 주소" th:value="${meeting.meetingPlace}">
@@ -428,9 +422,9 @@
 				var endSTN = result.OBJ[i].endSTN
 				var startSTN = result.OBJ[i].startSTN
 				if(i % 2 == 0){
-					var new_html = '<div class="btn btn-primary btn-xl" style="width: 800px; height: 30px; opacity:0.8; margin:15px; text-align: center; line-height: 0px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;">'
+					var new_html = '<div id="r' + i + '" onclick="view_all(event)" class="btn btn-primary btn-xl" style="width: 800px; height: 30px; opacity:0.8; margin:15px; text-align: center; line-height: 0px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;">'
 				}else{
-					var new_html = '<div class="btn btn-primary btn-xl" style="width: 800px; height: 30px; opacity:0.6; margin:15px; text-align: center; line-height: 0px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;">'
+					var new_html = '<div id="r' + i + '" onclick="view_all(event)" class="btn btn-primary btn-xl" style="width: 800px; height: 30px; opacity:0.6; margin:15px; text-align: center; line-height: 0px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;">'
 				}
 				
 				new_html += startSTN + " -> " + endSTN;
@@ -458,9 +452,9 @@
 				var trans = "";
 				var distance = "";
 				if(i % 2 == 0){
-					var new_html = '<div class="btn btn-primary btn-xl" style="width: 800px; height: 30px; opacity:0.8; margin:15px; text-align: center; line-height: 0px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;">'
+					var new_html = '<div id="r' + i + '" onclick="view_all(event)" class="btn btn-primary btn-xl" style="width: 800px; height: 30px; opacity:0.8; margin:15px; text-align: center; line-height: 0px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;">'
 				}else{
-					var new_html = '<div class="btn btn-primary btn-xl" style="width: 800px; height: 30px; opacity:0.6; margin:15px; text-align: center; line-height: 0px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;">'
+					var new_html = '<div id="r' + i + '" onclick="view_all(event)" class="btn btn-primary btn-xl" style="width: 800px; height: 30px; opacity:0.6; margin:15px; text-align: center; line-height: 0px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;">'
 				}
 				
 				for(let j = 0; j < subPath.length; j ++){
@@ -643,6 +637,10 @@
 				return;
 			}
 		}
+	}
+	
+	function view_all(e){
+		document.getElementById(e.target.id).style = "width: 800px; opacity:" + document.getElementById(e.target.id).style.opacity + "; margin:15px; text-align: center; overflow:hidden; height:auto";
 	}
 	
 	
