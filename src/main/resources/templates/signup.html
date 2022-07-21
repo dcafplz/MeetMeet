@@ -36,71 +36,37 @@
 					<form id="signupform" action="account/signup" method="post" enctype="multipart/form-data">
 						<!-- ID input-->
 						<div class="form-floating mb-3">
-<<<<<<< HEAD
-							<input class="form-control" name="accountId" id="id" type="text" required minlength="4" maxlength="15" pattern="^[a-zA-Z0-9]+$" onchange="idval()" />
-							<label for="id">ID</label>
-=======
 							<input class="form-control" name="accountId" id="id" type="text" required minlength="4" maxlength="15" pattern="^[a-zA-Z0-9]+$" onchange="idval()" /> <label for="id">ID</label>
->>>>>>> 86e4c39b39c7a5bd909f5a9c48c75677cc5a7362
 							<div class="id invalid-feedback">ID의 길이는 영문과 숫자만 사용 가능하며 4자이상 15자 이하여야 합니다.</div>
 							<div class="idd invalid-feedback" style="display: none">중복된 ID 입니다.</div>
 							<div class="id valid-feedback" style="display: none">사용 가능한 ID입니다.</div>
 						</div>
 						<!-- PW input-->
 						<div class="form-floating mb-3">
-<<<<<<< HEAD
-							<input class="form-control" name="pw" id="pw" type="password" required minlength="4" maxlength="15" onchange="valc(1, 'pw')" />
-							<label for="pw">Password</label>
-=======
 							<input class="form-control" name="pw" id="pw" type="password" required minlength="4" maxlength="15" onchange="valc(1, 'pw')" /> <label for="pw">Password</label>
->>>>>>> 86e4c39b39c7a5bd909f5a9c48c75677cc5a7362
 							<div class="pw invalid-feedback">pw의 길이는 4자이상 15자 이하여야 합니다.</div>
 							<div class="pw valid-feedback" style="display: none">사용 가능한 pw입니다.</div>
 						</div>
 						<div class="form-floating mb-3">
-<<<<<<< HEAD
-							<input class="form-control" id="pw2" type="password" required minlength="4" maxlength="15" onchange="pw2val()" />
-							<label for="pw2">Password confirm</label>
-=======
-							<input class="form-control" id="pw2" type="password" required minlength="4" maxlength="15" onchange="pw2val()" /> <label for="pw2">Password confirm</label>
->>>>>>> 86e4c39b39c7a5bd909f5a9c48c75677cc5a7362
+							<input class="form-control" id="pw2" type="password" required minlength="4" maxlength="15" onchange="pw2val()" /> <label for="pw2">Password confirm</label> 
 							<div class="pw2 invalid-feedback">비밀번호 확인이 일치하지 않습니다.</div>
 							<div class="pw2 valid-feedback" style="display: none">비밀번호 확인이 일치합니다.</div>
 						</div>
 						<div class="form-floating mb-3">
-<<<<<<< HEAD
-							<input class="form-control" name="pwQuestion" id="pwq" type="text" required pattern="^[가-힣]+$" onchange="valc(3, 'pwq')" />
-							<label for="pwq">비밀번호 찾기 질문: 남들이 모르는 당신만의 은밀한 취미는?</label>
-=======
 							<input class="form-control" name="pwQuestion" id="pwq" type="text" required pattern="^[가-힣]+$" onchange="valc(3, 'pwq')" /> <label for="pwq">비밀번호 찾기 질문: 남들이 모르는 당신만의 은밀한 취미는?</label>
->>>>>>> 86e4c39b39c7a5bd909f5a9c48c75677cc5a7362
 							<div class="pwq invalid-feedback">한글로 입력해주세요</div>
 							<div class="pwq valid-feedback" style="display: none">정상입니다.</div>
 						</div>
 						<div class="form-floating mb-3">
-<<<<<<< HEAD
-							<input class="form-control" name="nickName" id="nickname" type="text" required pattern="^[a-zA-Z0-9ㄱ-ㅎ가-힣]+$" onchange="valc(4, 'nickname')" />
-							<label for="nickname">Nick Name</label>
-=======
-							<input class="form-control" name="nickName" id="nickname" type="text" required pattern="^[a-zA-Z0-9ㄱ-ㅎ가-힣]+$" onchange="valc(4, 'nickname')" /> <label for="nickname">Nick Name</label>
->>>>>>> 86e4c39b39c7a5bd909f5a9c48c75677cc5a7362
+							<input class="form-control" name="nickName" id="nickname" type="text" required pattern="^[a-zA-Z0-9ㄱ-ㅎ가-힣]+$" onchange="valc(4, 'nickname')" /> <label for="nickname">Nick Name</label> 
 							<div class="nickname invalid-feedback">특수문자는 사용할 수 없습니다.</div>
 							<div class="nickname valid-feedback" style="display: none">사용 가능한 닉네임 입니다.</div>
 						</div>
 						<div class="form-floating mb-3">
-<<<<<<< HEAD
-							<input class="form-control" name="placeName" id="place" type="text" required pattern="^[ㄱ-ㅎ|가-힣|0-9|]+$" onchange="valc(5, 'place'); searchAddressToCoordinate(this.value)" />
-							<label for="place">Place</label>
-							<div class="place invalid-feedback">도로명이나 지번주소를 입력해주세요, 한글과 숫자만 입력 가능합니다</div>
-							<div class="place valid-feedback" style="display: none">정상적인 장소입니다.</div>
-							<input type="hidden" id="lat" value="" name="lat">
-							<input type="hidden" id="lng" value="" name="lng">
-=======
 							<input class="form-control" name="placeName" id="place" type="text" required pattern="^[ㄱ-ㅎ|가-힣|0-9|]+$" onchange="valc(5, 'place'); searchAddressToCoordinate(this.value)" /> <label for="place">Place</label>
 							<div class="place invalid-feedback">도로명이나 지번주소를 입력해주세요, 한글과 숫자만 입력 가능합니다</div>
 							<div class="place valid-feedback" style="display: none">정상적인 장소입니다.</div>
 							<input type="hidden" id="lat" value="" name="lat"> <input type="hidden" id="lng" value="" name="lng">
->>>>>>> 86e4c39b39c7a5bd909f5a9c48c75677cc5a7362
 						</div>
 						<hr style="background-color: #f4623a;" />
 						<div class="form-floating mb-3">
@@ -114,17 +80,13 @@
 						</div>
 						<br>
 						<div>
-<<<<<<< HEAD
-							선호하는 모임을 체크하세요 <br> <label class="form-check"><input type="checkbox" name="preference" value="sports"> 스포츠</label> <label class="form-check"><input type="checkbox" name="preference" value="book"> 독서</label> <label class="form-check"><input type="checkbox" name="preference" value="game"> 게임</label> <label class="form-check"><input type="checkbox" name="preference" value="friendship"> 친목</label> <label class="form-check"><input type="checkbox" name="preference" value="movie"> 영화</label> <label class="form-check"><input type="checkbox" name="preference" value="pet"> 반려동물</label>
-=======
-							<div>취향에 맞는 모임을 찾아드려요 (선택사항)</div><br>
+							<div>취향에 맞는 모임을 찾아드려요 (선택사항)</div><br> 
 							<label class="form-check"><input type="checkbox" name="preference" value="sports"> 스포츠</label> 
-							<label class="form-check"><input type="checkbox" name="preference" value="book"> 독서</label> 
-							<label class="form-check"><input type="checkbox" name="preference" value="game"> 게임</label> 
-							<label class="form-check"><input type="checkbox" name="preference" value="friendship"> 친목</label> 
-							<label class="form-check"><input type="checkbox" name="preference" value="movie"> 영화</label> 
+							<label class="form-check"><input type="checkbox" name="preference" value="book"> 독서</label>
+							<label class="form-check"><input type="checkbox" name="preference" value="game"> 게임</label>
+							<label class="form-check"><input type="checkbox" name="preference" value="friendship"> 친목</label>
+							<label class="form-check"><input type="checkbox" name="preference" value="movie"> 영화</label>
 							<label class="form-check"><input type="checkbox" name="preference" value="pet"> 반려동물</label>
->>>>>>> 86e4c39b39c7a5bd909f5a9c48c75677cc5a7362
 						</div>
 						<div class="d-grid">
 							<button class="btn btn-primary btn-xl" id="singupButton" type="submit" disabled="ture">sign up</button>

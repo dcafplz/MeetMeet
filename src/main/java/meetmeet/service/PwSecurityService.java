@@ -1,4 +1,4 @@
-package meetmeet.model.dto;
+package meetmeet.service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -6,9 +6,12 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.springframework.stereotype.Service;
+
 import meetmeet.model.entity.Account;
 
-public class PwSecurity {
+@Service
+public class PwSecurityService {
 	
 	public static boolean checkPw(Account account, String pw) throws Exception {
 		

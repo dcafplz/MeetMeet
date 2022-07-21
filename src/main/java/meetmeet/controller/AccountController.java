@@ -1,309 +1,191 @@
 package meetmeet.controller;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import meetmeet.model.dao.AccountRepository;
-import meetmeet.model.dao.PlaceRepository;
-import meetmeet.model.dao.PreferenceRepository;
 import meetmeet.model.dto.AccountDTO;
 import meetmeet.model.dto.PlaceDTO;
-import meetmeet.model.dto.PreferenceDTO;
-import meetmeet.model.dto.PwSecurity;
 import meetmeet.model.entity.Account;
-import meetmeet.model.entity.Place;
 import meetmeet.model.entity.Preference;
-
+import meetmeet.service.AccountService;
+import meetmeet.service.FileSaveService;
+import meetmeet.service.PlaceService;
+import meetmeet.service.PreferenceService;
+import meetmeet.service.PwSecurityService;
 
 @Controller
 public class AccountController {
-	
-	@Autowired
-	private AccountRepository dao;
-	
-	@Autowired
-	private PreferenceRepository pDao;
 
 	@Autowired
-	private PlaceRepository plDao;
-	
-	private ModelMapper modelMapper = new ModelMapper();
-	
-	
+	private AccountService accountService;
+
+	@Autowired
+	private PreferenceService preferenceService;
+
+	@Autowired
+	private PlaceService placeService;
+
+	@Autowired
+	private FileSaveService fileSaveService;
+
 	@PostMapping("account/signup")
-	public String signup(AccountDTO account, @RequestParam(required = false) List<String> preference, PlaceDTO place, @RequestParam(value = "file", required = false) MultipartFile file) throws NoSuchAlgorithmException, IllegalStateException, IOException {
-		Random random = new Random();
-		account.setHashSalt(random.ints(48,123)
-				  .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-				  .limit(3)
-				  .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-				  .toString());
-		account.setPw(PwSecurity.hashing(account.getPw(), account.getHashSalt()));
-		Account accountEntity = modelMapper.map(account, Account.class);
-		dao.save(accountEntity);
-		Place placeEntity = modelMapper.map(place, Place.class);
-		plDao.save(placeEntity);
-		if (preference != null) {savePreference(account.getAccountId(), preference);}
-
+	public String signup(AccountDTO account, @RequestParam(required = false) List<String> preference, PlaceDTO place,
+			@RequestParam(value = "file", required = false) MultipartFile file) throws NoSuchAlgorithmException, IOException {
 		
-		// File 생성. 해당 경로에 name으로 담기는 file
-		String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
-        // File 저장. 위 throws Exception 안하면 exception 대비하라고 경고떠서 추가했음
-		File saveFile = new File(projectPath, account.getAccountId() + "_profile");
-		if (file.getSize() == 0)
-		{
-			System.out.println("기본프로필");
-	        File defaultFile = new File(projectPath+"/default_profile.jpg");        
-	        Files.copy(defaultFile.toPath(), saveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-		}else {
-			file.transferTo(saveFile);
-		}
-        
+		accountService.save(account);
+		placeService.save(place);
+		fileSaveService.saveFile(file, "/"+ account.getAccountId() + "_profile", "/default_profile.jpg");
+		preferenceService.save(account.getAccountId(), preference);
+
 		return "redirect:/tologin";
 	}
-	
+
 	@ResponseBody
 	@GetMapping("account/check")
 	public String check(String accountId) {
-		System.out.println(accountId);
-		Optional<Account> account = dao.findById(accountId);
-		System.out.println(account);
-		if (account.isEmpty()) {
+		if (accountService.findById(accountId).isEmpty()) {
 			return "N";
 		}
 		return "Y";
 	}
-	
+
 	@PostMapping("login")
 	public String login(String accountId, String pw, HttpSession session) throws NoSuchAlgorithmException {
-			
-		Optional<Account> account = dao.findById(accountId);
+
+		Optional<Account> account = accountService.findById(accountId);
 		try {
-			if(PwSecurity.checkPw(account.get(), pw)) {
-		        session.setAttribute("accountId", account.get().getAccountId());
-		        session.setAttribute("nickName", account.get().getNickName());
-		        return "redirect:/tohome";
-//		        return "redirect:../test.jsp";
+			if (PwSecurityService.checkPw(account.get(), pw)) {
+				session.setAttribute("accountId", account.get().getAccountId());
+				session.setAttribute("nickName", account.get().getNickName());
+				return "redirect:/tohome";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "redirect:/tologin";
 	}
-	@GetMapping("nonSign")
-	public String nonSign(HttpSession session)  {
-		return "redirect:/tohome";
 
-	}
-	
 	@ResponseBody
 	@PostMapping("account/logincheck")
 	public String loginCheck(HttpSession session) {
 
-	    if (session != null) {
-	        return "Y";
-	    }
+		if (session != null) {
+			return "Y";
+		}
 
-	    return "N";
+		return "N";
 	}
 
 	@GetMapping("account/logout")
 	public String logout(HttpSession session) {
 
-	    if (session != null) {
-	        session.invalidate();   // 세션 날림
-	    }
+		if (session != null) {
+			session.invalidate(); // 세션 날림
+		}
 
-	    return "redirect:/tohome";
+		return "redirect:/tohome";
 
 	}
 
 	@PostMapping("account/changenickname")
 	public String changeNickName(HttpSession session, String nickName) {
-		Account account = dao.findById(session.getAttribute("accountId").toString()).get();
-		account.setNickName(nickName);
-		session.setAttribute("nickName", nickName);
-		dao.save(account);
-		return "redirect:/tohome";
-	}
-	
-	@PostMapping("account/changepw")
-	public String changePw(HttpSession session, String pw) {
-		Account account = dao.findById(session.getAttribute("accountId").toString()).get();
-		try {
-			account.setPw(PwSecurity.hashing(pw, account.getHashSalt()));
-			dao.save(account);
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		logout(session);
-		return "redirect:/tohome";
-	}
-	
-	@PostMapping("account/findpw")
-	public String findPw(AccountDTO account, Model model) {
 		
-		Account accountEntity = dao.findById(account.getAccountId()).get();
-		try {
-			if(accountEntity.getPwQuestion().equals(account.getPwQuestion())) {
-				accountEntity.setPw(PwSecurity.hashing(account.getPw(), accountEntity.getHashSalt()));
-				dao.save(accountEntity);
-				return "redirect:/tologin";
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		model.addAttribute("msg","ID나 비밀번호 찾기 질문을 확인하세요");
-		return "redirect:/tofindpw";
+		accountService.changeNickName(session.getAttribute("accountId").toString(), nickName);
+		session.setAttribute("nickName", nickName);
+
+		return "redirect:/tohome";
 	}
-	
+
+	@PostMapping("account/changepw")
+	public String changePw(HttpSession session, String pw) throws NoSuchAlgorithmException {
+		
+		accountService.changePw(session.getAttribute("accountId").toString(), pw);
+		logout(session);
+		
+		return "redirect:/tohome";
+	}
+
+	@PostMapping("account/findpw")
+	public String findPw(AccountDTO account) throws NoSuchAlgorithmException {
+		
+		return accountService.findPw(account);
+
+	}
+
 	@GetMapping("account/changepreference")
 	@Transactional
 	public String changePreference(@RequestParam(required = false) List<String> preference, HttpSession session) {
-		pDao.deleteByAccountId(session.getAttribute("accountId").toString());
-		savePreference(session.getAttribute("accountId").toString(), preference);
+		preferenceService.deleteByAccountId(session.getAttribute("accountId").toString());
+		preferenceService.save(session.getAttribute("accountId").toString(), preference);
 		
+
 		return "redirect:/tohome";
 	}
-	
-	public void savePreference(String accountid, List<String> preference) {
-		for(String s: preference) {
-			PreferenceDTO dto = PreferenceDTO.builder().category(s).accountId(accountid).build();
-			Preference entity = modelMapper.map(dto, Preference.class);
-			pDao.save(entity);
-		}
-	}
-	
+
+
+
 	@ResponseBody
 	@GetMapping("account/getpreference")
 	public List<String> getPreference(HttpSession session) {
-		List<Preference> dto = pDao.findByAccountId(session.getAttribute("accountId").toString());
+		List<Preference> dto = preferenceService.findByAccountId(session.getAttribute("accountId").toString());
+		
 		List<String> r = new ArrayList<>();
 		if (dto != null) {
-			for(Preference p: dto) {
+			for (Preference p : dto) {
 				r.add(p.getCategory());
 			}
 		}
 
 		return r;
 	}
+
+	private ModelMapper modelMapper = new ModelMapper();
+	
 	@ResponseBody
 	@GetMapping("searchUser")
-	public List<List<String>> searchUser(HttpSession session,String searching, String id){
+	public List<List<String>> searchUser(HttpSession session, String searching, String id) {
 		System.out.println(searching);
-		
+
 		id = session.getAttribute("accountId").toString();
 		System.out.println(id);
 		List<Account> result = new ArrayList<Account>();
-		result= dao.findByNickNameContainingAndAccountIdNot(searching, id);
+		result = accountService.findByNickNameContainingAndAccountIdNot(searching, id);
 		List<List<String>> result2 = new ArrayList<List<String>>();
-		
+
 		for (Account i : result) {
 			AccountDTO j = new AccountDTO();
-			j = modelMapper.map(i,AccountDTO.class);
+			j = modelMapper.map(i, AccountDTO.class);
 			List<String> temp = new ArrayList<String>();
 			temp.add(j.getAccountId());
 			temp.add(j.getNickName());
 			result2.add(temp);
-		};
+		}
+		;
 		System.out.println(result2);
 		System.out.println("성공확인용");
 		return result2;
 	}
-	
-	
-	@GetMapping("/tomypagepre")
-	public String toMyPagePre(HttpSession session) {
-		if (session.getAttribute("accountId") != null) {
-			return "mypagepre";
-		}else {
-			session.invalidate();
-			return "redirect:/tohome";
-		}
-	}
-	
-	@GetMapping("/tomypagenic")
-	public String toMyPageNic(HttpSession session) {
-		if (session.getAttribute("accountId") != null) {
-			return "mypagenic";
-		}else {
-			session.invalidate();
-			return "redirect:/tohome";
-		}
-	}
-	
-	@GetMapping("/tomypagepw")
-	public String toMyPagePw(HttpSession session) {
-		if (session.getAttribute("accountId") != null) {
-			return "mypagepw";
-		}else {
-			session.invalidate();
-			return "redirect:/tohome";
-		}
-	}
-	
-	@GetMapping("/tohome")
-	public String toHome(HttpSession session) {
-		return "home";
-	}
-	
-	@GetMapping("/tologin")
-	public String toLogin(HttpSession session) {
-		return "login";
-	}
-	
-	@GetMapping("/toabout")
-	public String toAbout(HttpSession session) {
-		return "about";
-	}
-	
-	@GetMapping("/tofriendlist")
-	public String toFriendList(HttpSession session) throws NoSuchAlgorithmException {
-		return "friendlist"; //에러페이지러변경!!
-	}
-	@GetMapping("/tofriendsearch")
-	public String toFriendsSearch(HttpSession session) throws NoSuchAlgorithmException {
-		return "friendsearch"; //에러페이지러변경!!
-	}
-	@GetMapping("/tofriendrequest")
-	public String toFriendsRequest(HttpSession session) throws NoSuchAlgorithmException {
-		return "friendrequest"; //에러페이지러변경!!
-	}
-	
+
 	@ResponseBody
 	@PostMapping("/getsession")
 	public String[] getSession(HttpSession session) {
-		return new String[] {session.getAttribute("accountId").toString(), session.getAttribute("nickName").toString()};
-	}
-	
-	@GetMapping("/tosignup")
-	public String toSignUp(HttpSession session) {
-		return "signup";
+		return new String[] { session.getAttribute("accountId").toString(),
+				session.getAttribute("nickName").toString() };
 	}
 
-	@GetMapping("/tofindpw")
-	public String toFindPw(HttpSession session) {
-		return "findpw";
-	}
 }
