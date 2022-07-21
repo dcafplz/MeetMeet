@@ -170,13 +170,11 @@ function idval() {
 ```
 
 
-<style>
-      video { max-width: 80%; display: block; margin: 20px auto; }
-</style>
+
 #### - Meeting 만들기
 ##### (1) 구현 화면
 
-![my_video](https://user-images.githubusercontent.com/87963586/180117336-3efd7172-b5da-49aa-bd43-d93dbc420273.mp4)
+<img src= "https://user-images.githubusercontent.com/87963586/180117336-3efd7172-b5da-49aa-bd43-d93dbc420273.mp4">
 
 &nbsp;
 ##### (2) Front-End
