@@ -196,7 +196,156 @@ public String[] getSession(HttpSession session) {
 			session.getAttribute("nickName").toString() };
 }
 ```
+&nbsp;
+# 🏠Home화면 기능
+##### (1) 구현 화면
 
+##### (2) Front-End
+1. Infinite Scroll 기능
+```javascript
+//스크롤 바닥 감지
+window.onscroll = function(e) {
+  //추가되는 임시 콘텐츠
+  //window height + window scrollY 값이 document height보다 클 경우,
+  if((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+    //실행할 로직 (콘텐츠 추가)
+    count += 8;
+    get_new_item(count - 8, count);
+  }
+};
+
+get_new_item(0, 12);
+
+// item list 추가 함수
+function get_new_item(start, end){
+  for(start; start < end; start ++){
+    var new_id = item_list[start].meetingId	/* "btn-modal" +   */
+    document.getElementById("item_list").innerHTML += 
+      '<div id="' + new_id + '"class="cards" style="..."><div class="card h-100"><img class="card-img-top" src=' +
+      item_list[start].img +
+     ...."
+  }
+}
+```
+저희는 meeting list를 무한 스크롤 방식으로 구현했습니다. 초기에는 12개까지의 meeting만 확인 가능하고, 스크롤과 window 높이가 document 높이보다 클 경우, 추가로 8개씩 listing 하는 방식으로 구현하였습니다.
+
+&nbsp;
+2. modal 기능
+```javascript
+const modal = document.getElementById("modal");
+
+function modalOn1(e) {
+  check_meetparticipate(e.target.parentElement.parentElement.parentElement.parentElement.id);
+  modal.style.display = "flex";
+  modal_content(e.target.parentElement.parentElement.parentElement.parentElement.id);
+};
+
+function isModalOn() {
+  return modal.style.display === "flex";
+};
+
+function modalOff() {
+  modal.style.display = "none";
+};
+
+
+const closeBtn = modal.querySelector(".close-area");
+
+closeBtn.addEventListener("click", e => {
+  modalOff();
+});
+
+modal.addEventListener("click", e => {
+  const evTarget = e.target
+  if(evTarget.classList.contains("modal-overlay")) {
+    modalOff();
+  }
+});
+window.addEventListener("keyup", e => {
+  if(isModalOn() && e.key === "Escape") {
+    modalOff();
+  }
+});
+
+function modal_content(parent_id){
+  if(document.getElementById("p-button") != null){
+    document.getElementById("p-button").value = parent_id;
+  }
+  var parent_tag = document.getElementById(parent_id);
+  var modal_tag = document.getElementById("modal");
+  document.getElementById("detailform").action = "/meetmeet/detail?meetingId=" + parent_id;
+  document.getElementById("meetingId").value = parent_id;
+
+  for(let i = 0; i < item_list.length; i ++){
+    if(item_list[i].meetingId == parent_id){
+      modal_tag.getElementsByClassName("card-img-top")[0].src = item_list[i].img;
+      modal_tag.getElementsByClassName("modal-name")[0].innerText = item_list[i].name;
+      modal_tag.getElementsByClassName("modal-place")[0].innerText = item_list[i].place;
+      modal_tag.getElementsByClassName("modal-date")[0].innerText = item_list[i].date;
+      modal_tag.getElementsByClassName("modal-contents")[0].innerText = item_list[i].content;
+
+    }
+  }
+
+}
+```
+메인페이지에서 간략하게 meeting 정보를 더 확인할 수 있도록 모달기능을 활용하였습니다. meeting의 더보기를 클릭시 event를 modalOn 함수에 전달하여, event가 발생한 tag의 id값을 modal_content에 전달하였습니다. 이후, 기존에 비동기로 가져온 item_list에서 해당 meeting 정보를 꺼내어 모달에 추가해주는 방식으로 구현하였습니다.
+모달창 바깥쪽은 modal-overlay 영역으로 구성하여, 모달 바깥을 클릭하거나 ESC를 눌러도 모달창이 닫히도록 구현하였습니다.
+
+&nbsp;
+3. 선호도 Filtering 기능
+```javascript
+function getPreference(){
+  axios.get("account/getpreference").then(function(response) {
+    item_list_temp = [];
+    var user_category = response.data;
+    idx_list = [];
+    for(i in item_list){
+      item_now = (item_list[i].category).split(',');
+      result = false;
+      for(j in item_now){
+        for(x in user_category){
+          if(item_now[j] === user_category[x]){
+            result = true;
+          };
+        };
+      };
+      if(result == true){
+        item_list_temp.push(item_list[i]);
+      }
+    }
+
+    item_list = item_list_temp;
+    document.getElementById("item_list").innerHTML = "";
+    get_new_item(0, 12);
+  });
+}
+```
+filter 클릭시 메인화면의 모임 List 중, 회원이 선호하는 category에 해당하는 모임만 출력되도록 기능을 추가하였습니다. 비동기로 현재 회원의 category를 가져온 뒤, 기존에 받아온 모임 list와 비교하여 화면에 재출력하는 형식으로 구현하였습니다.
+
+&nbsp;
+##### (3) Back-End
+&nbsp;
+1. Controller
+```java
+@GetMapping("/getall")
+	public Iterable<Meeting> getAll(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file) throws Exception {
+
+		Iterable<Meeting> i = meetingService.meetList();
+		System.out.println(i);
+
+		return i;
+	}
+```
+&nbsp;
+2. Service
+``` java
+public Iterable<Meeting> meetList() {
+    	Iterable<Meeting> p = meetingRepository.findAll();
+    	p.forEach(e -> modelMapper.map(e, MeetingDTO.class));
+    	return p;
+    }
+```
 
 # 🤝🏻 Meeting 만들기 기능
 ##### (1) 구현 화면
