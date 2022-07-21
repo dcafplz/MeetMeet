@@ -50,7 +50,7 @@ public class AccountController {
 		accountService.save(account);
 		placeService.save(place);
 		fileSaveService.saveFile(file, "/"+ account.getAccountId() + "_profile", "/default_profile.jpg");
-		preferenceService.save(account.getAccountId(), preference);
+		if(preference != null) { preferenceService.save(account.getAccountId(), preference);}
 
 		return "redirect:/tologin";
 	}
