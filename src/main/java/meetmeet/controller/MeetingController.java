@@ -174,8 +174,6 @@ public class MeetingController {
 			modelAndView.setViewName("mymeeting");
 			System.out.println(meetings);
 			
-//			return req.getSession().getAttribute("accountId").equals(meeting.getMaster_id());
-			
 		}else {
 			modelAndView.setViewName("redirect:/tohome");
 		}
