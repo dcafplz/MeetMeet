@@ -19,6 +19,9 @@ public class MeetingService {
 	@Autowired
 	private MeetingRepository meetingRepository;
 	
+	@Autowired
+	private FileSaveService fileSaveService;
+	
 	private ModelMapper modelMapper = new ModelMapper(); // 추후 빈에 등록 필요
 	
 	public Long meetCreate(MeetingDTO meeting, MultipartFile file) throws Exception{       
@@ -29,11 +32,8 @@ public class MeetingService {
 
         String fileName = "meeting" + uuid + "_" + file.getOriginalFilename(); // 기존 file 이름 +
         
-        // File 생성. 해당 경로에 name으로 담기는 file
-        File saveFile = new File(projectPath, fileName);
+        fileSaveService.saveFileMeeting(file, "/"+ fileName, "/default_meeting.png");
         
-        // File 저장. 위 throws Exception 안하면 exception 대비하라고 경고떠서 추가했음
-        file.transferTo(saveFile);
         meeting.setFilename(fileName);
         meeting.setFilepath("/files/" + fileName);
         System.out.println("service : " + meeting);
