@@ -10,8 +10,9 @@
 ### DB
 
 DB설계도    
--삽입예정-
+![DB Erd](https://user-images.githubusercontent.com/105038597/180125178-a5506f9a-99eb-47f2-b0a2-5799e9b746bc.JPG)    
 
+Account table에 모두 외래키로 연결    
 외래키의 ON DELETE CASECADE속성, UNIQUE속성을 활용해 무결성 유지
 ```sql
 ALTER TABLE friend_list ADD FOREIGN KEY (id1) REFERENCES
