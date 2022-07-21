@@ -176,9 +176,7 @@ function idval() {
 #### - Meeting 만들기
 ##### (1) 구현 화면
 
-<video autoplay controls loop muted poster="aaa" preload="bbb">
-  <source src="https://velog.velcdn.com/images/chso1324/post/3780bb35-3537-4946-b350-5800f0ce9cdd/image.mp4" type="video/mp4">
-</video>
+![my_video](https://user-images.githubusercontent.com/87963586/180117336-3efd7172-b5da-49aa-bd43-d93dbc420273.mp4)
 
 &nbsp;
 ##### (2) Front-End
