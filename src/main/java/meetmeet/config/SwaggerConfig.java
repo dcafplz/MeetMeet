@@ -1,5 +1,6 @@
 package meetmeet.config;
 
+<<<<<<< HEAD
 import javax.servlet.http.HttpSession;
 
 import org.springframework.context.annotation.Bean;
@@ -7,6 +8,11 @@ import org.springframework.context.annotation.Configuration;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+=======
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+>>>>>>> b50974767ac1091f9942cab0f9b200c704793d6f
 import springfox.documentation.annotations.ApiIgnore;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -18,6 +24,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2  
 public class SwaggerConfig {
+<<<<<<< HEAD
 	/*	1. Docket(DocumentationType.SWAGGER_2)
 	 * 	- swagger 설정 필수 핵심 bean
 	 * 	- swagger 버전에 따른 차이점
@@ -49,6 +56,14 @@ public class SwaggerConfig {
     public Docket swaggerApi() {
     	
         return new Docket(DocumentationType.SWAGGER_2).ignoredParameterTypes(ApiIgnore.class)
+=======
+	
+    @Bean
+    public Docket swaggerApi() {
+    	
+        return new Docket(DocumentationType.SWAGGER_2)
+        		.ignoredParameterTypes(ApiIgnore.class)
+>>>>>>> b50974767ac1091f9942cab0f9b200c704793d6f
         		.apiInfo(swaggerInfo()).select()
                 .apis(RequestHandlerSelectors.basePackage("meetmeet.controller"))
                 .build()
@@ -57,9 +72,15 @@ public class SwaggerConfig {
     
 
     private ApiInfo swaggerInfo() {
+<<<<<<< HEAD
         return new ApiInfoBuilder().title("API Doc 입니다")
                 .description("Swagger Doc 학습을 위한 기본 문서 작성중 ")
                 .license("license : playdata").licenseUrl("http://www.google.com")
+=======
+        return new ApiInfoBuilder().title("신동혁 스웨거")
+                .description("웹프로젝트 밋밋 Swagger Doc ")
+                .license("license : playdata").licenseUrl("https://shindonghyeo.github.io/java/Swagger/")
+>>>>>>> b50974767ac1091f9942cab0f9b200c704793d6f
                 .version("1").build();
     }
     

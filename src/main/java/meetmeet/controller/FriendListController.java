@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.swagger.annotations.ApiOperation;
 import meetmeet.model.dao.FriendListRepository;
 import meetmeet.model.dto.FriendListDTO;
 import meetmeet.model.entity.Account;
@@ -28,7 +29,9 @@ public class FriendListController {
 	private FriendListServiceImpl friendListService;
 
 	@GetMapping("findall")
+	@ApiOperation(value="밸류")
 	public ArrayList<FriendListDTO> findAll() {
+		System.out.println("friendlist/findAll() 실행----------------------------------");
 		ArrayList<FriendListDTO> result = null;
 		result = friendListService.findAll();
 		return result;
@@ -36,31 +39,30 @@ public class FriendListController {
 
 	@GetMapping("findFriendListById1")
 	public List<List<String>> findFriendListById1(String id1) {
+		System.out.println("friendlist/findFriendListById1() 실행----------------------------------");
 		List<List<String>> result = null;
 		result = friendListService.findFriendListById1(id1);
-		System.out.println(result);
 		return result;
 	}
 	
 	@DeleteMapping("delete")
 	public String delete(String id1,String id2) {
+		System.out.println("friendlist/delete() 실행----------------------------------");
 		String result = null;
-		result="삭제 중 오류가 발생했습니다";
 		result = friendListService.delete(id1,id2);
 		return result;
 	}
 	
 	@PostMapping("post")
 	public String post(String id1, String id2) {
-		System.out.println("친구요청하기실행----------------------------");
-		System.out.println(id1);
-		System.out.println(id2);
-		String result = friendListService.post(id1,id2);
+		System.out.println("friendlist/post() 실행----------------------------");
+		String result = null;
+		result = friendListService.post(id1,id2);
 		if (result.equals("친구상태")) {
-			return "친구상태입니다";
+			return "이미 친구 목록에 존재합니다";
 		}else if(result.equals("친구신청이미보냄")) {
-			return "친구신청을 이미 보냈습니다";
-		}return "친구요청 성공";
+			return "이미 친구신청을 보냈습니다";
+		}return "친구요청에 성공했습니다";
 
 	}
 
