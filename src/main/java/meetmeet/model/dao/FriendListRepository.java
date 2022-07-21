@@ -9,23 +9,16 @@ import org.springframework.stereotype.Repository;
 
 import meetmeet.model.entity.Account;
 import meetmeet.model.entity.FriendList;
+
 @Repository
 public interface FriendListRepository extends CrudRepository<FriendList, Integer> {
 
 	@Query("SELECT fl.id, fl.id2.accountId, fl.id2.nickName FROM FriendList fl WHERE fl.id1.accountId=:id1")
 	public abstract List<List<String>> findId2ById1AccountId(String id1);
-
-	public abstract void deleteById1AccountIdAndId2AccountId(String id1, String id2);
+//	public abstract List<List<String>> findIdAndId2AccountIdAndId2NickNameById1AccountId(String id1); 오류나는문장 
 
 	@Query("SELECT fl FROM FriendList fl WHERE fl.id1.accountId=:id1 AND fl.id2.accountId=:id2")
 	public abstract Optional<FriendList> findMyFunction(String id1, String id2);
-
-//	@Query("DELETE FROM FriendList fl WHERE fl.id1.accountId=:id1, fl.id2.accountId:id2")
-//	public abstract void deleteMyFunction(String id1, String id2);
-
-
-	
-
-
+//	public abstract void deleteById1AccountIdAndId2AccountId(String id1, String id2); 오류나는문장
 
 }
