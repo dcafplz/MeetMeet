@@ -86,7 +86,7 @@
 	
 	/* 서버단 세션에서  id,nickname 받아오기*/
 	axios
-	.post("getsession")
+	.post("../getsession")
 	.then(
 		function(response) {
 			User1 = response.data[0];
