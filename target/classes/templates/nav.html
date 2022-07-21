@@ -1,5 +1,5 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <nav class="navbar navbar-expand-lg navbar-light">
 	<div class="container px-4 px-lg-5">
 		<p class="navbar-brand" style="margin: auto; font-size: 23px;"
@@ -22,71 +22,61 @@
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<li><a class="dropdown-item" href="/tomypagepre">선호모임 설정</a></li>
 						<li><hr class="dropdown-divider" /></li>
-						<li><a class="dropdown-item"
-							href="/tomypagenic">개인정보 변경</a></li>
-						<li><a class="dropdown-item" href="/tomypagepw">패스워드
-								변경</a></li>
+						<li><a class="dropdown-item" href="/tomypagenic">개인정보 변경</a></li>
+						<li><a class="dropdown-item" href="/tomypagepw">패스워드 변경</a></li>
 						<li><hr class="dropdown-divider" /></li>
 						<li><a class="dropdown-item" href="/getmymeet">내 모임 보기</a></li>
 					</ul></li>
-				<!-- <li class="nav-item"><a class="nav-link"
-					href="tofriends?command=friendlist">Friends</a></li> -->
-					
-				<li class="nav-item dropdown"><a class="nav-link dropdown-toggle"href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Friends</a>
-				 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+				<li class="nav-item dropdown"><a
+					class="nav-link dropdown-toggle" href="#" role="button"
+					data-bs-toggle="dropdown" aria-expanded="false">Friends</a>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<li><a class="dropdown-item" href="/tofriendlist">친구목록</a></li>
-						<li><a class="dropdown-item"href="/tofriendsearch">친구검색</a></li>
-						</ul>
-				 </li>
-					
-					
-					
+						<li><a class="dropdown-item" href="/tofriendsearch">친구검색</a></li>
+					</ul></li>
 				<li class="nav-item">
 					<div th:if="${session.accountId != null}">
 						<form class="nav-link" action="/create-meet" method="post"
-						onclick="document.getElementById('makemeetButton').click()">Make Meet
+							onclick="document.getElementById('makemeetButton').click()">
+							Make Meet
 							<button class="btn btn-primary btn-xl" id="makemeetButton"
-									type="submit" style="display: none"></button>
+								type="submit" style="display: none"></button>
 						</form>
 					</div>
 				</li>
 			</ul>
 			<div th:if="${session.accountId == null}">
-				<button class="btn " type="submit" name = "login"
+				<button class="btn " type="submit" name="login"
 					onclick="location.href='/tologin'">로그인</button>
 				/
-				<button class="btn " type="submit" name = "loginout"
+				<button class="btn " type="submit" name="loginout"
 					onclick="location.href='/tosignup'">회원가입</button>
 			</div>
-			<div th:if="${session.accountId != null}" style="display: flex; flex-direction: row;  align: center; margin-left:auto; margin-right:auto;">
-				<!-- Header-->
+			<div th:if="${session.accountId != null}"
+				style="display: flex; flex-direction: row; align: center; margin-left: auto; margin-right: auto;">
+				<!-- Heade10->
 				<!-- 내 프로필 -->
-				<div style="border: none; width: 80px; height: 50px; display: flex; align-items: center; flex-direction: column;">
-					<div style="border: 1px solid transparent;
+				<div
+					style="border: 1.8px solid #DBDBDB; width: 100px; height: 50px; display: flex; align-items: center; flex-direction: column;">
+					<div style="border: 0.1px solid transparent;
 						border-radius: 50%;
 						background-image: linear-gradient(#fff, #fff), 
 						linear-gradient(45deg, #FFC700 18%, #FF6710 40% ,#D100C3 100%);
 						background-origin: border-box;
-						background-clip: content-box, border-box;
-						padding: 0.5px;">
-						<div id="myMiniProfile" style="border: 0.5px solid  white; width: 50px; height: 50px; border-radius: 50%; overflow: hidden;padding: 5px; font-size: 1px;">
+						background-clip: content-box, border-box;">
+							<div id="myProfile1"
+								style="border: 1px solid white; width: 29px; height: 29px; border-radius: 50%; overflow: hidden; padding: 5px; font-size: 1px;">
+							</div>
 						</div>
-					</div>	
-				
-					<div id="myMiniProfileName" style="margin: 0px; font-size: 1px;">
-						<div id="myProfile1" style="border: 1px solid  white; width: 29px; height: 29px; border-radius: 50%; overflow: hidden;padding: 5px; font-size: 1px;">
+						<div id="myProfileName1" style="margin: 0px; font-size: 1px;">
+							<span style="font-size: 0px;"></span>
 						</div>
 					</div>
-					<div id="myProfileName1" style="margin: 0px; font-size: 1px;">
-
-						<span style="font-size: 0px;"></span>
-					</div>
+					<button class="btn " type="submit" name="logout"
+						onclick="location.href='/account/logout'">로그아웃</button>
 				</div>
-				<button class="btn " type="submit" name = "logout"
-					onclick="location.href='/account/logout'">로그아웃</button>
 			</div>
 		</div>
-	</div>
 </nav>
 <script>
 	/* 자바스크립트용 전역변수 선언 */
@@ -102,20 +92,16 @@
 			User1 = response.data[0];
 			Username1 = response.data[1];
 			
-			showMeNav();
-			
+			showMe1();
 	});
 		
 	/* 초기화된 전역변수 이용해 내 프로필 사진,닉네임, id 출력하기 */
-	function showMeNav(){
-		console.log("mini");
-		var profilebox = document.getElementById("myMiniProfile");
-		profilebox.innerHTML = `<img src="/files/${User}_profile" onerror="this.src='/files/noProfile'"
+	function showMe1(){
+		var profilebox = document.getElementById("myProfile1");
+		profilebox.innerHTML = `<img src="/files/${User1}_profile" onerror="this.src='/files/noProfile'"
 		style="width:50px; height:50px; max-width:50px; max-height:50px; object-fit:cover;
 			position: relative; top: 50%; left: 50%; transform: translate(-50%, -50%);">`;
-		var namebox = document.getElementById("myMiniProfileName");
-		namebox.innerHTML = `<b style="font-size:2px;">${Username}</b>`;
-	});
-		
-
+		var namebox = document.getElementById("myProfileName1");
+		namebox.innerHTML = `<b style="font-size:2px;">${Username1}</b>( ${User1} )`;
+	} 
 </script>
