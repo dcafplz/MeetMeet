@@ -598,6 +598,164 @@ function 오디세이대중교통길찾기함수(){};
 </footer>
 }
 ```
+
+
+# 👬친구기능
+## 1. 친구신청
+- Front-End
+1. '친구추가'페이지에서 닉네임으로 유저들 검색
+
+```javascript
+var friendsNum = 0;
+var perPage = 12;
+var pageNum = 0;
+var tempData = 0;
+var div = 0;
+///// 1. 친구를 검색하는 함수 생성 //////
+function findFriend() {
+	const findUser = document.getElementById("findUser").value;
+	const xhttp = new XMLHttpRequest();
+    /////  3.받아온 정보로 화면 구성  ////////
+	xhttp.onload = function() {   
+		let res_data = this.responseText;
+		let data = JSON.parse(res_data);
+
+                // 화면 구성 생략 //
+									
+		}
+    /////  2.서버에서 원하는 정보 비동기로 요청  ////////
+	xhttp.open("get", `searchUser?searching=${findUser}&id=${User}`, true);
+	xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhttp.send();
+}
+</script>
+```
+
+
+2. 검색된 유저들 중 원하는 인원에 해당되는 친구신청 버튼 클릭
+
+```javascript
+/// 1.친구신청하는 함수 생성   ///
+function addFriend(v) {
+	const findUser = v;
+	const xhttp = new XMLHttpRequest();
+    /// 3.받아온 정보를 알람으로 출력 ////
+	xhttp.onload = function() {
+		let res_data = this.responseText;
+		alert(res_data);
+	}
+    /// 2.서버에 정보 비동기로 넘겨주고 결과요청  ///
+	xhttp.open("post", `friendlist/post?id1=${User}&id2=${findUser}`, true);
+	xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhttp.send();
+}
+```
+
+
+- Back-End
+1. AccountRepository에서 해당 조건을 만족하는 Account리스트 반환
+
+```java
+public interface AccountRepository extends CrudRepository<Account, String>{
+	public List<Account> findByNickNameContainingAndAccountIdNot(String searching,String id);
+}
+```
+
+2. 여러 조건을 검증한 뒤 친구요청목록에 저장
+
+```java
+// 1.닉네임으로 해당 Account 검색
+Optional<Account> result1 = accountRepository.findById(id1);
+Optional<Account> result2 = accountRepository.findById(id2);
+
+
+// 2.검색된 Account로 친구목록에 존재하는지 검사
+@Query("SELECT fl FROM FriendList fl WHERE fl.id1.accountId=:id1 AND fl.id2.accountId=:id2")
+	public abstract Optional<FriendList> findMyFunction(String id1, String id2);
+
+// 3.모든 검사를 마치면 친구요청목록에 저장
+friendRequestRepository.save(modelMapper.map(result, FriendRequest.class));
+
+```
+
+## 2.친구신청 수락/삭제
+- Front-End
+1. '친구요청'페이지에서 친구요청들 확인
+
+```javascript
+// 1.친구요청 목록을 보여주는 함수 생성 //
+function showRequest(){
+	const xhttp = new XMLHttpRequest();
+    // 3. 받아온 정보로 화면구성 //
+	xhttp.onload = function() {
+		let res_data = this.responseText;
+		let data = JSON.parse(res_data);
+		
+		// 화면 구성 생략 //
+	}
+    // 2.서버에 정보 비동기로 요청 ///
+	xhttp.open("get", `friendrequest/findFriendRequestByRequestedId?requestedId=${User}`, true);
+	xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhttp.send();
+}
+```
+
+2. 친구 수락/삭제 버튼을 통해 원하는 작업 진행
+
+```javascript
+function acceptRequest(v1,v2,v3){	
+	const request1 = v1;
+	const request2 = v2;
+	const request3 = v3;
+	const xhttp = new XMLHttpRequest();
+	xhttp.onload = function() {
+		let res_data = this.responseText;
+		alert(res_data);
+		showRequest();
+	}
+	xhttp.open("delete", `friendrequest/accept?id=${request1}&id1=${request2}&id2=${request3}`, true);
+	xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhttp.send();
+}
+function deleteRequest(v){	
+	const request = v;
+	const xhttp = new XMLHttpRequest();
+	xhttp.onload = function() {
+		let res_data = this.responseText;
+		alert(res_data);
+		showRequest();
+	}
+	xhttp.open("delete", `friendrequest/delete?id=${request}`, true);
+	xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhttp.send();
+}
+```
+
+- Back-End
+1. 수락
+
+```java
+    Optional<Account> result1 = accountRepository.findById(id1);
+    Optional<Account> result2 = accountRepository.findById(id2);
+    AccountDTO result3 = null;
+    AccountDTO result4 = null;
+    if (result1.isPresent()) {
+        result3 = modelMapper.map(result1.get(), AccountDTO.class);
+    }
+    if (result2.isPresent()) {
+        result4 = modelMapper.map(result2.get(), AccountDTO.class);
+    }
+    FriendListDTO result = FriendListDTO.builder().id1(result3).id2(result4).build();
+    friendListRepository.save(modelMapper.map(result, FriendList.class));
+    FriendListDTO resultt = FriendListDTO.builder().id2(result3).id1(result4).build();
+    friendListRepository.save(modelMapper.map(resultt, FriendList.class));
+```
+
+2. 삭제
+
+```java
+friendRequestRepository.deleteById(id2);
+```
 ## 참여자
 - 신동혁 https://github.com/SHINDongHyeo
 - 임주완 https://github.com/dcafplz
