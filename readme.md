@@ -170,22 +170,163 @@ function idval() {
 ```
 
 
----- 최영준 ----
-#### - Meeting CRUD
-(1) MeetingRepository
-``` java
-@Repository
-public interface MeetingRepository extends CrudRepository<Meeting, Long>{}
+<style>
+      video { max-width: 80%; display: block; margin: 20px auto; }
+</style>
+#### - Meeting 만들기
+##### (1) 구현 화면
+
+<video autoplay controls loop muted poster="aaa" preload="bbb">
+  <source src="https://velog.velcdn.com/images/chso1324/post/3780bb35-3537-4946-b350-5800f0ce9cdd/image.mp4" type="video/mp4">
+</video>
+
+&nbsp;
+##### (2) Front-End
+&nbsp;
+1. input data 검증
+아래와 같이 pattern을 이용한 정규표현식으로 input 검증되도록 data가 db 형식에 맞는지 처리하였습니다.
+``` html
+<!DOCTYPE html>
+...
+  <div class="form-floating mb-3">
+    <input class="form-control" id="title" type="text" required
+           pattern="^[ㄱ-ㅎ|가-힣|0-9|\s|a-z|A-Z]+$"
+           onchange="title_valid('title', 'title invalid-feedback', 'title valid-feedback')"
+           name="meetingName" /> <label for="title">미팅 이름</label>
+    <div class="title invalid-feedback">50자 이내로 입력해주세요.</div>
+    <div class="title2 invalid-feedback">한글, 숫자, 영어만 사용 가능합니다.</div>
+    <div class="title valid-feedback" style="display: none">OK</div>
+...
 ```
-CrudRepository의 기본기능을 사용하였습니다.
-&nbsp;
-&nbsp;
-&nbsp;
+위 input tag에서 change event가 발생할 때마다 아래 javascript 문을 실행하여 검증 데이터가 유효하다면, val() 함수를 이용해 현재 유효한 field가 몇개인지 체크합니다.
+``` javascript
+	
+let nums = new Array(6);
+nums.fill(0);
 
-(2) MeetingService
+function title_valid(e_id, e_class_invalid, e_class_valid) {
 
-- MeetingService에서는 4가지 기능을 구현하였습니다.
-1. Long meetCreate meetCreate(MeetingDTO meeting, MultipartFile file)
+  var e = document.getElementById(e_id);
+  var ei = document.getElementsByClassName(e_class_invalid);
+  var ei2 = document.getElementsByClassName("title2 invalid-feedback");
+  var ev = document.getElementsByClassName(e_class_valid);
+
+  if (e.checkValidity() && e.value.length <= 50) {
+    ev[0].style.display = "block";
+    ei[0].style.display = "none";
+    ei2[0].style.display = "none";
+    nums[4] = 1;
+
+  } else if(e.checkValidity() && e.value.length > 50){
+    ei[0].style.display = "block";
+    ei2[0].style.display = "none";
+    nums[4] = 0;
+
+  } else if(!e.checkValidity() && e.value.length <= 50){
+    ei[0].style.display = "none";
+    ei2[0].style.display = "block";
+    nums[4] = 0;
+
+  }else {
+    ev[0].style.display = "none";
+    ei[0].style.display = "block";
+    ei2[0].style.display = "block";
+    nums[4] = 0;
+  }
+  val();
+};
+
+function val() {
+  var k = 1;
+  for (i = 0; i < 6; i++) {
+    if (nums[i] == 0) {
+      k = 0;
+      break;
+    }
+  }
+  if (k == 0) {
+    document.getElementById("singupButton").disabled = true;
+  } else {
+    document.getElementById("singupButton").disabled = false;
+  }
+};
+```
+input의 모든 필드가 유효하다면 제출버튼을 활성화시켜서 회원이 meeting을 생성할 수 있도록 처리하였습니다.
+
+&nbsp;
+2. 이미지 input
+인코딩타입을 multipart/form-data 형식으로 전달하였습니다.
+
+``` html
+<!DOCTYPE html>
+<form id="signupform" action="/meetmeet/create-meet" method="post" enctype="multipart/form-data">
+<div class="form-floating mb-3">
+  <input id='create-meet' type='file' name='file'
+         onchange="change_image(event)">모임 사진을 올려주세요</input>
+</div>
+<div class="form-floating mb-3">
+
+  <!-- 오른쪽 meeting 생성 미리보기 부분 -->
+ <div class="col-lg-6">
+   <div id="image-block" class="form-floating mb-3"
+         style="display: none">
+     <img id="image-block-image" class="card-img-top" src="" alt="..." />
+   </div>
+```
+``` javascript
+/* image 미리보기 기능  */
+const reader = new FileReader();
+
+reader.onload = (readerEvent) => {
+  console.log(document.querySelector("#image-block-image"));
+  document.querySelector("#image-block-image").setAttribute("src", readerEvent.target.result);
+  //파일을 읽는 이벤트가 발생하면 img_section의 src 속성을 readerEvent의 결과물로 대체함
+};
+
+function change_image(e) {
+  console.log(e);
+  document.getElementById("image-block").style.display = "block";
+  const imgFile = e.target.files[0];
+  console.log(imgFile);
+  reader.readAsDataURL(imgFile);
+  console.log(reader);
+
+  //업로드한 이미지의 URL을 reader에 등록
+}
+```
+이미지가 uploda되면 change_image 함수가 실행되어 imgae-block에 미리보기 형식으로 이미지를 출력하도록 구현하였습니다.
+
+&nbsp;
+3. 주소 입력
+주소입력은 Naver Map API Geocoding과 Reverse Geocoding을 이용하였습니다. 
+map에 click event가 발생하거나, address input칸에 click event가 발생하면 해당 주소의 lat, lng 정보가 자동으로 hidden input 값에 기입되게 구현하였습니다.
+``` html
+<div class="form-floating mb-3">
+  <input class="form-control" id="address" type="text"
+         placeholder="검색할 주소" value="" onchange="initGeocoder()">
+  <label for="address">미팅 주소</label>
+  <input type="hidden" id="lat" value="" name="meetingPlaceLat"> <input type="hidden" id="lng" value="" name="meetingPlaceLng">
+</div>
+```
+``` javascript
+function searchCoordinateToAddress(latlng) {
+ ...
+}
+
+function searchAddressToCoordinate(arr) {
+ ...
+}
+
+function initGeocoder() {
+  ...
+}
+
+naver.maps.onJSContentLoaded = initGeocoder;
+```
+&nbsp;
+##### (3) Back-End
+
+1. MeetingService
 ``` java
 
 	public Long meetCreate(MeetingDTO meeting, MultipartFile file) throws Exception{       
@@ -212,27 +353,10 @@ CrudRepository의 기본기능을 사용하였습니다.
     (1) MultipartFile를 통해 모임을 만들때 필요한 사진 file을 전달 받았습니다.
     (2) 이미지 이름이 중복되지 않게 UUID library를 이용하여 random 식별자를 이용해 file명을 rename한 뒤, 저장될 경로와 함께 DTO에 저장하였습니다.
     (3) 이후, db에 저장 후 만들어진 meetingId를 반환해줍니다.
- &nbsp;
-2. Iterable<Meeting> meetList()
-  ``` java    
-    public Iterable<Meeting> meetList() {
-    	Iterable<Meeting> p = meetingRepository.findAll();
-    	p.forEach(e -> modelMapper.map(e, MeetingDTO.class));
-    	return p;
-    }
-```
-    (1) repository의 findAll()을 이용해 모든 search 값을 Iterable<Meeting>에 저장해주었습니다.
-    (2) forEach 함수를 이용해 각각의 객체마다 modelMapper를 통해 DTO class로 변환한 뒤, return해주었습니다.
-  &nbsp;
-3. MeetingDTO meetView(Long id)
-4. void meetDelete(Long id)
+
     
 &nbsp;
-&nbsp;
-&nbsp;
-(3) MeetingController
-- MeetingController에서는 8가지 기능을 구현하였습니다.
-1. ModelAndView meetCreate(MeetingDTO meeting, Model model, MultipartFile file, HttpServletRequest req)
+2. MeetingController
 ``` java
 	public ModelAndView meetCreate(MeetingDTO meeting, Model model, MultipartFile file, HttpServletRequest req) throws Exception {
 		
@@ -264,50 +388,163 @@ CrudRepository의 기본기능을 사용하였습니다.
     (2) 로그인한 회원이라면, MeetingDTO에 작성자(MasterId)를 추가해주어 service에 file과 함께 전달하여 새로 생긴 meeting id값을 반환 받습니다.
     (3) meeting을 만든 회원도 해당 Meeting에 참가하도록, 새로운 MeetingParticipantDTO 객체를 만들어서 meet_participate db에 저장해주었습니다.
     (4) 이후, 신규로 만든 meeting 정보와 해당 meeting의 상세 페이지로 redirect 해주었습니다.
+    
 &nbsp;
-2. ModelAndView meetUpdate(@PathVariable("meetingId") Long meetingId, MeetingDTO meeting, Model model, MultipartFile file)
-``` java
-    @PostMapping("/meetmeet/update/{meetingId}")
-    public ModelAndView meetUpdate(@PathVariable("meetingId") Long meetingId, MeetingDTO meeting, Model model, MultipartFile file) throws Exception{
 
-        MeetingDTO meetingTemp = meetingService.meetView(meetingId);
-        meetingTemp.setMeetingName(meeting.getMeetingName());
-        meetingTemp.setMeetingPlace(meeting.getMeetingPlace());
-        meetingTemp.setMeetingPlaceLat(meeting.getMeetingPlaceLat());
-        meetingTemp.setMeetingPlaceLng(meeting.getMeetingPlaceLng());
-        meetingTemp.setMeetingDetail(meeting.getMeetingDetail());
-        meetingTemp.setCategory(meeting.getCategory());
-        meetingTemp.setMaxParticipant(meeting.getMaxParticipant());
-        meetingTemp.setMeetingStartDate(meeting.getMeetingStartDate());
-        meetingTemp.setMeetingEndDate(meeting.getMeetingEndDate());
-        
-        ModelAndView modelAndView = new ModelAndView();
-        System.out.println(file);
-        Long id = meetingService.meetCreate(meetingTemp, file);
-        modelAndView.setViewName("redirect:../detail?meetingId=" + id);
-		modelAndView.addObject("meeting", meetingService.meetView(id));
-        return modelAndView;
-        
-    }
-```
+---
 &nbsp;
-3. ModelAndView meetDelete(Long meetingId, HttpServletRequest req)
-``` java
-	@GetMapping("/meetmeet/delete")
-	public ModelAndView meetDelete(Long meetingId, HttpServletRequest req) {
-		ModelAndView modelAndView = new ModelAndView();
-		meetingService.meetDelete(meetingId);
-		modelAndView.setViewName("redirect:/tohome");
-		
-		meetingParticipantService.
-		meetParticipationDelete(meetingId,
-				(String) req.getSession().getAttribute("accountId"));
-		
-		return modelAndView;
+#### - Meeting 상세페이지
+
+##### (1) 구현 화면
+
+<video autoplay controls loop muted poster="aaa" preload="bbb">
+  <source src="https://velog.velcdn.com/images/chso1324/post/da793159-f28b-47b2-9dd6-9ae71460e05a/image.mp4" type="video/mp4">
+</video>
+
+&nbsp;
+##### (2) Front-End
+&nbsp;
+1. meeting data 출력
+```html
+<div class="modal-contents" style="width:588px; height: 100px; text-align: center;" th:text="${meeting.meetingDetail} "></div>
+```
+Server에서 받아온 meeting data는 thymeleaf를 이용하여 출력하였습니다.
+&nbsp;
+2. 모임 수정/삭제/참여/취소 session 처리
+```html
+<div th:if="${session.accountId != null}">
+  <a id="button-participate" class="btn btn-primary btn-xl"  style="display: none" onclick="meetparticipate()">참여하기</a>
+  <a id="button-participate-cancel" class="btn btn-primary btn-xl" style="display: none" onclick="meetparticipatecancel()">취소하기</a>
+  <a id="button-delete" class="btn btn-primary btn-xl" style="display: none" th:href="@{/meetmeet/delete(meetingId=${meeting.meetingId})}">모임삭제</a>
+  <br>
+  <a id="button-modify" class="btn btn-primary btn-xl" style="display: none; opacity:0.8" th:href="@{/meetmeet/modify/{meetingId}(meetingId=${meeting.meetingId})}">모임수정</a>
+</div>
+```
+마찬가지로 thymeleaf 문법을 이용하여, session에 account id가 존재하는지 확인하여 해당 button들을 보여주도록 구현하였습니다.
+또한,
+```javascript
+/* writer가 맞는지 체크*/
+	isWriter();
+	function isWriter(){
+		axios.post('/meetmeet/iswriter', null, {params:{
+			master_id: master_id
+		}
+		})
+		.then(function (response) {	// 정상 응답시에 자동 호출
+			if(response.data){
+				isWriterTrue();
+			}else{
+				check_meetparticipate();
+			};
+		})
+			.catch(function (error) {	// 응답에러 발생시 자동 호출
+			console.log(error);
+		});
+	}
+```
+javascript에서 비동기 형식으로 back-end에 요청하여 현재 회원이 글 작성자가 맞는지 확인 후, 글 작성자가 맞다면 수정/삭제 버튼을, 아니라면 참가/취소 버튼이 보이도록 구현하였습니다.
+모임 참여/취소는 아래와 같이 비동기로 처리하였습니다.
+```javascript
+/* meeting 참가하기 */
+	 function meetparticipate(){
+		axios.post('/meetparticipate', null, {params:{
+			meetingId: meeting_id
+		}
+		})
+		.then(function (response) {	
+		 	if(response.data){
+				isWriterTrue();
+			}else{
+				check_meetparticipate();
+			};
+		})
+			.catch(function (error) {	
+			console.log(error);
+		});
+	}
+	
+	 /* meeting 취소하기 */
+		function meetparticipatecancel(){
+			axios.post('/cancel/meetparticipate', null, {params:{
+				meetingId: meeting_id
+			}
+			})
+			.then(function (response) {	
+				console.log(response);
+			 	if(response.data){
+			 		isWriterTrueParticipateFalse();
+				}
+			})
+				.catch(function (error) {	
+				console.log(error);
+			});
+		}
+	
+	/* meeting 참가중인지 여부*/
+	
+	function check_meetparticipate(){
+		axios.post('/check/meetparticipate', null, {params:{
+			meetingId: meeting_id
+		}
+		})
+		.then(function (response) {
+		 	if(response.data){
+		 		isWriterTrueParticipateTrue();
+			}else{
+				isWriterTrueParticipateFalse();
+			}
+		 	// setTimeout(check_meetparticipate,2000);
+		})
+			.catch(function (error) {
+			console.log(error);
+		});
 	}
 ```
 &nbsp;
-4. boolean isWriter(MeetingDTO meeting, HttpServletRequest req)
+3. 출발지에서 목적지까지 대중교통 길찾기
+페이지 로딩시 회원정보 DB에 저장된 위치를 출발지, 모임의 위치를 도착지로 하여 대중교통 길찾기가 실행되도록 구현하였습니다.
+```javascript
+/* backend에서 받아온 기초값 저장 */
+/*<![CDATA[*/
+let lat = /*[[ ${meeting.meetingPlaceLat} ]]*/;
+let lng = /*[[ ${meeting.meetingPlaceLng} ]]*/;
+let session_accountId = /*[[ ${session.accountId} ]]*/;
+/*]]*/
+
+if(session_accountId != null){
+  get_direct_user();
+}
+
+function get_direct_user(){
+  axios.post('/place/getone', null, {params:{
+    id: session_accountId
+  }
+                                    })
+    .then(function (response) {
+    mark_direct_user(response.data);
+  })
+    .catch(function (error) {
+    console.log(error);
+  });
+}
+
+function mark_direct_user(res){		
+  searchCoordinateToAddress({
+    y : res.lng,
+    _lat : lat,
+    x : res.lat,
+    _lng : lng
+  })
+}
+
+function 오디세이대중교통길찾기함수(){};
+```
+현재 모임의 위치와 회원의 위치를 비동기로 backend에서 받아온 뒤, ODsay 대중교통 길찾기 함수를 이용하여 지도에 출력하였습니다.
+
+
+##### (3) Back-End
+&nbsp;
+1. Controller
 ``` java
 	@PostMapping("/meetmeet/iswriter")
 	public boolean isWriter(MeetingDTO meeting, HttpServletRequest req) throws Exception {
@@ -317,11 +554,8 @@ CrudRepository의 기본기능을 사용하였습니다.
 			return false;
 		}
 	}
-```
-&nbsp;
-5. ModelAndView getMyMeet(HttpServletRequest req)
-``` java
-	@GetMapping("/meetmeet/getmymeet")
+    
+    @GetMapping("/getmymeet")
 	public ModelAndView getMyMeet(HttpServletRequest req) throws Exception {
 		
 		ModelAndView modelAndView = new ModelAndView();
@@ -345,37 +579,6 @@ CrudRepository의 기본기능을 사용하였습니다.
 		}
 		
 		return modelAndView;
-	}
-```
-6. ModelAndView meetView(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file)
-``` java
-	@GetMapping("/meetmeet/detail")
-	public ModelAndView meetView(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file) throws Exception {
-		
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("meetdetail.html");
-		modelAndView.addObject("meeting", meetingService.meetView(meetingId));
-
-		return modelAndView;
-	}
-```
-7. Iterable<Meeting> getAll(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file)
-``` java
-	@GetMapping("/meetmeet/getall")
-	public Iterable<Meeting> getAll(Model model, Long meetingId, MeetingDTO meeting, MultipartFile file) throws Exception {
-
-		Iterable<Meeting> i = meetingService.meetList();
-		System.out.println(i);
-
-		return i;
-	}
-	
-```
-8. MeetingDTO getOne(Long meetingId)
-``` java
-	@PostMapping("/meetmeet/getone")
-	public MeetingDTO getOne(Long meetingId) throws Exception {	
-		return meetingService.meetView(meetingId);
 	}
 ```
 
