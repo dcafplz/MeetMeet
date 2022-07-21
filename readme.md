@@ -174,7 +174,7 @@ function idval() {
 #### - Meeting 만들기
 ##### (1) 구현 화면
 
-<img src="![meeting만들기_AdobeExpress](https://user-images.githubusercontent.com/87963586/180118119-556860b4-9e06-4cae-ad20-7cff4f9c02f7.gif)" style="max-width: 80%; display: block; margin: 20px auto;">
+<img src="https://user-images.githubusercontent.com/87963586/180118119-556860b4-9e06-4cae-ad20-7cff4f9c02f7.gif" style="max-width: 80%; display: block; margin: 20px auto;">
 
 
 &nbsp;
