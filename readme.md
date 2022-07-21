@@ -2,7 +2,7 @@
 관심사, 위치기반 모임 서비스 Meet-Meet🎉
 
 # 서비스 기능
-회원의 관심사를🥳 저장하여 관심사와 일치하는 모임만 볼 수 있다.    
+회원의 관심사를 저장하여 관심사와 일치하는 모임만 볼 수 있다.    
 회원이 저장한 위치에서 모임 장소로 이동하는  🚌대중교통 길찾기 기능을 제공한다.
 
 # DB 💾
@@ -17,7 +17,7 @@ account  (account_id) on delete cascade;
 # 멀티 컬럼 유니크
 ALTER TABLE friend_list ADD UNIQUE(id1, id2);
 ```
-# 회원 가입 기능👏
+# 사용자 계정 기능🥳
 
 ### Front-End
 DB 오류를 최소화 하고, 사용자가 즉각적으로 입력해야하는 값들을 체크할 수 있게 required, disabled 활용   
@@ -115,7 +115,8 @@ function idval() {
 };
 ```
 ### Back-End
-hash 함수 및 랜덤 생성된 hash_salt를 통해 암호화하여 pw 저장 :lock:
+#### 1. hash 함수 및 랜덤 생성된 hash_salt를 통해 암호화하여 pw 저장 :lock:
+사용자에게 입력받은 정보로 DB저장 메소드
 ```java
 @PostMapping("account/signup")
 public String signup(AccountDTO account) throws NoSuchAlgorithmException {
@@ -141,6 +142,7 @@ public String signup(AccountDTO account) throws NoSuchAlgorithmException {
 	return "redirect:/tologin";
 }
 ```
+암호화 관련 클래스 
 ```java
 public class PwSecurity {
 	
@@ -166,8 +168,34 @@ public class PwSecurity {
 	
 }
 ```
+#### 2. 로그인, 로그인 상태 유지 및 로그아웃 기능    
+사용자 입력값과 DB저장 값 비교 일치시 사용자 정보 세션에 저장 
+```java
+@PostMapping("login")
+public String login(String accountId, String pw, HttpSession session) throws NoSuchAlgorithmException {
 
-
+	Optional<Account> account = accountService.findById(accountId);
+	try {
+		if (PwSecurityService.checkPw(account.get(), pw)) {
+			session.setAttribute("accountId", account.get().getAccountId());
+			session.setAttribute("nickName", account.get().getNickName());
+			return "redirect:/tohome";
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return "redirect:/tologin";
+}
+```
+사용자 정보가 필요할시 프론트에 세션정보 전달
+```JAVA
+@ResponseBody
+@PostMapping("/getsession")
+public String[] getSession(HttpSession session) {
+	return new String[] { session.getAttribute("accountId").toString(),
+			session.getAttribute("nickName").toString() };
+}
+```
 
 
 # 🤝🏻 Meeting 만들기 기능
