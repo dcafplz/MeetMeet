@@ -757,7 +757,70 @@ function 오디세이대중교통길찾기함수(){};
 
 
 # 👬친구기능
-## 1. 친구신청
+## 1. 친구목록
+- Front-End
+1. '친구목록'페이지에서 비동기로 현재 접속 중인 계정 파악 후 내 프로필 출력 함수, 친구 목록 출력 함수 호출
+
+```javascript
+/* 자바스크립트용 전역변수 선언 */
+var User = "?";				// 세션에서 받은 id 저장할 변수
+var Username = "?";			// 세션에서 받은 nickname 저장할 변수
+var targetFriendId = "?"; 	// 친구목록에서 현재 선택된 친구id를 저장할 변수
+
+/* 서버단 세션에서  id,nickname 받아오기*/
+axios
+.post("getsession")
+.then(
+	function(response) {
+		User = response.data[0];
+		Username = response.data[1];
+		
+		showMe();
+		showFriends();
+});
+```
+
+2. 위에서 받은 내 계정 정보를 파라미터로 넣어 해당 계정 친구목록을 비동기로 요청해 화면 구성
+
+```javacript
+function showFriends(){
+	const xhttp = new XMLHttpRequest();
+	xhttp.onload = function() {
+		let res_data = this.responseText;
+		let data = JSON.parse(res_data);
+
+		// 출력 화면 코드 //
+
+	}
+	
+	xhttp.open("get", `friendlist/findFriendListById1?id1=${User}`, true);
+	xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded;charset=UTF-8");
+	xhttp.send();
+}
+```
+
+- Back-End
+1. 세션에 저장된 계정 id, 닉네임 반환
+
+```java
+	@ResponseBody
+	@PostMapping("/getsession")
+	public String[] getSession(HttpSession session) {
+		return new String[] { session.getAttribute("accountId").toString(),
+				session.getAttribute("nickName").toString() };
+	}
+
+```
+
+2. 직접 쿼리문을 작성해 친구목록 테이블에서 해당 id와 친구인 계정 id, 닉네임 반환
+
+```java
+	@Query("SELECT fl.id, fl.id2.accountId, fl.id2.nickName FROM FriendList fl WHERE fl.id1.accountId=:id1")
+	public abstract List<List<String>> findId2ById1AccountId(String id1);
+```
+
+
+## 2. 친구신청
 - Front-End
 1. '친구추가'페이지에서 닉네임으로 유저들 검색
 
@@ -834,7 +897,7 @@ friendRequestRepository.save(modelMapper.map(result, FriendRequest.class));
 
 ```
 
-## 2.친구신청 수락/삭제
+## 3.친구신청 수락/삭제
 - Front-End
 1. '친구요청'페이지에서 친구요청들 확인
 
