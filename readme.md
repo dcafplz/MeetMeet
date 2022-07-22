@@ -428,6 +428,7 @@ input의 모든 필드가 유효하다면 제출버튼을 활성화시켜서 회
 
 &nbsp;
 2. 이미지 input
+&nbsp;
 인코딩타입을 multipart/form-data 형식으로 전달하였습니다.
 
 ``` html
@@ -471,8 +472,9 @@ function change_image(e) {
 
 &nbsp;
 3. 주소 입력
+&nbsp;
 주소입력은 Naver Map API Geocoding과 Reverse Geocoding을 이용하였습니다. 
-map에 click event가 발생하거나, address input칸에 click event가 발생하면 해당 주소의 lat, lng 정보가 자동으로 hidden input 값에 기입되게 구현하였습니다.
+map이나 address input칸에 click event가 발생하면 해당 주소의 lat, lng 정보가 자동으로 hidden input 태그에 기입되게 구현하였습니다.
 ``` html
 <div class="form-floating mb-3">
   <input class="form-control" id="address" type="text"
@@ -576,7 +578,7 @@ naver.maps.onJSContentLoaded = initGeocoder;
 &nbsp;
 ##### (2) Front-End
 &nbsp;
-1. meeting data 출력
+1. 모임 data 출력
 ```html
 <div class="modal-contents" style="width:588px; height: 100px; text-align: center;" th:text="${meeting.meetingDetail} "></div>
 ```
@@ -592,7 +594,7 @@ Server에서 받아온 모임 data는 thymeleaf를 이용하여 출력하였습�
   <a id="button-modify" class="btn btn-primary btn-xl" style="display: none; opacity:0.8" th:href="@{/meetmeet/modify/{meetingId}(meetingId=${meeting.meetingId})}">모임수정</a>
 </div>
 ```
-마찬가지로 thymeleaf 문법을 이용하여, session에 account id가 존재하는지 확인하여 해당 button들을 보여주도록 구현하였습니다.
+마찬가지로 thymeleaf 문법을 이용하여, session에 account id가 존재하는지 확인하여 알맞은 button들을 보여주도록 구현하였습니다.
 ```javascript
 /* writer가 맞는지 체크*/
 	isWriter();
@@ -672,7 +674,7 @@ javascript에서 비동기 형식으로 back-end에 요청하여 현재 회원�
 	}
 ```
 &nbsp;
-3. 출발지에서 목적지까지 대중교통 길찾기
+3. 대중교통 길찾기
 페이지 로딩시 회원정보 DB에 저장된 위치를 출발지, 모임의 위치를 도착지로 하여 대중교통 길찾기가 실행되도록 구현하였습니다.
 ```javascript
 /* backend에서 받아온 기초값 저장 */
