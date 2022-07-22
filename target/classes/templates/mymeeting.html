@@ -15,6 +15,118 @@
 <!-- Core theme CSS (includes Bootstrap)-->
 <link href="../css/styles_jw.css" rel="stylesheet" />
 <title>빠르고 간편한 모임 MeetMeet</title>
+<style>
+	.sec_cal {
+    width: 360px;
+    margin: 0 auto;
+    font-family: "NotoSansR";
+	}
+	
+	.sec_cal .cal_nav {
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    font-weight: 700;
+	    font-size: 48px;
+	    line-height: 78px;
+	}
+	
+	.sec_cal .cal_nav .year-month {
+	    width: 300px;
+	    text-align: center;
+	    line-height: 1;
+	}
+	
+	.sec_cal .cal_nav .nav {
+	    display: flex;
+	    border: 1px solid #333333;
+	    border-radius: 5px;
+	}
+	
+	.sec_cal .cal_nav .go-prev,
+	.sec_cal .cal_nav .go-next {
+	    display: block;
+	    width: 50px;
+	    height: 78px;
+	    font-size: 0;
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	}
+	
+	.sec_cal .cal_nav .go-prev::before,
+	.sec_cal .cal_nav .go-next::before {
+	    content: "";
+	    display: block;
+	    width: 20px;
+	    height: 20px;
+	    border: 3px solid #000;
+	    border-width: 3px 3px 0 0;
+	    transition: border 0.1s;
+	}
+	
+	.sec_cal .cal_nav .go-prev:hover::before,
+	.sec_cal .cal_nav .go-next:hover::before {
+	    border-color: #ed2a61;
+	}
+	
+	.sec_cal .cal_nav .go-prev::before {
+	    transform: rotate(-135deg);
+	}
+	
+	.sec_cal .cal_nav .go-next::before {
+	    transform: rotate(45deg);
+	}
+	
+	.sec_cal .cal_wrap {
+	    padding-top: 40px;
+	    position: relative;
+	    margin: 0 auto;
+	}
+	
+	.sec_cal .cal_wrap .days {
+	    display: flex;
+	    margin-bottom: 20px;
+	    padding-bottom: 20px;
+	    border-bottom: 1px solid #ddd;
+	}
+	
+	.sec_cal .cal_wrap::after {
+	    top: 368px;
+	}
+	
+	.sec_cal .cal_wrap .day {
+	    display:flex;
+	    align-items: center;
+	    justify-content: center;
+	    width: calc(100% / 7);
+	    text-align: left;
+	    color: #999;
+	    font-size: 12px;
+	    text-align: center;
+	    border-radius:5px
+	}
+	
+	.current.today {background: rgb(242 242 242);}
+	
+	.sec_cal .cal_wrap .dates {
+	    display: flex;
+	    flex-flow: wrap;
+	    height: 290px;
+	}
+	
+	.sec_cal .cal_wrap .day:nth-child(7n -1) {
+	    color: #3c6ffa;
+	}
+	
+	.sec_cal .cal_wrap .day:nth-child(7n) {
+	    color: #ed2a61;
+	}
+	
+	.sec_cal .cal_wrap .day.disable {
+	    color: #ddd;
+	}
+</style>
 </head>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script
@@ -24,26 +136,104 @@
 <body>
 	<!-- Navigation-->
 	<div th:insert="nav"></div>
-	<table class="table" style="margin-left:auto; 
-    margin-right:auto;top:17%; width:60%;">
-			<tr>
-				<th><h4 style="color:#f4623a;">모임이름</h4></th>
-				<th><h4 style="color:#f4623a;">모임일정</h4></th>
-				<th><h4 style="color:#f4623a;">모임장소</h4></th>
-				<th><h4 style="color:#f4623a;">모임취소</h4></th>
-			</tr>
-			<tr th:each="meet : ${meetings}">
-                <th th:text="${meet.meetingName}">1</th>
-                <th th:text="${meet.meetingStartDate}"></th>
-                <th th:text="${meet.meetingPlace}"></th>
-                <th>
-                   <button th:text="취소" th:myId="${meet.meetingId}" th:onclick="meetparticipatecancel(this.getAttribute('myId'))"
-                    class="btn btn-primary btn-xl" style="width: 100px; height: 30px;  text-align: center; line-height: 0px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;" ></button>
-                </th>
-	        </tr>
-	</table>
+	<div style="display: flex; flex-direction: row">
+		<table class="table" style="margin-left:auto; 
+	    margin-right:auto;top:17%; width:60%;">
+				<tr>
+					<th><h4 style="color:#f4623a;">모임이름</h4></th>
+					<th><h4 style="color:#f4623a;">모임일정</h4></th>
+					<th><h4 style="color:#f4623a;">모임장소</h4></th>
+					<th><h4 style="color:#f4623a;">모임취소</h4></th>
+				</tr>
+				<tr th:each="meet : ${meetings}">
+	                <th th:text="${meet.meetingName}">1</th>
+	                <th th:text="${meet.meetingStartDate}"></th>
+	                <th th:text="${meet.meetingPlace}"></th>
+	                <th>
+	                   <button th:text="취소" th:myId="${meet.meetingId}" th:onclick="meetparticipatecancel(this.getAttribute('myId'))"
+	                    class="btn btn-primary btn-xl" style="width: 100px; height: 30px;  text-align: center; line-height: 0px; white-space: nowrap;overflow:hidden;text-overflow:ellipsis;" ></button>
+	                </th>
+		        </tr>
+		</table>
+		<div class="sec_cal">
+		  <div class="cal_nav">
+		    <a href="javascript:;" class="nav-btn go-prev">prev</a>
+		    <div class="year-month"></div>
+		    <a href="javascript:;" class="nav-btn go-next">next</a>
+		  </div>
+		  <div class="cal_wrap">
+		    <div class="days">
+		      <div class="day">MON</div>
+		      <div class="day">TUE</div>
+		      <div class="day">WED</div>
+		      <div class="day">THU</div>
+		      <div class="day">FRI</div>
+		      <div class="day">SAT</div>
+		      <div class="day">SUN</div>
+		    </div>
+		    <div class="dates"></div>
+		  </div>
+		</div>
+	</diV>
 	<script th:inline="javascript">
-
+			/*<![CDATA[*/
+			 meetings = /*[[ ${meetings} ]]*/;
+			 /*]]*/
+			
+			meet_list = {};
+			
+			function add_meet_list(year2, month2, day2, year1, month1, day1){
+				var stDate = new Date(year2, month2, day2);
+				var endDate = new Date(year1, month1, day1);
+				currentYear = year2;
+				currentMonth = month2;
+				day = day2;
+				for(let i = 0; i < (endDate.getTime() - stDate.getTime()) / (1000*60*60*24); i ++ ){
+					var endDay = (new Date(currentYear, currentMonth, 0)).getDate();
+					if(day > endDay){
+						day = 1;
+						currentMonth += 1;
+					}
+					if(currentMonth > 12){
+						currentYear += 1;
+						currentMonth = 1;
+					}
+					var endDay = (new Date(currentYear, currentMonth, 0)).getDate();
+					if(meet_list.hasOwnProperty(currentYear)){
+						if(meet_list[currentYear].hasOwnProperty(currentMonth)){
+							if(meet_list[currentYear][currentMonth].hasOwnProperty(day)){
+								meet_list[currentYear][currentMonth][day] += 1;
+							}else{
+								meet_list[currentYear][currentMonth][day] = 1;
+							}
+						}else{
+							meet_list[currentYear][currentMonth] = {day: 1};
+							meet_list[currentYear][currentMonth][day] =  1;
+						}
+					}else{
+						meet_list[currentYear] = {currentMonth : {day: 1}};
+						meet_list[currentYear][currentMonth] = {day: 1};
+						meet_list[currentYear][currentMonth][day] =  1;
+					}
+					day = day + 1;
+				}
+			}
+			
+			for(let i = 0; i < meetings.length ; i ++){
+				start_year = meetings[i].meetingStartDate.split('-')[0];
+				start_month = meetings[i].meetingStartDate.split('-')[1];
+				start_day = meetings[i].meetingStartDate.split('-')[2];
+				
+				end_year = meetings[i].meetingEndDate.split('-')[0];
+				end_month = meetings[i].meetingEndDate.split('-')[1];
+				end_day = meetings[i].meetingEndDate.split('-')[2];
+				
+				add_meet_list(Number(start_year), Number(start_month), Number(start_day),
+						Number(end_year), Number(end_month), Number(end_day));
+				
+			}
+			console.log(meet_list);
+			
 			function meetparticipatecancel(id){
 				console.log(id);
 				axios.post('/cancel/meetparticipate', null, {params:{
@@ -60,6 +250,142 @@
 					console.log(error);
 				});
 			}
+			
+			/* 달력 출처 : https://songsong.dev/11 */
+		    calendarInit();
+			
+			/*
+			    달력 렌더링 할 때 필요한 정보 목록 
+
+			    현재 월(초기값 : 현재 시간)
+			    금월 마지막일 날짜와 요일
+			    전월 마지막일 날짜와 요일
+			*/
+
+			function calendarInit() {
+
+			    // 날짜 정보 가져오기
+			    var date = new Date(); // 현재 날짜(로컬 기준) 가져오기
+			    var utc = date.getTime() + (date.getTimezoneOffset() * 60 * 1000); // uct 표준시 도출
+			    var kstGap = 9 * 60 * 60 * 1000; // 한국 kst 기준시간 더하기
+			    var today = new Date(utc + kstGap); // 한국 시간으로 date 객체 만들기(오늘)
+			  
+			    var thisMonth = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+			    // 달력에서 표기하는 날짜 객체
+			  
+			    
+			    var currentYear = thisMonth.getFullYear(); // 달력에서 표기하는 연
+			    var currentMonth = thisMonth.getMonth(); // 달력에서 표기하는 월
+			    var currentDate = thisMonth.getDate(); // 달력에서 표기하는 일
+
+			    // kst 기준 현재시간
+			    // console.log(thisMonth);
+
+			    // 캘린더 렌더링
+			    renderCalender(thisMonth);
+
+			    function renderCalender(thisMonth) {
+
+			        // 렌더링을 위한 데이터 정리
+			        currentYear = thisMonth.getFullYear();
+			        currentMonth = thisMonth.getMonth();
+			        currentDate = thisMonth.getDate();
+
+			        // 이전 달의 마지막 날 날짜와 요일 구하기
+			        var startDay = new Date(currentYear, currentMonth, 0);
+			        var prevDate = startDay.getDate();
+			        var prevDay = startDay.getDay();
+
+			        // 이번 달의 마지막날 날짜와 요일 구하기
+			        var endDay = new Date(currentYear, currentMonth + 1, 0);
+			        var nextDate = endDay.getDate();
+			        var nextDay = endDay.getDay();
+
+			        // console.log(prevDate, prevDay, nextDate, nextDay);
+
+			        // 현재 월 표기
+			        document.getElementsByClassName('year-month')[0].innerText = currentYear + '.' + (currentMonth + 1);
+
+			        // 렌더링 html 요소 생성
+			        calendar = document.querySelector('.dates')
+			        calendar.innerHTML = '';
+
+			        // 지난달
+			        for (var i = prevDate - prevDay + 1; i <= prevDate; i++) {
+			            calendar.innerHTML = calendar.innerHTML + '<div class="day prev disable">' + i + '</div>'
+			        }
+			        // 이번달
+			        for (var i = 1; i <= nextDate; i++) {
+			        	if(meet_list.hasOwnProperty(currentYear)){
+			        		if(currentMonth + 1 > 12){
+				        		if(meet_list[currentYear].hasOwnProperty(1)){
+				        			if(meet_list[currentYear][currentMonth + 1].hasOwnProperty(i)){
+				        				color_value = 0;
+				        				if(meet_list[currentYear][currentMonth + 1][i] > 5){
+				        					color_value = 0.8;
+				        				}else if(meet_list[currentYear][currentMonth + 1][i] > 3){
+				        					color_value = 0.6;
+				        				}else if(meet_list[currentYear][currentMonth + 1][i] >= 1){
+				        					color_value = 0.3;
+				        				}
+				        				calendar.innerHTML = calendar.innerHTML + '<div class="day current" style="background-color: green; opacity:' + color_value + '; color: black;">' + i + '</div>'
+					        		}else{
+					        			calendar.innerHTML = calendar.innerHTML + '<div class="day current">' + i + '</div>'
+					        		}
+				        		}else{
+				        			calendar.innerHTML = calendar.innerHTML + '<div class="day current">' + i + '</div>'
+				        		}
+			        		}else{
+			        			console.log(currentMonth + 1);
+				        		if(meet_list[currentYear].hasOwnProperty(currentMonth + 1)){
+				        			if(meet_list[currentYear][currentMonth + 1].hasOwnProperty(i)){
+					        			color_value = 0;
+				        				if(meet_list[currentYear][currentMonth + 1][i] > 5){
+				        					color_value = 0.8;
+				        				}else if(meet_list[currentYear][currentMonth + 1][i] > 3){
+				        					color_value = 0.6;
+				        				}else if(meet_list[currentYear][currentMonth + 1][i] >= 1){
+				        					color_value = 0.3;
+				        				}
+					        			calendar.innerHTML = calendar.innerHTML + '<div class="day current" style="background-color: green; opacity:' + color_value + '; color: black;">' + i + '</div>'
+				        			}else{
+				        				calendar.innerHTML = calendar.innerHTML + '<div class="day current">' + i + '</div>'
+				        			}
+				        		}else{
+				        			calendar.innerHTML = calendar.innerHTML + '<div class="day current">' + i + '</div>'
+				        		}
+			        		}
+			        	}else{
+			        		calendar.innerHTML = calendar.innerHTML + '<div class="day current">' + i + '</div>'
+			        	}
+			            
+			        }
+			        // 다음달
+			        for (var i = 1; i <= (7 - nextDay == 7 ? 0 : 7 - nextDay); i++) {
+			            calendar.innerHTML = calendar.innerHTML + '<div class="day next disable">' + i + '</div>'
+			        }
+
+			        // 오늘 날짜 표기
+			        if (today.getMonth() == currentMonth) {
+			            todayDate = today.getDate();
+			            var currentMonthDate = document.querySelectorAll('.dates .current');
+			            currentMonthDate[todayDate -1].classList.add('today');
+			        }
+			    }
+
+			    // 이전달로 이동
+			    document.getElementsByClassName('go-prev')[0].addEventListener('click', function() {
+			        thisMonth = new Date(currentYear, currentMonth - 1, 1);
+			        renderCalender(thisMonth);
+			    });
+
+			    // 다음달로 이동
+			    document.getElementsByClassName('go-next')[0].addEventListener('click', function() {
+			        thisMonth = new Date(currentYear, currentMonth + 1, 1);
+			        renderCalender(thisMonth); 
+			    });
+			}
+			
 	</script>
 </body>
 </html>
