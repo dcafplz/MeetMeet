@@ -85,4 +85,13 @@ public class MeetMeetController {
 		}
 	}
 	
+	@GetMapping("/tomypagepro")
+	public String toMyPagePro(HttpSession session) {
+		if (session.getAttribute("accountId") != null) {
+			return "mypagepro";
+		}else {
+			session.invalidate();
+			return "redirect:/tohome";
+		}
+	}
 }

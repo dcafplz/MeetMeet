@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<!-- Favicon-->
+<link rel="icon" type="image/x-icon" href="assets/handshaking.png" />
+<!-- title -->
+<title>빠르고 간편한 모임 MeetMeet</title>
+<!-- Bootstrap icons-->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="css/styles_jw.css" rel="stylesheet" />
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- Favicon-->
+<link rel="icon" type="image/x-icon" href="assets/handshaking.png" />
+<!-- title -->
+<title>빠르고 간편한 모임 MeetMeet</title>
+</head>
+<body>
+	<!-- Navigation-->
+	<div th:insert="nav"></div>
+	<!-- Header-->
+	<!-- Section-->
+	<div style="display: block">
+		<br> <br> <br> <br>
+		<div id="changing1" class="row gx-4 gx-lg-5 justify-content-center mb-5">
+			<div class="col-lg-6">
+				<form id="signupform" action="account/changeprofile" method="post" enctype="multipart/form-data">
+					<div class="form-floating mb-3">
+						<div>프로필 사진을 변경해보세요</div>
+						<input id='imgupload' type='file' name='file' onchange="change_image(event)" accept=".gif, .jpg, .png"></input>
+					</div>
+					<div class="col-lg-6">
+						<div id="image-block" class="form-floating mb-3" style="display: block">
+							<img id="imgview" style="width: 250px; height: 250px; object-fit: cover; max-width: 250px; max-height: 250px;" src="" alt="..." />
+						</div>
+					</div>
+					<div class="d-grid">
+						<button class="btn btn-primary btn-xl" id="change" type="submit" disabled="ture">sign up</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<script>
+			axios
+			.post("getsession")
+			.then(
+				function(response) {
+					User = response.data[0];
+					document.querySelector("#imgview").setAttribute("src", "/files/"+ User + "_profile");
+			});
+		/* image 미리보기 기능  */
+			const reader = new FileReader();
+			
+			reader.onload = (readerEvent) => {
+				console.log(document.querySelector("#imgview"));
+				document.querySelector("#imgview").setAttribute("src", readerEvent.target.result);
+		        //파일을 읽는 이벤트가 발생하면 img_section의 src 속성을 readerEvent의 결과물로 대체함
+		    };
+		
+			function change_image(e) {
+				document.getElementById("image-block").style.display = "block";
+				const imgFile = e.target.files[0];
+				reader.readAsDataURL(imgFile);
+				document.getElementById("change").disabled = false;
+			};
+		
+
+		</script>
+
+
+	</div>
+
+
+	<!-- Footer-->
+	<div th:insert="footer"></div>
+	<!-- Bootstrap core JS-->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -90,6 +90,14 @@ public class AccountController {
 
 		return "N";
 	}
+	
+	@PostMapping("account/changeprofile")
+	public String changeProfile(HttpSession session, @RequestParam(value = "file") MultipartFile file) throws IOException {
+		
+		fileSaveService.saveFile(file, "/"+ session.getAttribute("accountId").toString() + "_profile", "/default_profile.jpg");
+
+		return "redirect:/tohome";
+	}
 
 	@GetMapping("account/logout")
 	public String logout(HttpSession session) {
